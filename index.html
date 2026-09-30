@@ -36,17 +36,24 @@
     .nav-bar::-webkit-scrollbar { display: none; }
     .nav-btn {
       flex: 0 0 auto; padding: 8px 12px; background: #fff; border: 1px solid var(--border);
-      border-radius: 20px; font-size: 12.5px; font-weight: 600; color: #495057; cursor: pointer;
+      border-radius: 20px; font-size: 12.5px; font-weight: 600; color: #495057; cursor: pointer; transition: 0.3s;
     }
     .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
     .view-panel { display: none; }
-    .view-panel.active { display: block; }
+    .view-panel.active { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
     .card {
       background: var(--card-bg); border-radius: 12px; padding: 14px;
       margin-bottom: 10px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.04);
     }
+    
+    .dashboard-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+    .stat-box { background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #bbdefb; }
+    .stat-box h2 { margin: 0 0 5px; color: #0d47a1; font-size: 24px; }
+    .stat-box p { margin: 0; font-size: 12px; color: #555; font-weight: 600; }
+
     .form-group { margin-bottom: 10px; }
     label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #495057; }
     input, select, textarea {
@@ -54,32 +61,31 @@
     }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 8px; }
-    @media (min-width: 600px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .student-item {
       display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 10px;
       background: #fff; border-left: 4px solid var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.04); margin-bottom: 8px;
     }
-    @media (min-width: 600px) {
-      .student-item { flex-direction: row; align-items: center; justify-content: space-between; }
-    }
+    @media (min-width: 600px) { .student-item { flex-direction: row; align-items: center; justify-content: space-between; } }
+    
     .student-meta { display: flex; align-items: center; gap: 10px; }
     .student-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
     .student-meta h4 { margin: 0; font-size: 14px; }
     .student-meta p { margin: 2px 0 0; font-size: 11.5px; color: #6c757d; }
+    .leave-badge { display: inline-block; background: #fff3cd; color: #856404; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 4px; border: 1px solid #ffeeba; }
 
     .actions { display: flex; gap: 6px; }
     .btn {
       padding: 8px 10px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600;
       color: white; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 4px;
     }
-    .btn-father { background-color: var(--father); }
-    .btn-mother { background-color: var(--mother); }
+    .btn-father { background-color: var(--father); flex: 1; }
+    .btn-mother { background-color: var(--mother); flex: 1; }
     .btn-main { background-color: var(--primary); width: 100%; padding: 11px; font-size: 13px; }
     .btn-success { background-color: #2e7d32; width: 100%; padding: 11px; font-size: 13px; }
     .btn-warning { background-color: var(--warning); width: 100%; padding: 11px; font-size: 13px; }
-    .btn-danger { background-color: var(--danger); }
+    .btn-danger { background-color: var(--danger); width: 100%; padding: 11px; font-size: 13px; }
     .btn-secondary { background-color: #6c757d; }
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
 
@@ -99,15 +105,8 @@
     .id-body img { width: 68px; height: 68px; border-radius: 50%; margin: 0 auto 8px; display: block; border: 2px solid var(--primary); }
 
     /* Login Modal Styles */
-    #loginModal {
-      display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center;
-    }
-    .modal-content {
-      background-color: #fff; padding: 20px; border-radius: 12px; width: 90%; max-width: 350px;
-      text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    .modal-content input { margin-bottom: 15px; }
+    #loginModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    .modal-content { background-color: #fff; padding: 20px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
   </style>
 </head>
 <body>
@@ -116,23 +115,19 @@
 <div id="loginModal">
   <div class="modal-content">
     <h3 style="color:var(--primary); margin-top:0;">🔒 એડમિન લોગિન</h3>
-    <p style="font-size:12px; color:#555; margin-bottom:15px;">એડમિન પેનલ ખોલવા માટે પાસવર્ડ દાખલ કરો.</p>
-    
     <label style="text-align:left;">ID (યુઝરનેમ):</label>
-    <input type="text" id="adminUser" placeholder="admin">
-    
+    <input type="text" id="adminUser" placeholder="admin" style="margin-bottom: 10px;">
     <label style="text-align:left;">પાસવર્ડ (Password):</label>
-    <input type="password" id="adminPass" placeholder="*****">
-    
+    <input type="password" id="adminPass" placeholder="*****" style="margin-bottom: 15px;">
     <div style="display:flex; gap:10px;">
-      <button class="btn btn-main" style="flex:1;" onclick="checkAdminLogin()">લોગિન (Login)</button>
-      <button class="btn btn-secondary" style="flex:1;" onclick="closeLoginModal()">રદ કરો</button>
+      <button class="btn btn-main" style="flex:1;" onclick="checkAdminLogin()">લોગિન</button>
+      <button class="btn btn-secondary" style="flex:1;" onclick="closeLoginModal()">રદ</button>
     </div>
     <p id="loginError" style="color:red; font-size:12px; display:none; margin-top:10px;">ખોટો ID અથવા પાસવર્ડ!</p>
   </div>
 </div>
 
-<div class="app-container">
+<div class="app-container" id="mainApp">
   <header>
     <h1>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત</h1>
     <p>ધોરણ ૧૨ (સામાન્ય પ્રવાહ) • વર્ગ શિક્ષક: હેમંત સર</p>
@@ -140,20 +135,44 @@
 
   <!-- નેવિગેશન બાર -->
   <div class="nav-bar">
-    <button class="nav-btn active" onclick="showPanel('attPanel')">📋 હાજરી</button>
+    <button class="nav-btn active" onclick="showPanel('dashPanel')">🏠 હોમ</button>
+    <button class="nav-btn" onclick="showPanel('attPanel')">📋 હાજરી</button>
     <button class="nav-btn" onclick="showPanel('hwPanel')">📚 ગૃહકાર્ય</button>
     <button class="nav-btn" onclick="showPanel('examPanel')">📝 પરીક્ષા ગુણ</button>
     <button class="nav-btn" onclick="showPanel('feePanel')">💰 ફી સૂચના</button>
     <button class="nav-btn" onclick="showPanel('leavePanel')">🚨 વિશેષ રજા</button>
     <button class="nav-btn" onclick="showPanel('idPanel')">🪪 આઈ-કાર્ડ</button>
     <button class="nav-btn" onclick="showPanel('noticePanel')">📢 પરિપત્ર</button>
-    <button class="nav-btn" style="background:#e3f2fd; color:#0d47a1;" onclick="openAdminPanel()">⚙️ Admin પેનલ</button>
+    <button class="nav-btn" style="background:#e3f2fd; color:#0d47a1;" onclick="openAdminPanel()">⚙️ Admin</button>
+  </div>
+
+  <!-- ૦. ડેશબોર્ડ પેનલ -->
+  <div id="dashPanel" class="view-panel active">
+    <div class="dashboard-stats">
+      <div class="stat-box">
+        <h2 id="dashTotalCount">0</h2>
+        <p>કુલ વિદ્યાર્થીનીઓ</p>
+      </div>
+      <div class="stat-box" style="background: #e8f5e9; border-color: #c8e6c9;">
+        <h2 id="dashLeaveCount" style="color: #2e7d32;">0</h2>
+        <p>આજની મંજૂર રજા</p>
+      </div>
+    </div>
+    <div class="card" style="border-left-color: var(--primary);">
+      <h4 style="margin:0 0 10px;">📌 ઝડપી કાર્યો (Quick Actions)</h4>
+      <div class="btn-grid">
+        <button class="btn btn-main" onclick="showPanel('attPanel')">✅ હાજરી પૂરો</button>
+        <button class="btn btn-warning" onclick="showPanel('hwPanel')">📝 હોમવર્ક મોકલો</button>
+        <button class="btn btn-success" onclick="showPanel('examPanel')">📊 પરીક્ષા પરિણામ</button>
+        <button class="btn btn-secondary" onclick="showPanel('leavePanel')">🚨 રજા મંજૂરી</button>
+      </div>
+    </div>
   </div>
 
   <!-- ૧. હાજરી પેનલ -->
-  <div id="attPanel" class="view-panel active">
+  <div id="attPanel" class="view-panel">
     <div style="font-size: 12.5px; font-weight: bold; margin-bottom: 8px; color: #555;">
-      તારીખ: <span id="lblDate"></span> | ગેરહાજરી મેસેજ મોકલો:
+      તારીખ: <span class="lblDate"></span> | ગેરહાજરી મેસેજ મોકલો:
     </div>
     <div id="attContainer"></div>
   </div>
@@ -185,8 +204,8 @@
         <textarea id="hwDesc" rows="3" placeholder="ગૃહકાર્યની વિગત..."></textarea>
       </div>
       <div class="form-group">
-        <label>ડ્રાઇવ / ફોટો લિંક:</label>
-        <input type="text" id="hwLink" placeholder="https://drive.google.com/...">
+        <label>લિંક (વૈકલ્પિક):</label>
+        <input type="text" id="hwLink" placeholder="https://...">
       </div>
       <button class="btn btn-success" onclick="dispatchHomework()">📲 WhatsApp પર હોમવર્ક મોકલો</button>
     </div>
@@ -212,9 +231,9 @@
         <select id="examStudent"></select>
       </div>
       <div class="form-group">
-        <label>પરીક્ષામાં હાજરી સ્થિતિ:</label>
-        <select id="examAttendance" onchange="toggleExamMarks()" style="border-color:var(--primary); font-weight:bold;">
-          <option value="present">✅ હાજર (ગુણ મોકલો)</option>
+        <label>હાજરી સ્થિતિ:</label>
+        <select id="examAttendance" onchange="toggleExamMarks()" style="font-weight:bold;">
+          <option value="present">✅ હાજર (ગુણ દાખલ કરો)</option>
           <option value="absent">❌ ગેરહાજર (વાલીને જાણ કરો)</option>
         </select>
       </div>
@@ -228,7 +247,7 @@
           <input type="number" id="marksTotal" value="25">
         </div>
       </div>
-      <button class="btn btn-main" id="btnExamDispatch" onclick="dispatchMarks()">📊 પરિણામ મોકલો</button>
+      <button class="btn btn-main" id="btnExamDispatch" onclick="dispatchMarks()">💬 પરિણામ મેસેજ મોકલો</button>
     </div>
   </div>
 
@@ -250,26 +269,36 @@
           <option value="paid">ફી જમા પહોંચ સ્વીકૃતિ</option>
         </select>
       </div>
-      <button class="btn btn-warning" onclick="dispatchFee()">💬 ફી મેસેજ મોકલો</button>
+      <button class="btn btn-warning" onclick="dispatchFee()">💬 વ્યક્તિગત ફી મેસેજ મોકલો</button>
     </div>
   </div>
 
-  <!-- ૫. વિશેષ રજા ગેટપાસ પેનલ -->
+  <!-- ૫. વિશેષ રજા અને ટ્રેકર પેનલ -->
   <div id="leavePanel" class="view-panel">
     <div class="card">
+      <p style="font-size:12px; color:#555;">અહીંથી રજા મંજૂર કરવાથી તે વિદ્યાર્થીનીના હાજરી પત્રકમાં આજની રજા દેખાશે.</p>
       <div class="form-group">
         <label>વિદ્યાર્થીની:</label>
         <select id="leaveStudent"></select>
       </div>
-      <div class="form-group">
-        <label>કારણ:</label>
-        <select id="leaveReason">
-          <option>અચાનક તબિયત બગડવાના કારણે</option>
-          <option>ઘરના અગત્યના કામ અર્થે</option>
-          <option>તબીબી તપાસ / દવાખાને જવા અર્થે</option>
-        </select>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>રજાની તારીખ:</label>
+          <input type="date" id="leaveDateInput">
+        </div>
+        <div class="form-group">
+          <label>કારણ:</label>
+          <select id="leaveReason">
+            <option>બીમારીના કારણે</option>
+            <option>સામાજિક પ્રસંગ અર્થે</option>
+            <option>અન્ય અગત્યના કામ અર્થે</option>
+          </select>
+        </div>
       </div>
-      <button class="btn btn-warning" onclick="dispatchLeave()">🚨 વિશેષ રજા (ગેટપાસ) મોકલો</button>
+      <div class="btn-grid">
+        <button class="btn btn-main" onclick="approveLeave()">💾 રજા મંજૂર કરી સેવ કરો</button>
+        <button class="btn btn-warning" onclick="dispatchLeave()">💬 વાલીને મેસેજ કરો</button>
+      </div>
     </div>
   </div>
 
@@ -315,99 +344,27 @@
     </div>
   </div>
 
-  <!-- ૮. ADMIN PANEL (Protected by Login) -->
+  <!-- ૮. ADMIN PANEL -->
   <div id="adminPanel" class="view-panel">
-    
     <div class="card" style="border-left-color: #2e7d32; background-color: #f1f8e9;">
-      <h3 style="margin:0 0 10px; color:#2e7d32; font-size:15px;">🔄 ડેટા મેનેજમેન્ટ (સિંક અને બેકઅપ)</h3>
-      <p style="font-size:12px; color:#555; margin:0 0 10px;">તમારી ઓનલાઇન Google Sheet માંથી સીધો ડેટા એપમાં લાવો.</p>
-
+      <h3 style="margin:0 0 10px; color:#2e7d32; font-size:15px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
       <div class="form-group">
-        <label>Google Apps Script URL (ડેટા સિંક કરવા માટે):</label>
-        <!-- અહી તમારી નવી સ્ક્રિપ્ટ લિંક મૂકેલી છે -->
-        <input type="text" id="scriptUrlInput" readonly 
-               value="https://script.google.com/macros/s/AKfycbz6uPydFd1Aq2ifh-NZ6qw6a09NvYc73s6Z8EIShzSeTD03aRx3NE1EiaP9g8_q0ryotQ/exec">
+        <label>Google Apps Script URL:</label>
+        <input type="text" id="scriptUrlInput" readonly value="https://script.google.com/macros/s/AKfycbz6uPydFd1Aq2ifh-NZ6qw6a09NvYc73s6Z8EIShzSeTD03aRx3NE1EiaP9g8_q0ryotQ/exec">
       </div>
-      
-      <button class="btn btn-success" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">
-        🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Live Sync)
-      </button>
-
+      <button class="btn btn-success" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Live Sync)</button>
       <div class="btn-grid">
         <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="importDataCSV(event)">
-        <button class="btn btn-main" style="background-color: #0277bd;" onclick="document.getElementById('csvFileInput').click()">
-          📤 CSV ફાઇલ અપલોડ
-        </button>
+        <button class="btn btn-main" style="background-color: #0277bd;" onclick="document.getElementById('csvFileInput').click()">📤 CSV ફાઇલ અપલોડ</button>
         <button class="btn btn-secondary" onclick="exportDataJSON()">📥 JSON ડાઉનલોડ</button>
       </div>
     </div>
-
-    <div class="card" style="border-left-color: #0d47a1;">
-      <h3 style="margin-top:0; color:#0d47a1; font-size:15px;">⚙️ નવો વિદ્યાર્થી ઉમેરો / એડિટ કરો</h3>
-      <input type="hidden" id="editIndex" value="-1">
-      <div class="grid-2">
-        <div class="form-group">
-          <label>રોલ નંબર:</label>
-          <input type="number" id="admRoll" placeholder="દા.ત. 1">
-        </div>
-        <div class="form-group">
-          <label>જી.આર. નંબર:</label>
-          <input type="text" id="admGR" placeholder="દા.ત. 4521">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>વિદ્યાર્થીનીનું પૂરું નામ:</label>
-        <input type="text" id="admName" placeholder="અટક - નામ - પિતાનું નામ">
-      </div>
-      <div class="grid-2">
-        <div class="form-group">
-          <label>જન્મ તારીખ:</label>
-          <input type="text" id="admDOB" placeholder="DD/MM/YYYY">
-        </div>
-        <div class="form-group">
-          <label>બ્લડ ગ્રૂપ:</label>
-          <input type="text" id="admBlood" placeholder="દા.ત. B+">
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="form-group">
-          <label>પિતાનો WhatsApp/મોબાઇલ:</label>
-          <input type="text" id="admFPhone" placeholder="9198XXXXXXXX">
-        </div>
-        <div class="form-group">
-          <label>માતાનો WhatsApp/મોબાઇલ:</label>
-          <input type="text" id="admMPhone" placeholder="9198XXXXXXXX">
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="form-group">
-          <label>યુ-ડાયસ (U-DISE):</label>
-          <input type="text" id="admUdise" placeholder="24220500101">
-        </div>
-        <div class="form-group">
-          <label>ફોટો URL લિંક:</label>
-          <input type="text" id="admPhoto" placeholder="ફોટો લિંક ન હોય તો ખાલી રાખો">
-        </div>
-      </div>
-      <div style="display:flex; gap:8px;">
-        <button class="btn btn-main" id="btnSaveStudent" onclick="saveStudent()">💾 માહિતી સેવ કરો</button>
-        <button class="btn btn-secondary" id="btnCancelEdit" style="display:none;" onclick="resetAdminForm()">રદ કરો</button>
-      </div>
-    </div>
-
+    <!-- Student List Display -->
     <div class="card">
-      <h4 style="margin:0 0 8px;">📋 વર્તમાન વિદ્યાર્થીનીઓની યાદી (<span id="totalStudentsCount">0</span>)</h4>
+      <h4 style="margin:0 0 8px;">📋 વિદ્યાર્થીનીઓની યાદી (<span id="totalStudentsCount">0</span>)</h4>
       <div class="table-container">
         <table>
-          <thead>
-            <tr>
-              <th>રોલ</th>
-              <th>નામ</th>
-              <th>GR નં</th>
-              <th>પિતા નં</th>
-              <th>ક્રિયા</th>
-            </tr>
-          </thead>
+          <thead><tr><th>રોલ</th><th>નામ</th><th>GR નં</th><th>પિતા નં</th><th>ક્રિયા</th></tr></thead>
           <tbody id="adminTableBody"></tbody>
         </table>
       </div>
@@ -418,194 +375,167 @@
 
 <!-- JAVASCRIPT -->
 <script>
-  // એડમિન લોગિન આઈડી અને પાસવર્ડ
   const ADMIN_ID = "admin";
   const ADMIN_PASS = "97275";
   const DEFAULT_AVATAR = "https://lh3.googleusercontent.com/a/default-user=s70-c"; 
 
   let isAdminLogged = false;
-
   let roster = JSON.parse(localStorage.getItem('singapuri_roster')) || [];
 
-  const todayStr = new Date().toLocaleDateString('gu-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  document.getElementById('lblDate').innerText = todayStr;
+  const todayDateObj = new Date();
+  const todayStr = todayDateObj.toLocaleDateString('gu-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const todayISO = todayDateObj.toISOString().split('T')[0];
+  
+  document.querySelectorAll('.lblDate').forEach(el => el.innerText = todayStr);
+  document.getElementById('leaveDateInput').value = todayISO;
 
-  function saveToStorage() {
-    localStorage.setItem('singapuri_roster', JSON.stringify(roster));
-  }
+  function saveToStorage() { localStorage.setItem('singapuri_roster', JSON.stringify(roster)); }
 
-  // --- LOGIN SECURITY FUNCTIONS ---
   function openAdminPanel() {
-    if (isAdminLogged) {
-      showPanel('adminPanel');
-    } else {
+    if (isAdminLogged) showPanel('adminPanel');
+    else {
       document.getElementById('loginModal').style.display = 'flex';
       document.getElementById('loginError').style.display = 'none';
       document.getElementById('adminPass').value = '';
     }
   }
 
-  function closeLoginModal() {
-    document.getElementById('loginModal').style.display = 'none';
-  }
+  function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
 
   function checkAdminLogin() {
-    const user = document.getElementById('adminUser').value;
-    const pass = document.getElementById('adminPass').value;
-    
-    if (user === ADMIN_ID && pass === ADMIN_PASS) {
-      isAdminLogged = true;
-      closeLoginModal();
-      showPanel('adminPanel');
+    if (document.getElementById('adminUser').value === ADMIN_ID && document.getElementById('adminPass').value === ADMIN_PASS) {
+      isAdminLogged = true; closeLoginModal(); showPanel('adminPanel');
     } else {
       document.getElementById('loginError').style.display = 'block';
     }
   }
 
-  // --- UI NAVIGATION ---
   function showPanel(panelId) {
-    if(panelId === 'adminPanel' && !isAdminLogged) {
-      openAdminPanel();
-      return;
-    }
-    
+    if(panelId === 'adminPanel' && !isAdminLogged) return openAdminPanel();
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(panelId).classList.add('active');
     event.target.classList.add('active');
-    
     if(panelId === 'idPanel') renderCard();
     if(panelId === 'adminPanel') renderAdminTable();
   }
 
   function setup() {
     const list = document.getElementById('attContainer');
-    const hwSel = document.getElementById('hwStudent');
-    const exSel = document.getElementById('examStudent');
-    const feeSel = document.getElementById('feeStudent');
-    const lvSel = document.getElementById('leaveStudent');
-    const idSel = document.getElementById('idStudent');
-
+    const sels = ['hwStudent', 'examStudent', 'feeStudent', 'leaveStudent', 'idStudent'];
+    
     list.innerHTML = '';
-    [hwSel, exSel, feeSel, lvSel, idSel].forEach(s => s.innerHTML = '');
+    sels.forEach(id => document.getElementById(id).innerHTML = '');
+
+    let todayLeavesCount = 0;
 
     if(roster.length === 0) {
-      list.innerHTML = '<p style="text-align:center; color:#888;">કોઈ વિદ્યાર્થીનીનો ડેટા નથી. કૃપા કરીને એડમિન પેનલમાંથી ગૂગલ શીટ સિંક કરો.</p>';
-      return;
-    }
+      list.innerHTML = '<p style="text-align:center; color:#888;">કોઈ ડેટા નથી. ગૂગલ શીટ સિંક કરો.</p>';
+    } else {
+      roster.forEach((st, i) => {
+        let avatar = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR;
+        
+        let leaveHtml = "";
+        if(st.leaveDate === todayISO) {
+          leaveHtml = `<div class="leave-badge">🟡 આજની રજા મંજૂર</div>`;
+          todayLeavesCount++;
+        }
 
-    roster.forEach((st, i) => {
-      let avatar = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR;
-      list.innerHTML += `
-        <div class="student-item">
-          <div class="student-meta">
-            <img class="student-avatar" src="${avatar}" alt="${st.name}">
-            <div>
-              <h4>રોલ ${st.roll}: ${st.name}</h4>
-              <p>GR: ${st.gr} | પિતા: ${st.fPhone} | માતા: ${st.mPhone}</p>
+        // પિતા અને માતા બંનેના બટન ઉમેર્યા
+        list.innerHTML += `
+          <div class="student-item">
+            <div class="student-meta">
+              <img class="student-avatar" src="${avatar}">
+              <div>
+                <h4>રોલ ${st.roll}: ${st.name}</h4>
+                <p>GR: ${st.gr} | પિતા: ${st.fPhone}</p>
+                ${leaveHtml}
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-father" onclick="sendAbsent('${st.name}', '${st.fPhone}', 'પિતાશ્રી')">📲 પિતા</button>
+              <button class="btn btn-mother" onclick="sendAbsent('${st.name}', '${st.mPhone}', 'માતાશ્રી')">📲 માતા</button>
             </div>
           </div>
-          <div class="actions">
-            <button class="btn btn-father" onclick="sendAbsent('${st.name}', '${st.fPhone}', 'પિતાશ્રી')">📲 પિતા</button>
-            <button class="btn btn-mother" onclick="sendAbsent('${st.name}', '${st.mPhone}', 'માતાશ્રી')">📲 માતા</button>
-          </div>
-        </div>
-      `;
+        `;
 
-      const opt = `<option value="${i}">રોલ ${st.roll} - ${st.name}</option>`;
-      hwSel.innerHTML += opt;
-      exSel.innerHTML += opt;
-      feeSel.innerHTML += opt;
-      lvSel.innerHTML += opt;
-      idSel.innerHTML += opt;
-    });
+        const opt = `<option value="${i}">રોલ ${st.roll} - ${st.name}</option>`;
+        sels.forEach(id => document.getElementById(id).innerHTML += opt);
+      });
+    }
 
     document.getElementById('totalStudentsCount').innerText = roster.length;
+    document.getElementById('dashTotalCount').innerText = roster.length;
+    document.getElementById('dashLeaveCount').innerText = todayLeavesCount;
     renderCard();
     if(isAdminLogged) renderAdminTable();
   }
 
+  // --- TOGGLES ---
   function toggleHwStudent() {
-    const type = document.getElementById('hwSendType').value;
-    document.getElementById('hwStudentGroup').style.display = (type === 'individual') ? 'block' : 'none';
+    document.getElementById('hwStudentGroup').style.display = (document.getElementById('hwSendType').value === 'individual') ? 'block' : 'none';
   }
-
   function toggleExamMarks() {
-    const attendance = document.getElementById('examAttendance').value;
-    const marksGroup = document.getElementById('marksInputGroup');
+    const isAbsent = document.getElementById('examAttendance').value === 'absent';
+    document.getElementById('marksInputGroup').style.display = isAbsent ? 'none' : 'grid';
     const btn = document.getElementById('btnExamDispatch');
-    
-    if (attendance === 'absent') {
-      marksGroup.style.display = 'none';
-      btn.innerText = "❌ ગેરહાજર મેસેજ મોકલો";
-      btn.className = "btn btn-danger";
-    } else {
-      marksGroup.style.display = 'grid';
-      btn.innerText = "📊 પરિણામ મોકલો";
-      btn.className = "btn btn-main";
-    }
+    btn.innerText = isAbsent ? "❌ ગેરહાજર મેસેજ મોકલો" : "💬 પરિણામ મેસેજ મોકલો";
+    btn.className = isAbsent ? "btn btn-danger" : "btn btn-main";
   }
 
-  // --- LIVE SYNC WITH GOOGLE APPS SCRIPT ---
+  function approveLeave() {
+    if(roster.length === 0) return;
+    const idx = document.getElementById('leaveStudent').value;
+    const lDate = document.getElementById('leaveDateInput').value;
+    if(!lDate) return alert("કૃપા કરીને તારીખ પસંદ કરો.");
+    
+    roster[idx].leaveDate = lDate; 
+    saveToStorage();
+    setup(); 
+    alert(`${roster[idx].name} ની તારીખ ${lDate.split('-').reverse().join('/')} ની રજા મંજૂર કરી દેવામાં આવી છે.`);
+  }
+
+  // --- LIVE SYNC SCRIPT ---
   async function syncGoogleSheetLive() {
     const scriptUrl = document.getElementById('scriptUrlInput').value;
-    
-    if(!scriptUrl || !scriptUrl.includes("script.google.com")) {
-      alert("કૃપા કરીને સાચી Google Apps Script લિંક નાખો.");
-      return;
-    }
-    
     try {
-      document.querySelector('button[onclick="syncGoogleSheetLive()"]').innerText = "🔄 સિંક થઈ રહ્યું છે...";
-      
+      const btn = document.querySelector('button[onclick="syncGoogleSheetLive()"]');
+      btn.innerText = "🔄 સિંક થઈ રહ્યું છે...";
       const response = await fetch(scriptUrl);
       if (!response.ok) throw new Error("નેટવર્ક એરર.");
-      
-      const jsonData = await response.json();
-      processJSONData(jsonData);
-      
-      document.querySelector('button[onclick="syncGoogleSheetLive()"]').innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Live Sync)";
+      processJSONData(await response.json());
+      btn.innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Live Sync)";
     } catch (error) {
-      alert("ડેટા લાવવામાં મુશ્કેલી થઈ: " + error.message);
+      alert("ભૂલ: " + error.message);
       document.querySelector('button[onclick="syncGoogleSheetLive()"]').innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Live Sync)";
     }
   }
 
   function processJSONData(data) {
-    if (data.length < 2) return alert("શીટમાં કોઈ ડેટા મળ્યો નથી!");
+    if (data.length < 2) return alert("શીટ ખાલી છે!");
     let importedRoster = [];
-
-    // પહેલી લાઇન (index 0) હેડર છે, એટલે index 1 થી શરૂ કરો
     for (let i = 1; i < data.length; i++) {
-      const col = data[i];
+      let col = data[i];
+      if (col.length === 1 && typeof col[0] === 'string' && col[0].includes(',')) col = col[0].split(',');
       if (!col[2] || col[2].toString().trim() === "") continue;
 
-      const student = {
+      importedRoster.push({
         roll: parseInt(col[0]) || (importedRoster.length + 1),
         gr: col[1] ? col[1].toString().trim() : "",
         name: col[2] ? col[2].toString().trim() : "",
         photo: col[3] && col[3].toString().trim() ? col[3].toString().trim() : "",
-        // Dates might come as ISO strings, extract just the date part
-        dob: col[4] ? new Date(col[4]).toLocaleDateString('en-IN') : "",
+        dob: col[4] ? col[4].toString().trim() : "",
         blood: col[12] ? col[12].toString().trim() : "",
         fPhone: col[9] ? col[9].toString().replace(/[^0-9]/g, '') : "",
         mPhone: col[10] ? col[10].toString().replace(/[^0-9]/g, '') : "",
-        udise: col[8] ? col[8].toString().trim() : ""
-      };
-      importedRoster.push(student);
+        udise: col[8] ? col[8].toString().trim() : "",
+        leaveDate: "" 
+      });
     }
-
-    if (importedRoster.length > 0) {
-      roster = importedRoster;
-      saveToStorage();
-      setup();
-      alert(`અભિનંદન! ${importedRoster.length} વિદ્યાર્થીનીઓનો ડેટા સફળતાપૂર્વક સિંક થઈ ગયો છે.`);
-    } else {
-      alert("ડેટા યોગ્ય ફોર્મેટમાં મળ્યો નથી.");
-    }
+    if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setup(); alert("સફળતાપૂર્વક સિંક થયું!"); }
   }
 
-  // --- MANUAL CSV UPLOAD (BACKUP METHOD) ---
+  // --- MANUAL CSV UPLOAD ---
   function importDataCSV(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -632,160 +562,79 @@
         blood: col[12] ? col[12].trim() : "",
         fPhone: col[9] ? col[9].replace(/[^0-9]/g, '') : "",
         mPhone: col[10] ? col[10].replace(/[^0-9]/g, '') : "",
-        udise: col[8] ? col[8].trim() : ""
+        udise: col[8] ? col[8].trim() : "",
+        leaveDate: ""
       };
       if (student.name) importedRoster.push(student);
     }
-
-    if (importedRoster.length > 0) {
-      roster = importedRoster;
-      saveToStorage();
-      setup();
-      alert(`અભિનંદન! ${importedRoster.length} વિદ્યાર્થીનીઓનો ડેટા સફળતાપૂર્વક અપડેટ થઈ ગયો છે.`);
-    } else {
-      alert("ડેટા યોગ્ય ફોર્મેટમાં મળ્યો નથી.");
-    }
+    if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setup(); alert("સફળતાપૂર્વક અપડેટ થઈ ગયું!"); }
   }
 
-  // --- ADMIN FUNCTIONS ---
+  // --- ADMIN TABLE & ACTIONS ---
   function renderAdminTable() {
     const tbody = document.getElementById('adminTableBody');
     tbody.innerHTML = '';
     roster.forEach((st, i) => {
-      tbody.innerHTML += `
-        <tr>
-          <td>${st.roll}</td><td>${st.name}</td><td>${st.gr}</td><td>${st.fPhone}</td>
-          <td>
-            <button class="btn btn-warning" style="padding:4px 8px; font-size:11px;" onclick="editStudent(${i})">✏️</button>
-            <button class="btn btn-danger" style="padding:4px 8px; font-size:11px;" onclick="deleteStudent(${i})">🗑️</button>
-          </td>
-        </tr>`;
+      tbody.innerHTML += `<tr><td>${st.roll}</td><td>${st.name}</td><td>${st.gr}</td><td>${st.fPhone}</td>
+      <td><button class="btn btn-danger" style="padding:4px;" onclick="deleteStudent(${i})">🗑️</button></td></tr>`;
     });
-    document.getElementById('totalStudentsCount').innerText = roster.length;
   }
-
-  function saveStudent() {
-    const idx = parseInt(document.getElementById('editIndex').value);
-    const studentData = {
-      roll: parseInt(document.getElementById('admRoll').value) || (roster.length + 1),
-      gr: document.getElementById('admGR').value.trim(),
-      name: document.getElementById('admName').value.trim(),
-      dob: document.getElementById('admDOB').value.trim(),
-      blood: document.getElementById('admBlood').value.trim(),
-      fPhone: document.getElementById('admFPhone').value.trim(),
-      mPhone: document.getElementById('admMPhone').value.trim(),
-      udise: document.getElementById('admUdise').value.trim(),
-      photo: document.getElementById('admPhoto').value.trim()
-    };
-
-    if (!studentData.name || !studentData.fPhone) return alert("કૃપા કરીને નામ અને પિતાનો મોબાઈલ નંબર અવશ્ય દાખલ કરો.");
-
-    if (idx === -1) roster.push(studentData); else roster[idx] = studentData;
-    roster.sort((a, b) => a.roll - b.roll);
-    saveToStorage(); setup(); resetAdminForm(); alert("માહિતી અપડેટ થઈ ગઈ છે!");
-  }
-
-  function editStudent(index) {
-    const st = roster[index];
-    document.getElementById('editIndex').value = index;
-    ['Roll','GR','Name','DOB','Blood','FPhone','MPhone','Udise','Photo'].forEach(field => {
-      document.getElementById('adm'+field).value = st[field.toLowerCase()] || st[field.charAt(0).toLowerCase() + field.slice(1)];
-    });
-    document.getElementById('btnSaveStudent').innerText = "🔄 ફેરફાર અપડેટ કરો";
-    document.getElementById('btnCancelEdit').style.display = "inline-block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function resetAdminForm() {
-    document.getElementById('editIndex').value = "-1";
-    ['Roll','GR','Name','DOB','Blood','FPhone','MPhone','Udise','Photo'].forEach(f => document.getElementById('adm'+f).value = "");
-    document.getElementById('btnSaveStudent').innerText = "💾 માહિતી સેવ કરો";
-    document.getElementById('btnCancelEdit').style.display = "none";
-  }
-
   function deleteStudent(index) {
-    if (confirm(`શું તમે ખરેખર ${roster[index].name} ની માહિતી ડિલીટ કરવા માંગો છો?`)) {
-      roster.splice(index, 1); saveToStorage(); setup();
-    }
+    if (confirm(`શું તમે ${roster[index].name} ની માહિતી ડિલીટ કરવા માંગો છો?`)) { roster.splice(index, 1); saveToStorage(); setup(); }
   }
-
   function exportDataJSON() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", `Singapuri_Girls_Std12_${todayStr.replace(/\//g, '-')}.json`);
-    dlAnchor.click();
+    const a = document.createElement('a');
+    a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2));
+    a.download = `Singapuri_Girls_${todayStr.replace(/\//g, '-')}.json`; a.click();
   }
 
-  // --- WHATSAPP DISPATCH FUNCTIONS ---
+  // --- WHATSAPP MESSAGES ---
   function sendAbsent(name, phone, relation) {
-    if(!phone || phone=="") { alert("મોબાઈલ નંબર ઉપલબ્ધ નથી."); return; }
-    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\nનમસ્તે ${relation},\nઆપની દીકરી *${name}* (ધોરણ ૧૨) આજે તારીખ ${todayStr} ના રોજ શાળામાં ગેરહાજર છે. નોંધ લેવી.\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    if(!phone || phone === "") return alert(`${relation} નો મોબાઈલ નંબર ઉપલબ્ધ નથી.`);
+    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\nનમસ્તે ${relation},\nઆપની દીકરી *${name}* આજે તારીખ ${todayStr} ના રોજ શાળામાં ગેરહાજર છે. નોંધ લેવી.\n- હેમંત સર`;
     window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function dispatchHomework() {
-    if(roster.length === 0) return alert("ડેટા ઉપલબ્ધ નથી.");
-    const sendType = document.getElementById('hwSendType').value;
+    if(roster.length === 0) return;
+    const type = document.getElementById('hwSendType').value;
     const sub = document.getElementById('hwSubject').value;
-    const txt = document.getElementById('hwDesc').value;
-    const link = document.getElementById('hwLink').value;
-
-    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📚 *દૈનિક ગૃહકાર્ય*\nતારીખ: ${todayStr} | ધોરણ: ૧૨\n`;
-    
-    if (sendType === 'individual') {
-      const st = roster[document.getElementById('hwStudent').value];
-      msg += `વિદ્યાર્થીની: ${st.name}\n`;
-    }
-
-    msg += `-------------------------\n📖 વિષય: *${sub}*\n📝 વિગત: ${txt}\n`;
-    if (link) msg += `🔗 લિંક: ${link}\n`;
+    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n📚 *ગૃહકાર્ય* (${todayStr})\n`;
+    if (type === 'individual') msg += `વિદ્યાર્થીની: ${roster[document.getElementById('hwStudent').value].name}\n`;
+    msg += `વિષય: *${sub}*\nવિગત: ${document.getElementById('hwDesc').value}\n`;
+    if(document.getElementById('hwLink').value) msg += `લિંક: ${document.getElementById('hwLink').value}\n`;
     msg += `- હેમંત સર`;
-
-    if (sendType === 'group') {
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
-    } else {
-      const phone = roster[document.getElementById('hwStudent').value].fPhone;
-      window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank');
-    }
+    
+    if (type === 'group') window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+    else window.open(`https://api.whatsapp.com/send?phone=${roster[document.getElementById('hwStudent').value].fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function dispatchMarks() {
-    if(roster.length === 0) return alert("ડેટા ઉપલબ્ધ નથી.");
+    if(roster.length === 0) return;
     const st = roster[document.getElementById('examStudent').value];
-    const title = document.getElementById('examTitle').value;
     const sub = document.getElementById('examSubject').value;
-    const attendance = document.getElementById('examAttendance').value;
-
-    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n`;
-    
-    if (attendance === 'present') {
-      const obt = document.getElementById('marksObt').value;
-      const tot = document.getElementById('marksTotal').value;
-      msg += `📊 *પરીક્ષા પરિણામ જાણ*\nવિદ્યાર્થીની: *${st.name}* (રોલ: ${st.roll})\nકસોટી: ${title}\nવિષય: ${sub}\nગુણ: *${obt} / ${tot}*\n- હેમંત સર`;
+    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n`;
+    if (document.getElementById('examAttendance').value === 'present') {
+      msg += `📊 *પરિણામ*\nવિદ્યાર્થીની: *${st.name}*\nવિષય: ${sub}\nગુણ: *${document.getElementById('marksObt').value} / ${document.getElementById('marksTotal').value}*\n- હેમંત સર`;
     } else {
-      msg += `⚠️ *પરીક્ષા ગેરહાજરી જાણ*\nવાલીશ્રી, આપની દીકરી *${st.name}* (રોલ: ${st.roll}) આજે લેવાયેલ *${title}* ની પરીક્ષા (વિષય: ${sub}) માં ગેરહાજર રહેલ છે. કૃપા કરી નોંધ લેવી.\n- હેમંત સર`;
+      msg += `⚠️ વાલીશ્રી, આપની દીકરી *${st.name}* આજની ${sub} ની પરીક્ષામાં ગેરહાજર છે.\n- હેમંત સર`;
     }
-    
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function dispatchFee() {
-    if(roster.length === 0) return alert("ડેટા ઉપલબ્ધ નથી.");
+    if(roster.length === 0) return;
     const st = roster[document.getElementById('feeStudent').value];
     const amt = document.getElementById('feeAmt').value;
-    const type = document.getElementById('feeStatus').value;
-    const note = type === 'due' ? `આપની દીકરી ${st.name} ની શાળા ફી પેટે ${amt} જમા કરાવવાના બાકી છે.` : `આપની દીકરી ${st.name} ની શાળા ફી પેટે ${amt} જમા મળી ગયેલ છે.`;
-    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n💰 *ફી સૂચના*\nવાલીશ્રી, ${note}\n- હેમંત સર / કાર્યાલય`;
+    const note = document.getElementById('feeStatus').value === 'due' ? `બાકી છે` : `જમા મળી ગયેલ છે`;
+    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n💰 *ફી સૂચના*\nવાલીશ્રી, આપની દીકરી ${st.name} ની ફી પેટે ${amt} ${note}.\n- કાર્યાલય`;
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function dispatchLeave() {
-    if(roster.length === 0) return alert("ડેટા ઉપલબ્ધ નથી.");
+    if(roster.length === 0) return;
     const st = roster[document.getElementById('leaveStudent').value];
-    const rsn = document.getElementById('leaveReason').value;
-    const time = new Date().toLocaleTimeString('gu-IN', { hour: '2-digit', minute: '2-digit' });
-    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n⚠️ *વિશેષ રજા (Early Leave Pass)*\nવાલીશ્રી, આપની દીકરી *${st.name}* ને તારીખ ${todayStr} ના રોજ સમય ${time} કલાકે શાળામાંથી રજા આપેલ છે.\nકારણ: ${rsn}\n- હેમંત સર`;
+    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n⚠️ વાલીશ્રી, આપની દીકરી *${st.name}* ની તારીખ ${document.getElementById('leaveDateInput').value.split('-').reverse().join('/')} ની રજા મંજૂર કરેલ છે.\nકારણ: ${document.getElementById('leaveReason').value}\n- હેમંત સર`;
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
@@ -806,10 +655,8 @@
   }
 
   function dispatchNotice() {
-    const desc = document.getElementById('noticeDesc').value;
-    const link = document.getElementById('noticeLink').value;
-    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📢 *શાળા પરિપત્ર / અગત્યની સૂચના*\nતારીખ: ${todayStr} | ધોરણ ૧૨\n-------------------------\n${desc}\n`;
-    if (link) msg += `\n🔗 પરિપત્ર લિંક: ${link}\n`;
+    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📢 *શાળા પરિપત્ર / અગત્યની સૂચના*\nતારીખ: ${todayStr} | ધોરણ ૧૨\n-------------------------\n${document.getElementById('noticeDesc').value}\n`;
+    if (document.getElementById('noticeLink').value) msg += `\n🔗 પરિપત્ર લિંક: ${document.getElementById('noticeLink').value}\n`;
     msg += `\n- હેમંત સર (વર્ગ શિક્ષક)`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
   }
