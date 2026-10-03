@@ -1,112 +1,113 @@
 <!DOCTYPE html>
 <html lang="gu">
 <head>
+	<meta name="theme-color" content="#0d47a1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="apple-touch-icon" 	href="https://lh3.googleusercontent.com/a/default-user=s70-c">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ - સ્માર્ટ વર્ગ સંચાલન</title>
   <style>
     :root {
-      --primary: #800020;
-      --primary-dark: #560015;
-      --secondary: #1a73e8;
-      --success: #25D366;
+      /* Attractive Dark Blue Theme */
+      --primary: #0d47a1; 
+      --primary-dark: #0a3375;
+      --secondary: #1976d2;
+      --success: #2e7d32;
       --warning: #f57c00;
-      --danger: #d93025;
-      --father: #0b7285;
-      --mother: #862e9c;
-      --bg: #f8f9fa;
+      --danger: #d32f2f;
+      --father: #00838f;
+      --mother: #6a1b9a;
+      --bg: #f4f6f9;
       --card-bg: #ffffff;
-      --border: #dee2e6;
-      --text: #212529;
+      --border: #e0e0e0;
+      --text: #333;
     }
 
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; justify-content: center; }
     .app-container { width: 100%; max-width: 900px; display: flex; flex-direction: column; min-height: 96vh; }
 
+    /* Header */
     header {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white; padding: 14px 12px; border-radius: 12px; text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.12); margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white; padding: 15px; border-radius: 12px; text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 12px;
     }
-    header h1 { margin: 0; font-size: 18px; }
-    header p { margin: 3px 0 0; font-size: 12px; opacity: 0.9; }
+    header h1 { margin: 0; font-size: 20px; letter-spacing: 0.5px; }
+    header p { margin: 5px 0 0; font-size: 13px; opacity: 0.9; }
 
-    .nav-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+    /* Navigation */
+    .nav-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
     .nav-bar::-webkit-scrollbar { display: none; }
     .nav-btn {
-      flex: 0 0 auto; padding: 8px 12px; background: #fff; border: 1px solid var(--border);
-      border-radius: 20px; font-size: 12.5px; font-weight: 600; color: #495057; cursor: pointer; transition: 0.3s;
+      flex: 0 0 auto; padding: 10px 14px; background: #fff; border: 1px solid var(--border);
+      border-radius: 20px; font-size: 13px; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .nav-btn.admin-btn { background: #e3f2fd; color: var(--primary); border-color: #bbdefb; }
 
+    /* Panels */
     .view-panel { display: none; }
     .view-panel.active { display: block; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    .card {
-      background: var(--card-bg); border-radius: 12px; padding: 14px;
-      margin-bottom: 10px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-    }
+    /* Cards & Form */
+    .card { background: var(--card-bg); border-radius: 12px; padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .card-title { font-size: 16px; font-weight: bold; color: var(--primary); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
     
-    .dashboard-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-    .stat-box { background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #bbdefb; }
-    .stat-box h2 { margin: 0 0 5px; color: #0d47a1; font-size: 24px; }
-    .stat-box p { margin: 0; font-size: 12px; color: #555; font-weight: 600; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #555; }
+    input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; background: #fafafa; transition: 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: #fff; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    .form-group { margin-bottom: 10px; }
-    label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #495057; }
-    input, select, textarea {
-      width: 100%; padding: 9px 10px; border: 1px solid #ced4da; border-radius: 8px; font-size: 13px; outline: none; background: #fff;
-    }
-    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+    /* Buttons */
+    .btn { padding: 10px 15px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s; }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-main { background-color: var(--primary); width: 100%; }
+    .btn-success { background-color: var(--success); width: 100%; }
+    .btn-warning { background-color: var(--warning); width: 100%; }
+    .btn-danger { background-color: var(--danger); width: 100%; }
+    .btn-secondary { background-color: #757575; }
+    .btn-father { background-color: var(--father); flex: 1; font-size: 13px; padding: 8px; }
+    .btn-mother { background-color: var(--mother); flex: 1; font-size: 13px; padding: 8px; }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    /* Dashboard Stats */
+    .dashboard-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+    .stat-box { background: #e3f2fd; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #bbdefb; }
+    .stat-box h2 { margin: 0 0 5px; color: var(--primary); font-size: 26px; }
+    .stat-box p { margin: 0; font-size: 13px; color: #555; font-weight: bold; }
 
-    .student-item {
-      display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 10px;
-      background: #fff; border-left: 4px solid var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.04); margin-bottom: 8px;
-    }
+    /* Student List */
+    .student-item { display: flex; flex-direction: column; gap: 10px; padding: 15px; border-radius: 10px; background: #fff; border-left: 4px solid var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 10px; }
     @media (min-width: 600px) { .student-item { flex-direction: row; align-items: center; justify-content: space-between; } }
-    
-    .student-meta { display: flex; align-items: center; gap: 10px; }
-    .student-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-    .student-meta h4 { margin: 0; font-size: 14px; }
-    .student-meta p { margin: 2px 0 0; font-size: 11.5px; color: #6c757d; }
-    .leave-badge { display: inline-block; background: #fff3cd; color: #856404; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 4px; border: 1px solid #ffeeba; }
+    .student-meta { display: flex; align-items: center; gap: 12px; }
+    .student-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); }
+    .student-meta h4 { margin: 0; font-size: 15px; color: #222; }
+    .student-meta p { margin: 4px 0 0; font-size: 12px; color: #666; }
+    .actions { display: flex; gap: 8px; }
+    .leave-badge { display: inline-block; background: #fff3cd; color: #856404; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 4px; margin-top: 5px; border: 1px solid #ffeeba; }
 
-    .actions { display: flex; gap: 6px; }
-    .btn {
-      padding: 8px 10px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600;
-      color: white; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-    }
-    .btn-father { background-color: var(--father); flex: 1; }
-    .btn-mother { background-color: var(--mother); flex: 1; }
-    .btn-main { background-color: var(--primary); width: 100%; padding: 11px; font-size: 13px; }
-    .btn-success { background-color: #2e7d32; width: 100%; padding: 11px; font-size: 13px; }
-    .btn-warning { background-color: var(--warning); width: 100%; padding: 11px; font-size: 13px; }
-    .btn-danger { background-color: var(--danger); width: 100%; padding: 11px; font-size: 13px; }
-    .btn-secondary { background-color: #6c757d; }
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    /* ID Card */
+    .id-box { max-width: 320px; margin: 15px auto; border: 2px solid var(--primary); border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .id-header { background: var(--primary); color: white; padding: 12px; text-align: center; }
+    .id-header h4 { margin: 0; font-size: 14px; }
+    .id-header p { margin: 3px 0 0; font-size: 11px; opacity: 0.9; }
+    .id-body { padding: 15px; font-size: 13px; line-height: 1.8; }
+    .id-body img { width: 75px; height: 75px; border-radius: 50%; margin: 0 auto 10px; display: block; border: 2px solid var(--primary); }
 
-    .table-container { overflow-x: auto; margin-top: 10px; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 500px; }
-    th, td { padding: 8px; border: 1px solid #dee2e6; text-align: left; }
-    th { background: #f1f3f5; color: #333; }
+    /* Admin Table */
+    .table-container { overflow-x: auto; margin-top: 15px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+    th, td { padding: 10px; border: 1px solid var(--border); text-align: left; }
+    th { background: #f1f3f5; color: #333; font-weight: bold; }
 
-    .id-box {
-      max-width: 310px; margin: 10px auto; border: 2px solid var(--primary);
-      border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .id-header { background: var(--primary); color: white; padding: 10px; text-align: center; }
-    .id-header h4 { margin: 0; font-size: 13px; }
-    .id-header p { margin: 2px 0 0; font-size: 10px; opacity: 0.9; }
-    .id-body { padding: 12px; font-size: 11.5px; line-height: 1.6; }
-    .id-body img { width: 68px; height: 68px; border-radius: 50%; margin: 0 auto 8px; display: block; border: 2px solid var(--primary); }
-
-    /* Login Modal Styles */
-    #loginModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-    .modal-content { background-color: #fff; padding: 20px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    /* Modal */
+    #loginModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
+    .modal-content { background-color: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
   </style>
 </head>
 <body>
@@ -115,15 +116,19 @@
 <div id="loginModal">
   <div class="modal-content">
     <h3 style="color:var(--primary); margin-top:0;">🔒 એડમિન લોગિન</h3>
-    <label style="text-align:left;">ID (યુઝરનેમ):</label>
-    <input type="text" id="adminUser" placeholder="admin" style="margin-bottom: 10px;">
-    <label style="text-align:left;">પાસવર્ડ (Password):</label>
-    <input type="password" id="adminPass" placeholder="*****" style="margin-bottom: 15px;">
-    <div style="display:flex; gap:10px;">
+    <div class="form-group" style="text-align:left;">
+      <label>ID (યુઝરનેમ):</label>
+      <input type="text" id="adminUser" placeholder="admin">
+    </div>
+    <div class="form-group" style="text-align:left;">
+      <label>પાસવર્ડ (Password):</label>
+      <input type="password" id="adminPass" placeholder="*****">
+    </div>
+    <div style="display:flex; gap:10px; margin-top: 20px;">
       <button class="btn btn-main" style="flex:1;" onclick="checkAdminLogin()">લોગિન</button>
       <button class="btn btn-secondary" style="flex:1;" onclick="closeLoginModal()">રદ</button>
     </div>
-    <p id="loginError" style="color:red; font-size:12px; display:none; margin-top:10px;">ખોટો ID અથવા પાસવર્ડ!</p>
+    <p id="loginError" style="color:red; font-size:12px; display:none; margin-top:10px; font-weight:bold;">ખોટો ID અથવા પાસવર્ડ!</p>
   </div>
 </div>
 
@@ -143,7 +148,7 @@
     <button class="nav-btn" onclick="showPanel('leavePanel')">🚨 વિશેષ રજા</button>
     <button class="nav-btn" onclick="showPanel('idPanel')">🪪 આઈ-કાર્ડ</button>
     <button class="nav-btn" onclick="showPanel('noticePanel')">📢 પરિપત્ર</button>
-    <button class="nav-btn" style="background:#e3f2fd; color:#0d47a1;" onclick="openAdminPanel()">⚙️ Admin</button>
+    <button class="nav-btn admin-btn" onclick="openAdminPanel()">⚙️ Admin</button>
   </div>
 
   <!-- ૦. ડેશબોર્ડ પેનલ -->
@@ -153,25 +158,25 @@
         <h2 id="dashTotalCount">0</h2>
         <p>કુલ વિદ્યાર્થીનીઓ</p>
       </div>
-      <div class="stat-box" style="background: #e8f5e9; border-color: #c8e6c9;">
-        <h2 id="dashLeaveCount" style="color: #2e7d32;">0</h2>
+      <div class="stat-box" style="background: #fff3e0; border-color: #ffe0b2;">
+        <h2 id="dashLeaveCount" style="color: #e65100;">0</h2>
         <p>આજની મંજૂર રજા</p>
       </div>
     </div>
-    <div class="card" style="border-left-color: var(--primary);">
-      <h4 style="margin:0 0 10px;">📌 ઝડપી કાર્યો (Quick Actions)</h4>
+    <div class="card" style="border-left: 4px solid var(--primary);">
+      <h4 class="card-title" style="border:none; margin-bottom:5px;">📌 ઝડપી કાર્યો (Quick Actions)</h4>
       <div class="btn-grid">
         <button class="btn btn-main" onclick="showPanel('attPanel')">✅ હાજરી પૂરો</button>
         <button class="btn btn-warning" onclick="showPanel('hwPanel')">📝 હોમવર્ક મોકલો</button>
         <button class="btn btn-success" onclick="showPanel('examPanel')">📊 પરીક્ષા પરિણામ</button>
-        <button class="btn btn-secondary" onclick="showPanel('leavePanel')">🚨 રજા મંજૂરી</button>
+        <button class="btn btn-danger" onclick="showPanel('leavePanel')">🚨 રજા મંજૂરી</button>
       </div>
     </div>
   </div>
 
-  <!-- ૧. હાજરી પેનલ -->
+  <!-- ૧. હાજરી પેનલ (વાલીશ્રી સંબોધન સાથે) -->
   <div id="attPanel" class="view-panel">
-    <div style="font-size: 12.5px; font-weight: bold; margin-bottom: 8px; color: #555;">
+    <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: var(--primary);">
       તારીખ: <span class="lblDate"></span> | ગેરહાજરી મેસેજ મોકલો:
     </div>
     <div id="attContainer"></div>
@@ -180,6 +185,7 @@
   <!-- ૨. ગૃહકાર્ય પેનલ -->
   <div id="hwPanel" class="view-panel">
     <div class="card">
+      <h3 class="card-title">📚 ગૃહકાર્ય મોકલો</h3>
       <div class="form-group">
         <label>ગૃહકાર્ય મોકલવાનો પ્રકાર:</label>
         <select id="hwSendType" onchange="toggleHwStudent()">
@@ -197,6 +203,7 @@
           <option>વાણિજ્ય વ્યવસ્થા અને સંચાલન</option>
           <option>આંકડાશાસ્ત્ર</option>
           <option>અર્થશાસ્ત્ર</option>
+          <option>નામાના મૂળતત્વો</option>
         </select>
       </div>
       <div class="form-group">
@@ -207,16 +214,27 @@
         <label>લિંક (વૈકલ્પિક):</label>
         <input type="text" id="hwLink" placeholder="https://...">
       </div>
-      <button class="btn btn-success" onclick="dispatchHomework()">📲 WhatsApp પર હોમવર્ક મોકલો</button>
+      <button class="btn btn-success" style="margin-top:5px;" onclick="dispatchHomework()">📲 WhatsApp પર હોમવર્ક મોકલો</button>
     </div>
   </div>
 
-  <!-- ૩. પરીક્ષા ગુણ પેનલ -->
+  <!-- ૩. પરીક્ષા ગુણ પેનલ (AB લોજીક સાથે) -->
   <div id="examPanel" class="view-panel">
     <div class="card">
+      <h3 class="card-title">📝 પરીક્ષા અને ગુણ નોંધ</h3>
       <div class="form-group">
         <label>કસોટીનું નામ:</label>
         <input type="text" id="examTitle" value="પ્રથમ એકમ કસોટી (Unit Test)">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>પરીક્ષા તારીખ:</label>
+          <input type="date" id="examDate">
+        </div>
+        <div class="form-group">
+          <label>પરિણામ તારીખ:</label>
+          <input type="date" id="examResDate">
+        </div>
       </div>
       <div class="form-group">
         <label>વિષય:</label>
@@ -224,76 +242,89 @@
           <option>વાણિજ્ય વ્યવસ્થા અને સંચાલન</option>
           <option>આંકડાશાસ્ત્ર</option>
           <option>અર્થશાસ્ત્ર</option>
+          <option>નામાના મૂળતત્વો</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>વિદ્યાર્થીની:</label>
-        <select id="examStudent"></select>
-      </div>
-      <div class="form-group">
-        <label>હાજરી સ્થિતિ:</label>
-        <select id="examAttendance" onchange="toggleExamMarks()" style="font-weight:bold;">
-          <option value="present">✅ હાજર (ગુણ દાખલ કરો)</option>
-          <option value="absent">❌ ગેરહાજર (વાલીને જાણ કરો)</option>
-        </select>
-      </div>
-      <div class="grid-2" id="marksInputGroup">
+      
+      <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; margin-top: 15px;">
         <div class="form-group">
-          <label>મેળવેલ ગુણ:</label>
-          <input type="number" id="marksObt" placeholder="દા.ત. 23">
+          <label>વિદ્યાર્થીની પસંદ કરો:</label>
+          <select id="examStudent"></select>
         </div>
         <div class="form-group">
-          <label>કુલ ગુણ:</label>
-          <input type="number" id="marksTotal" value="25">
+          <label>પરીક્ષાના દિવસે હાજરી:</label>
+          <select id="examAttendance" onchange="toggleExamMarks()" style="font-weight:bold; color:var(--primary);">
+            <option value="present">✅ હાજર (Present)</option>
+            <option value="absent">❌ ગેરહાજર (Absent)</option>
+          </select>
+        </div>
+        <div class="grid-2" id="marksInputGroup">
+          <div class="form-group">
+            <label>મેળવેલ ગુણ:</label>
+            <input type="text" id="marksObt" placeholder="દા.ત. 23" style="font-weight:bold;">
+          </div>
+          <div class="form-group">
+            <label>કુલ ગુણ:</label>
+            <input type="number" id="marksTotal" value="25">
+          </div>
         </div>
       </div>
-      <button class="btn btn-main" id="btnExamDispatch" onclick="dispatchMarks()">💬 પરિણામ મેસેજ મોકલો</button>
+      <button class="btn btn-main" id="btnExamDispatch" style="margin-top: 15px;" onclick="dispatchMarks()">💬 પરિણામ મેસેજ મોકલો</button>
     </div>
   </div>
 
   <!-- ૪. ફી સૂચના પેનલ -->
   <div id="feePanel" class="view-panel">
     <div class="card">
+      <h3 class="card-title">💰 ફી મેનેજમેન્ટ</h3>
       <div class="form-group">
         <label>વિદ્યાર્થીની:</label>
         <select id="feeStudent"></select>
       </div>
-      <div class="form-group">
-        <label>રકમ (₹):</label>
-        <input type="text" id="feeAmt" placeholder="દા.ત. ₹500">
+      <div class="grid-2">
+        <div class="form-group">
+          <label>રકમ (₹):</label>
+          <input type="text" id="feeAmt" placeholder="દા.ત. ₹500">
+        </div>
+        <div class="form-group">
+          <label>સૂચના પ્રકાર:</label>
+          <select id="feeStatus">
+            <option value="due">ફી બાકી રીમાઇન્ડર</option>
+            <option value="paid">ફી જમા પહોંચ સ્વીકૃતિ</option>
+          </select>
+        </div>
       </div>
-      <div class="form-group">
-        <label>સૂચના પ્રકાર:</label>
-        <select id="feeStatus">
-          <option value="due">ફી બાકી રીમાઇન્ડર</option>
-          <option value="paid">ફી જમા પહોંચ સ્વીકૃતિ</option>
-        </select>
-      </div>
-      <button class="btn btn-warning" onclick="dispatchFee()">💬 વ્યક્તિગત ફી મેસેજ મોકલો</button>
+      <button class="btn btn-warning" style="margin-top: 5px;" onclick="dispatchFee()">💬 વ્યક્તિગત ફી મેસેજ મોકલો</button>
     </div>
   </div>
 
-  <!-- ૫. વિશેષ રજા અને ટ્રેકર પેનલ -->
+  <!-- ૫. વિશેષ રજા પેનલ (અગાઉથી મંજૂરી લોજીક) -->
   <div id="leavePanel" class="view-panel">
     <div class="card">
-      <p style="font-size:12px; color:#555;">અહીંથી રજા મંજૂર કરવાથી તે વિદ્યાર્થીનીના હાજરી પત્રકમાં આજની રજા દેખાશે.</p>
+      <h3 class="card-title">🚨 વિશેષ રજા મંજૂરી</h3>
+      <p style="font-size:12px; color:#666; margin-top:-5px;">અહીંથી મંજૂર કરેલ રજા, વિદ્યાર્થીનીના હાજરી પત્રકમાં તે જ દિવસે દેખાશે.</p>
+      
       <div class="form-group">
-        <label>વિદ્યાર્થીની:</label>
+        <label>વિદ્યાર્થીની પસંદ કરો:</label>
         <select id="leaveStudent"></select>
       </div>
       <div class="grid-2">
         <div class="form-group">
-          <label>રજાની તારીખ:</label>
-          <input type="date" id="leaveDateInput">
+          <label>અરજી કર્યાની તારીખ:</label>
+          <input type="date" id="leaveApplyDateInput">
         </div>
         <div class="form-group">
-          <label>કારણ:</label>
-          <select id="leaveReason">
-            <option>બીમારીના કારણે</option>
-            <option>સામાજિક પ્રસંગ અર્થે</option>
-            <option>અન્ય અગત્યના કામ અર્થે</option>
-          </select>
+          <label>રજાની તારીખ (ક્યા દિવસની રજા જોઈએ છે?):</label>
+          <input type="date" id="leaveDateInput">
         </div>
+      </div>
+      <div class="form-group">
+        <label>કારણ:</label>
+        <select id="leaveReason">
+          <option>બીમારીના કારણે</option>
+          <option>સામાજિક પ્રસંગ અર્થે</option>
+          <option>અન્ય અગત્યના કામ અર્થે</option>
+        </select>
       </div>
       <div class="btn-grid">
         <button class="btn btn-main" onclick="approveLeave()">💾 રજા મંજૂર કરી સેવ કરો</button>
@@ -305,6 +336,7 @@
   <!-- ૬. આઈ-કાર્ડ પેનલ -->
   <div id="idPanel" class="view-panel">
     <div class="card">
+      <h3 class="card-title">🪪 ડિજિટલ આઈ-કાર્ડ</h3>
       <div class="form-group">
         <label>વિદ્યાર્થીની પસંદ કરો:</label>
         <select id="idStudent" onchange="renderCard()"></select>
@@ -329,39 +361,47 @@
     </div>
   </div>
 
-  <!-- ૭. સામાન્ય પરિપત્ર પેનલ -->
+  <!-- ૭. પરિપત્ર પેનલ ( 11 / 12 ફોર્મેટ સાથે) -->
   <div id="noticePanel" class="view-panel">
     <div class="card">
+      <h3 class="card-title">📢 સૂચના / પરિપત્ર જનરેટર</h3>
       <div class="form-group">
-        <label>સૂચના / પરિપત્ર વિગત:</label>
+        <label>લાગુ પડતું ધોરણ:</label>
+        <select id="noticeClass">
+          <option value="12"> (ધોરણ ૧૨)</option>
+          <option value="11"> (ધોરણ ૧૧)</option>
+          <option value="11 અને 12">બંને (ધોરણ ૧૧/૧૨)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>સૂચનાની વિગત:</label>
         <textarea id="noticeDesc" rows="4" placeholder="સૂચના લખાણ..."></textarea>
       </div>
       <div class="form-group">
-        <label>લિંક:</label>
+        <label>પરિપત્રની લિંક (વૈકલ્પિક):</label>
         <input type="text" id="noticeLink" placeholder="https://drive.google.com/...">
       </div>
-      <button class="btn btn-success" onclick="dispatchNotice()">📢 WhatsApp ગ્રૂપમાં શેર કરો</button>
+      <button class="btn btn-success" onclick="dispatchNotice()">📲 WhatsApp ગ્રૂપમાં શેર કરો</button>
     </div>
   </div>
 
   <!-- ૮. ADMIN PANEL -->
   <div id="adminPanel" class="view-panel">
-    <div class="card" style="border-left-color: #2e7d32; background-color: #f1f8e9;">
-      <h3 style="margin:0 0 10px; color:#2e7d32; font-size:15px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
+    <div class="card" style="border-left: 4px solid var(--success); background-color: #f1f8e9;">
+      <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
       <div class="form-group">
         <label>Google Apps Script URL:</label>
-        <input type="text" id="scriptUrlInput" readonly value="https://script.google.com/macros/s/AKfycbz6uPydFd1Aq2ifh-NZ6qw6a09NvYc73s6Z8EIShzSeTD03aRx3NE1EiaP9g8_q0ryotQ/exec">
+        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbz6uPydFd1Aq2ifh-NZ6qw6a09NvYc73s6Z8EIShzSeTD03aRx3NE1EiaP9g8_q0ryotQ/exec">
       </div>
-      <button class="btn btn-success" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Live Sync)</button>
-      <div class="btn-grid">
+      <button class="btn btn-success" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
+      <div class="btn-grid" style="margin-top: 5px;">
         <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="importDataCSV(event)">
-        <button class="btn btn-main" style="background-color: #0277bd;" onclick="document.getElementById('csvFileInput').click()">📤 CSV ફાઇલ અપલોડ</button>
+        <button class="btn btn-main" onclick="document.getElementById('csvFileInput').click()">📤 CSV અપલોડ</button>
         <button class="btn btn-secondary" onclick="exportDataJSON()">📥 JSON ડાઉનલોડ</button>
       </div>
     </div>
-    <!-- Student List Display -->
     <div class="card">
-      <h4 style="margin:0 0 8px;">📋 વિદ્યાર્થીનીઓની યાદી (<span id="totalStudentsCount">0</span>)</h4>
+      <h4 class="card-title">📋 વિદ્યાર્થીનીઓની યાદી (<span id="totalStudentsCount">0</span>)</h4>
       <div class="table-container">
         <table>
           <thead><tr><th>રોલ</th><th>નામ</th><th>GR નં</th><th>પિતા નં</th><th>ક્રિયા</th></tr></thead>
@@ -383,14 +423,19 @@
   let roster = JSON.parse(localStorage.getItem('singapuri_roster')) || [];
 
   const todayDateObj = new Date();
-  const todayStr = todayDateObj.toLocaleDateString('gu-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  const todayISO = todayDateObj.toISOString().split('T')[0];
+  const todayStr = todayDateObj.toLocaleDateString('gu-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }); // DD/MM/YYYY
+  const todayISO = todayDateObj.toISOString().split('T')[0]; // YYYY-MM-DD
   
+  // તારીખ સેટ કરવી
   document.querySelectorAll('.lblDate').forEach(el => el.innerText = todayStr);
+  document.getElementById('examDate').value = todayISO;
+  document.getElementById('examResDate').value = todayISO;
+  document.getElementById('leaveApplyDateInput').value = todayISO;
   document.getElementById('leaveDateInput').value = todayISO;
 
   function saveToStorage() { localStorage.setItem('singapuri_roster', JSON.stringify(roster)); }
 
+  // લોગિન મેનેજમેન્ટ
   function openAdminPanel() {
     if (isAdminLogged) showPanel('adminPanel');
     else {
@@ -410,16 +455,20 @@
     }
   }
 
+  // પેનલ નેવિગેશન
   function showPanel(panelId) {
     if(panelId === 'adminPanel' && !isAdminLogged) return openAdminPanel();
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    
     document.getElementById(panelId).classList.add('active');
     event.target.classList.add('active');
+    
     if(panelId === 'idPanel') renderCard();
     if(panelId === 'adminPanel') renderAdminTable();
   }
 
+  // મુખ્ય સેટઅપ ફંક્શન
   function setup() {
     const list = document.getElementById('attContainer');
     const sels = ['hwStudent', 'examStudent', 'feeStudent', 'leaveStudent', 'idStudent'];
@@ -430,18 +479,18 @@
     let todayLeavesCount = 0;
 
     if(roster.length === 0) {
-      list.innerHTML = '<p style="text-align:center; color:#888;">કોઈ ડેટા નથી. ગૂગલ શીટ સિંક કરો.</p>';
+      list.innerHTML = '<p style="text-align:center; color:#888; font-weight:bold; padding:20px;">કોઈ ડેટા નથી. કૃપા કરીને એડમિન પેનલમાંથી ગૂગલ શીટ સિંક કરો.</p>';
     } else {
       roster.forEach((st, i) => {
         let avatar = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR;
         
+        // રજાનું લોજીક: જો વિદ્યાર્થીની Leave Date આજની તારીખ (ISO) સાથે મેચ થાય તો જ બેજ બતાવો
         let leaveHtml = "";
         if(st.leaveDate === todayISO) {
           leaveHtml = `<div class="leave-badge">🟡 આજની રજા મંજૂર</div>`;
           todayLeavesCount++;
         }
 
-        // પિતા અને માતા બંનેના બટન ઉમેર્યા
         list.innerHTML += `
           <div class="student-item">
             <div class="student-meta">
@@ -453,8 +502,8 @@
               </div>
             </div>
             <div class="actions">
-              <button class="btn btn-father" onclick="sendAbsent('${st.name}', '${st.fPhone}', 'પિતાશ્રી')">📲 પિતા</button>
-              <button class="btn btn-mother" onclick="sendAbsent('${st.name}', '${st.mPhone}', 'માતાશ્રી')">📲 માતા</button>
+              <button class="btn btn-father" onclick="sendAbsent('${st.name}', '${st.fPhone}')">📲 પિતા</button>
+              <button class="btn btn-mother" onclick="sendAbsent('${st.name}', '${st.mPhone}')">📲 માતા</button>
             </div>
           </div>
         `;
@@ -464,6 +513,7 @@
       });
     }
 
+    // ડેશબોર્ડ કાઉન્ટર અપડેટ
     document.getElementById('totalStudentsCount').innerText = roster.length;
     document.getElementById('dashTotalCount').innerText = roster.length;
     document.getElementById('dashLeaveCount').innerText = todayLeavesCount;
@@ -471,23 +521,41 @@
     if(isAdminLogged) renderAdminTable();
   }
 
-  // --- TOGGLES ---
+  // --- TOGGLES & LOGIC ---
   function toggleHwStudent() {
     document.getElementById('hwStudentGroup').style.display = (document.getElementById('hwSendType').value === 'individual') ? 'block' : 'none';
   }
+  
   function toggleExamMarks() {
     const isAbsent = document.getElementById('examAttendance').value === 'absent';
-    document.getElementById('marksInputGroup').style.display = isAbsent ? 'none' : 'grid';
+    const marksInput = document.getElementById('marksObt');
+    const totalInput = document.getElementById('marksTotal');
     const btn = document.getElementById('btnExamDispatch');
-    btn.innerText = isAbsent ? "❌ ગેરહાજર મેસેજ મોકલો" : "💬 પરિણામ મેસેજ મોકલો";
-    btn.className = isAbsent ? "btn btn-danger" : "btn btn-main";
+    
+    if(isAbsent) {
+      marksInput.value = "AB";
+      marksInput.disabled = true;
+      totalInput.disabled = true;
+      marksInput.style.backgroundColor = "#ffcdd2"; // Red background
+      marksInput.style.color = "#c62828";
+      btn.innerText = "❌ ગેરહાજર મેસેજ મોકલો";
+      btn.className = "btn btn-danger";
+    } else {
+      marksInput.value = "";
+      marksInput.disabled = false;
+      totalInput.disabled = false;
+      marksInput.style.backgroundColor = "#fff";
+      marksInput.style.color = "#333";
+      btn.innerText = "💬 પરિણામ મેસેજ મોકલો";
+      btn.className = "btn btn-main";
+    }
   }
 
   function approveLeave() {
     if(roster.length === 0) return;
     const idx = document.getElementById('leaveStudent').value;
     const lDate = document.getElementById('leaveDateInput').value;
-    if(!lDate) return alert("કૃપા કરીને તારીખ પસંદ કરો.");
+    if(!lDate) return alert("કૃપા કરીને રજાની તારીખ પસંદ કરો.");
     
     roster[idx].leaveDate = lDate; 
     saveToStorage();
@@ -495,7 +563,7 @@
     alert(`${roster[idx].name} ની તારીખ ${lDate.split('-').reverse().join('/')} ની રજા મંજૂર કરી દેવામાં આવી છે.`);
   }
 
-  // --- LIVE SYNC SCRIPT ---
+  // --- DATA SYNC FUNCTIONS ---
   async function syncGoogleSheetLive() {
     const scriptUrl = document.getElementById('scriptUrlInput').value;
     try {
@@ -504,10 +572,10 @@
       const response = await fetch(scriptUrl);
       if (!response.ok) throw new Error("નેટવર્ક એરર.");
       processJSONData(await response.json());
-      btn.innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Live Sync)";
+      btn.innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)";
     } catch (error) {
       alert("ભૂલ: " + error.message);
-      document.querySelector('button[onclick="syncGoogleSheetLive()"]').innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Live Sync)";
+      document.querySelector('button[onclick="syncGoogleSheetLive()"]').innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)";
     }
   }
 
@@ -535,7 +603,6 @@
     if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setup(); alert("સફળતાપૂર્વક સિંક થયું!"); }
   }
 
-  // --- MANUAL CSV UPLOAD ---
   function importDataCSV(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -548,7 +615,6 @@
     const lines = csvText.split('\n');
     if (lines.length < 2) return alert("ફાઇલમાં કોઈ ડેટા મળ્યો નથી!");
     let importedRoster = [];
-
     for (let i = 1; i < lines.length; i++) {
       let line = lines[i].replace(/"/g, '').trim(); 
       if (!line) continue;
@@ -570,31 +636,35 @@
     if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setup(); alert("સફળતાપૂર્વક અપડેટ થઈ ગયું!"); }
   }
 
-  // --- ADMIN TABLE & ACTIONS ---
   function renderAdminTable() {
     const tbody = document.getElementById('adminTableBody');
     tbody.innerHTML = '';
     roster.forEach((st, i) => {
       tbody.innerHTML += `<tr><td>${st.roll}</td><td>${st.name}</td><td>${st.gr}</td><td>${st.fPhone}</td>
-      <td><button class="btn btn-danger" style="padding:4px;" onclick="deleteStudent(${i})">🗑️</button></td></tr>`;
+      <td><button class="btn btn-danger" style="padding:5px 10px;" onclick="deleteStudent(${i})">ડિલીટ</button></td></tr>`;
     });
   }
+
   function deleteStudent(index) {
-    if (confirm(`શું તમે ${roster[index].name} ની માહિતી ડિલીટ કરવા માંગો છો?`)) { roster.splice(index, 1); saveToStorage(); setup(); }
+    if (confirm(`શું તમે ${roster[index].name} ની માહિતી કાઢી નાખવા માંગો છો?`)) { roster.splice(index, 1); saveToStorage(); setup(); }
   }
+
   function exportDataJSON() {
     const a = document.createElement('a');
     a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2));
-    a.download = `Singapuri_Girls_${todayStr.replace(/\//g, '-')}.json`; a.click();
+    a.download = `Singapuri_Girls_Data_${todayStr.replace(/\//g, '-')}.json`; a.click();
   }
 
-  // --- WHATSAPP MESSAGES ---
-  function sendAbsent(name, phone, relation) {
-    if(!phone || phone === "") return alert(`${relation} નો મોબાઈલ નંબર ઉપલબ્ધ નથી.`);
-    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\nનમસ્તે ${relation},\nઆપની દીકરી *${name}* આજે તારીખ ${todayStr} ના રોજ શાળામાં ગેરહાજર છે. નોંધ લેવી.\n- હેમંત સર`;
+  // --- WHATSAPP MESSAGE DISPATCHERS ---
+
+  // ગેરહાજરી મેસેજ (વાલીશ્રી સંબોધન સાથે)
+  function sendAbsent(name, phone) {
+    if(!phone || phone === "") return alert(`વાલી નો મોબાઈલ નંબર ઉપલબ્ધ નથી.`);
+    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\nસવિનય જણાવવાનું કે *વાલીશ્રી*, આપની દીકરી *${name}* આજે તારીખ ${todayStr} ના રોજ શાળામાં ગેરહાજર છે. કૃપા કરીને નોંધ લેશો.\n- હેમંત સર`;
     window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
+  // હોમવર્ક મેસેજ
   function dispatchHomework() {
     if(roster.length === 0) return;
     const type = document.getElementById('hwSendType').value;
@@ -609,19 +679,24 @@
     else window.open(`https://api.whatsapp.com/send?phone=${roster[document.getElementById('hwStudent').value].fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
+  // પરીક્ષા પરિણામ / ગેરહાજરી મેસેજ
   function dispatchMarks() {
     if(roster.length === 0) return;
     const st = roster[document.getElementById('examStudent').value];
     const sub = document.getElementById('examSubject').value;
-    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n`;
+    const title = document.getElementById('examTitle').value;
+    const examDate = document.getElementById('examDate').value.split('-').reverse().join('/');
+    
+    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n📝 *${title}*\n`;
     if (document.getElementById('examAttendance').value === 'present') {
-      msg += `📊 *પરિણામ*\nવિદ્યાર્થીની: *${st.name}*\nવિષય: ${sub}\nગુણ: *${document.getElementById('marksObt').value} / ${document.getElementById('marksTotal').value}*\n- હેમંત સર`;
+      msg += `📊 *પરિણામ*\nવિદ્યાર્થીની: *${st.name}*\nવિષય: ${sub}\nપરીક્ષા તારીખ: ${examDate}\nગુણ: *${document.getElementById('marksObt').value} / ${document.getElementById('marksTotal').value}*\n- હેમંત સર`;
     } else {
-      msg += `⚠️ વાલીશ્રી, આપની દીકરી *${st.name}* આજની ${sub} ની પરીક્ષામાં ગેરહાજર છે.\n- હેમંત સર`;
+      msg += `⚠️ સવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* તારીખ ${examDate} ના રોજ લેવાયેલ *${sub}* ની પરીક્ષામાં ગેરહાજર રહેલ છે.\n- હેમંત સર`;
     }
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
+  // ફી સૂચના મેસેજ
   function dispatchFee() {
     if(roster.length === 0) return;
     const st = roster[document.getElementById('feeStudent').value];
@@ -631,13 +706,25 @@
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
+  // રજા મંજૂરી મેસેજ
   function dispatchLeave() {
     if(roster.length === 0) return;
     const st = roster[document.getElementById('leaveStudent').value];
-    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n⚠️ વાલીશ્રી, આપની દીકરી *${st.name}* ની તારીખ ${document.getElementById('leaveDateInput').value.split('-').reverse().join('/')} ની રજા મંજૂર કરેલ છે.\nકારણ: ${document.getElementById('leaveReason').value}\n- હેમંત સર`;
+    const lDate = document.getElementById('leaveDateInput').value.split('-').reverse().join('/');
+    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n⚠️ વાલીશ્રી, આપની દીકરી *${st.name}* ની તારીખ ${lDate} ની રજા મંજૂર કરેલ છે.\nકારણ: ${document.getElementById('leaveReason').value}\n- હેમંત સર`;
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
+  // પરિપત્ર મેસેજ ('11 / '12 ફોર્મેટ સાથે)
+  function dispatchNotice() {
+    const std = document.getElementById('noticeClass').value;
+    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📢 *શાળા પરિપત્ર / અગત્યની સૂચના*\nતારીખ: ${todayStr}\n-------------------------\nઆથી *${std}* ની તમામ વિદ્યાર્થીનીઓને જણાવવાનું કે, ${document.getElementById('noticeDesc').value}\n`;
+    if (document.getElementById('noticeLink').value) msg += `\n🔗 પરિપત્ર લિંક: ${document.getElementById('noticeLink').value}\n`;
+    msg += `\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  // આઈ-કાર્ડ રેન્ડર
   function renderCard() {
     if (!roster.length) return;
     const idx = document.getElementById('idStudent').value || 0;
@@ -652,13 +739,6 @@
     document.getElementById('cPhone').innerText = st.fPhone;
     document.getElementById('cMPhone').innerText = st.mPhone;
     document.getElementById('cUdise').innerText = st.udise;
-  }
-
-  function dispatchNotice() {
-    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📢 *શાળા પરિપત્ર / અગત્યની સૂચના*\nતારીખ: ${todayStr} | ધોરણ ૧૨\n-------------------------\n${document.getElementById('noticeDesc').value}\n`;
-    if (document.getElementById('noticeLink').value) msg += `\n🔗 પરિપત્ર લિંક: ${document.getElementById('noticeLink').value}\n`;
-    msg += `\n- હેમંત સર (વર્ગ શિક્ષક)`;
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   window.onload = setup;
