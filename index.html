@@ -298,10 +298,20 @@
     </div>
   </div>
 
-  <!-- ૫. વિશેષ રજા પેનલ -->
+  <!-- ૫. વિશેષ રજા પેનલ (બંને સુવિધા સાથે) -->
   <div id="leavePanel" class="view-panel">
     <div class="card">
-      <h3 class="card-title">🚨 ચાલુ શાળાએ વિશેષ રજા</h3>
+      <h3 class="card-title">🚨 વિશેષ રજા મંજૂરી</h3>
+      
+      <!-- રજાનો પ્રકાર પસંદ કરવાનો નવો વિકલ્પ -->
+      <div class="form-group">
+        <label>રજાનો પ્રકાર પસંદ કરો:</label>
+        <select id="leaveType" onchange="toggleLeaveType()" style="font-weight:bold; color:var(--primary); background:#e3f2fd; border-color:#bbdefb;">
+          <option value="advance">📅 અગાઉથી જાણ કરેલ રજા (Advance Leave)</option>
+          <option value="halfday">🏫 ચાલુ શાળાએ રજા (School Hours Leave)</option>
+        </select>
+      </div>
+
       <div class="form-group">
         <label>વિદ્યાર્થીની પસંદ કરો:</label>
         <select id="leaveStudent"></select>
@@ -309,10 +319,11 @@
       
       <div class="grid-2">
         <div class="form-group">
-          <label>તારીખ:</label>
+          <label>રજાની તારીખ:</label>
           <input type="date" id="leaveDateInput">
         </div>
-        <div class="form-group">
+        <!-- આ બોક્સ માત્ર 'ચાલુ શાળાએ રજા' પસંદ કરશો ત્યારે જ દેખાશે -->
+        <div class="form-group" id="timeGroup" style="display:none;">
           <label>રજા આપ્યાનો સમય:</label>
           <input type="time" id="leaveTimeInput">
         </div>
@@ -327,25 +338,28 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <label>વિદ્યાર્થીનીને લેવા કોણ આવ્યું છે?</label>
-        <select id="leavePickupPerson" onchange="togglePickupDetails()" style="font-weight:bold; color:var(--primary);">
-          <option value="parents">વાલી (માતા / પિતા જાતે)</option>
-          <option value="other">અન્ય કોઈ વ્યક્તિ (સગાસંબંધી)</option>
-        </select>
-      </div>
-      
-      <div id="otherPickupDetails" style="display:none; background:#fff3e0; padding:15px; border-radius:8px; border:1px solid #ffe0b2; margin-bottom:15px;">
-        <label style="color:#e65100; font-size:14px; border-bottom:1px solid #ffcc80; padding-bottom:5px; margin-bottom:10px;">👤 અન્ય વ્યક્તિની વિગતો</label>
-        <div class="grid-2">
-          <div class="form-group">
-            <input type="text" id="pickupName" placeholder="વ્યક્તિનું પૂરું નામ">
-          </div>
-          <div class="form-group">
-            <input type="text" id="pickupRelation" placeholder="સંબંધ (દા.ત. કાકા/મામા)">
-          </div>
+      <!-- લેવા આવનાર વ્યક્તિનું સેક્શન (માત્ર ચાલુ શાળાએ રજા માટે) -->
+      <div id="pickupGroup" style="display:none;">
+        <div class="form-group">
+          <label>વિદ્યાર્થીનીને લેવા કોણ આવ્યું છે?</label>
+          <select id="leavePickupPerson" onchange="togglePickupDetails()" style="font-weight:bold; color:var(--primary);">
+            <option value="parents">વાલી (માતા / પિતા જાતે)</option>
+            <option value="other">અન્ય કોઈ વ્યક્તિ (સગાસંબંધી)</option>
+          </select>
         </div>
-        <input type="text" id="pickupPhone" placeholder="સંપર્ક નંબર (મોબાઈલ નંબર)" maxlength="10">
+        
+        <div id="otherPickupDetails" style="display:none; background:#fff3e0; padding:15px; border-radius:8px; border:1px solid #ffe0b2; margin-bottom:15px;">
+          <label style="color:#e65100; font-size:14px; border-bottom:1px solid #ffcc80; padding-bottom:5px; margin-bottom:10px;">👤 અન્ય વ્યક્તિની વિગતો</label>
+          <div class="grid-2">
+            <div class="form-group">
+              <input type="text" id="pickupName" placeholder="વ્યક્તિનું પૂરું નામ">
+            </div>
+            <div class="form-group">
+              <input type="text" id="pickupRelation" placeholder="સંબંધ (દા.ત. કાકા/મામા)">
+            </div>
+          </div>
+          <input type="text" id="pickupPhone" placeholder="સંપર્ક નંબર (મોબાઈલ નંબર)" maxlength="10">
+        </div>
       </div>
 
       <div class="btn-grid">
@@ -744,22 +758,59 @@
     return hours + ':' + minutes + ' ' + ampm;
   }
 
+  // રજાનો પ્રકાર બદલવા પર ફોર્મ બદલાશે
+  function toggleLeaveType() {
+    const lType = document.getElementById('leaveType').value;
+    const timeGroup = document.getElementById('timeGroup');
+    const pickupGroup = document.getElementById('pickupGroup');
+    
+    if(lType === 'halfday') {
+      timeGroup.style.display = 'block';
+      pickupGroup.style.display = 'block';
+      // ચાલુ શાળા પસંદ કરતા જ વર્તમાન સમય ઓટોમેટિક આવી જશે
+      const nowTime = new Date();
+      document.getElementById('leaveTimeInput').value = nowTime.toTimeString().substring(0, 5);
+    } else {
+      timeGroup.style.display = 'none';
+      pickupGroup.style.display = 'none';
+    }
+  }
+
+  // લેવા આવનાર વ્યક્તિનું ડ્રોપડાઉન
+  function togglePickupDetails() {
+    const isOther = document.getElementById('leavePickupPerson').value === 'other';
+    document.getElementById('otherPickupDetails').style.display = isOther ? 'block' : 'none';
+  }
+
+  // રજાનો ફાઇનલ મેસેજ જનરેટ કરતું ફંક્શન
   function dispatchLeave() {
     if(roster.length === 0) return;
     const st = roster[document.getElementById('leaveStudent').value];
     const lDate = document.getElementById('leaveDateInput').value.split('-').reverse().join('/');
-    const lTime = document.getElementById('leaveTimeInput').value;
-    const formatedTime = formatAMPM(lTime);
-    
-    let pickupInfo = "વાલી (માતા/પિતા)";
-    if(document.getElementById('leavePickupPerson').value === 'other') {
-      const pName = document.getElementById('pickupName').value || "(નામ નથી)";
-      const pRel = document.getElementById('pickupRelation').value || "(સંબંધ નથી)";
-      const pPhone = document.getElementById('pickupPhone').value || "(નંબર નથી)";
-      pickupInfo = `${pName} (${pRel}) - મો. ${pPhone}`;
-    }
+    const reason = document.getElementById('leaveReason').value;
+    const lType = document.getElementById('leaveType').value;
 
-    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n🚨 *સુરક્ષા ચેતવણી (ચાલુ શાળાએ રજા)*\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ને શાળા સમય દરમિયાન વિશેષ રજા આપવામાં આવેલ છે.\n\nતારીખ: ${lDate}\nસમય: *${formatedTime}*\nકારણ: ${document.getElementById('leaveReason').value}\nરજા લેવા આવનાર વ્યક્તિ: *${pickupInfo}*\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    let msg = "";
+
+    // જો અગાઉથી જાણ કરેલ રજા હોય (Advance Leave)
+    if(lType === 'advance') {
+      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ની તારીખ ${lDate} ની રજા (અગાઉથી જાણ કરવા બદલ) મંજૂર કરેલ છે.\n\nકારણ: ${reason}\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    } 
+    // જો ચાલુ શાળાએ રજા હોય (School Hours Leave)
+    else {
+      const lTime = document.getElementById('leaveTimeInput').value;
+      const formatedTime = formatAMPM(lTime);
+      
+      let pickupInfo = "વાલી (માતા/પિતા)";
+      if(document.getElementById('leavePickupPerson').value === 'other') {
+        const pName = document.getElementById('pickupName').value || "(નામ નથી)";
+        const pRel = document.getElementById('pickupRelation').value || "(સંબંધ નથી)";
+        const pPhone = document.getElementById('pickupPhone').value || "(નંબર નથી)";
+        pickupInfo = `${pName} (${pRel}) - મો. ${pPhone}`;
+      }
+
+      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n🚨 *સુરક્ષા ચેતવણી (ચાલુ શાળાએ રજા)*\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ને શાળા સમય દરમિયાન વિશેષ રજા આપવામાં આવેલ છે.\n\nતારીખ: ${lDate}\nસમય: *${formatedTime}*\nકારણ: ${reason}\nરજા લેવા આવનાર વ્યક્તિ: *${pickupInfo}*\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    }
     
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
