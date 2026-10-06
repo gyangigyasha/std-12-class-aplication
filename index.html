@@ -10,7 +10,6 @@
   <title>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ - સ્માર્ટ વર્ગ સંચાલન</title>
   <style>
     :root {
-      /* Attractive Dark Blue Theme */
       --primary: #0d47a1; 
       --primary-dark: #0a3375;
       --secondary: #1976d2;
@@ -29,7 +28,6 @@
     body { background-color: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; justify-content: center; }
     .app-container { width: 100%; max-width: 900px; display: flex; flex-direction: column; min-height: 96vh; }
 
-    /* Header */
     header {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white; padding: 15px; border-radius: 12px; text-align: center;
@@ -38,7 +36,6 @@
     header h1 { margin: 0; font-size: 20px; letter-spacing: 0.5px; }
     header p { margin: 5px 0 0; font-size: 13px; opacity: 0.9; }
 
-    /* Navigation */
     .nav-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
     .nav-bar::-webkit-scrollbar { display: none; }
     .nav-btn {
@@ -48,12 +45,10 @@
     .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
     .nav-btn.admin-btn { background: #e3f2fd; color: var(--primary); border-color: #bbdefb; }
 
-    /* Panels */
     .view-panel { display: none; }
     .view-panel.active { display: block; animation: fadeIn 0.3s; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Cards & Form */
     .card { background: var(--card-bg); border-radius: 12px; padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
     .card-title { font-size: 16px; font-weight: bold; color: var(--primary); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
     
@@ -63,7 +58,6 @@
     input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: #fff; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    /* Buttons */
     .btn { padding: 10px 15px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s; }
     .btn:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-main { background-color: var(--primary); width: 100%; }
@@ -75,13 +69,11 @@
     .btn-mother { background-color: var(--mother); flex: 1; font-size: 13px; padding: 8px; }
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
 
-    /* Dashboard Stats */
     .dashboard-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
     .stat-box { background: #e3f2fd; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #bbdefb; }
     .stat-box h2 { margin: 0 0 5px; color: var(--primary); font-size: 26px; }
     .stat-box p { margin: 0; font-size: 13px; color: #555; font-weight: bold; }
 
-    /* Student List */
     .student-item { display: flex; flex-direction: column; gap: 10px; padding: 15px; border-radius: 10px; background: #fff; border-left: 4px solid var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 10px; }
     @media (min-width: 600px) { .student-item { flex-direction: row; align-items: center; justify-content: space-between; } }
     .student-meta { display: flex; align-items: center; gap: 12px; }
@@ -91,7 +83,6 @@
     .actions { display: flex; gap: 8px; }
     .leave-badge { display: inline-block; background: #fff3cd; color: #856404; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 4px; margin-top: 5px; border: 1px solid #ffeeba; }
 
-    /* ID Card */
     .id-box { max-width: 320px; margin: 15px auto; border: 2px solid var(--primary); border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
     .id-header { background: var(--primary); color: white; padding: 12px; text-align: center; }
     .id-header h4 { margin: 0; font-size: 14px; }
@@ -99,15 +90,21 @@
     .id-body { padding: 15px; font-size: 13px; line-height: 1.8; }
     .id-body img { width: 75px; height: 75px; border-radius: 50%; margin: 0 auto 10px; display: block; border: 2px solid var(--primary); }
 
-    /* Admin Table */
     .table-container { overflow-x: auto; margin-top: 15px; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
     th, td { padding: 10px; border: 1px solid var(--border); text-align: left; }
     th { background: #f1f3f5; color: #333; font-weight: bold; }
 
-    /* Modal */
     #loginModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
     .modal-content { background-color: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    
+    /* પ્રિન્ટ માટેનું સેટિંગ */
+    @media print {
+      body * { visibility: hidden; }
+      #printReportArea, #printReportArea * { visibility: visible; }
+      #printReportArea { position: absolute; left: 0; top: 0; width: 100%; padding:20px; }
+      #mainApp { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -135,16 +132,17 @@
 <div class="app-container" id="mainApp">
   <header>
     <h1>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત</h1>
-    <p>ધોરણ ૧૨ (સામાન્ય પ્રવાહ) • વર્ગ શિક્ષક: હેમંત સર</p>
+    <p>ધોરણ ૧૧/૧૨ (સામાન્ય પ્રવાહ) • વર્ગ શિક્ષક: હેમંત સર</p>
   </header>
 
   <!-- નેવિગેશન બાર -->
   <div class="nav-bar">
     <button class="nav-btn active" onclick="showPanel('dashPanel')">🏠 હોમ</button>
     <button class="nav-btn" onclick="showPanel('attPanel')">📋 હાજરી</button>
+    <button class="nav-btn" onclick="showPanel('reportPanel')" style="color:var(--success); border-color:var(--success);">📄 માર્કશીટ</button>
     <button class="nav-btn" onclick="showPanel('hwPanel')">📚 ગૃહકાર્ય</button>
     <button class="nav-btn" onclick="showPanel('examPanel')">📝 પરીક્ષા ગુણ</button>
-    <button class="nav-btn" onclick="showPanel('feePanel')">💰 ફી સૂચના</button>
+    <button class="nav-btn" onclick="showPanel('feePanel')">💰 ફી</button>
     <button class="nav-btn" onclick="showPanel('leavePanel')">🚨 વિશેષ રજા</button>
     <button class="nav-btn" onclick="showPanel('idPanel')">🪪 આઈ-કાર્ડ</button>
     <button class="nav-btn" onclick="showPanel('noticePanel')">📢 પરિપત્ર</button>
@@ -167,8 +165,8 @@
       <h4 class="card-title" style="border:none; margin-bottom:5px;">📌 ઝડપી કાર્યો (Quick Actions)</h4>
       <div class="btn-grid">
         <button class="btn btn-main" onclick="showPanel('attPanel')">✅ હાજરી પૂરો</button>
+        <button class="btn btn-success" onclick="showPanel('reportPanel')">📄 રિઝલ્ટ બનાવો</button>
         <button class="btn btn-warning" onclick="showPanel('hwPanel')">📝 હોમવર્ક મોકલો</button>
-        <button class="btn btn-success" onclick="showPanel('examPanel')">📊 પરીક્ષા પરિણામ</button>
         <button class="btn btn-danger" onclick="showPanel('leavePanel')">🚨 રજા મંજૂરી</button>
       </div>
     </div>
@@ -180,6 +178,41 @@
       તારીખ: <span class="lblDate"></span> | ગેરહાજરી મેસેજ મોકલો:
     </div>
     <div id="attContainer"></div>
+  </div>
+
+  <!-- 🌟 નવું: માર્કશીટ (પરિણામ પત્રક) પેનલ -->
+  <div id="reportPanel" class="view-panel">
+    <div class="card">
+      <h3 class="card-title">📄 સ્માર્ટ પરિણામ પત્રક (માર્કશીટ)</h3>
+      <div class="form-group">
+        <label>વિદ્યાર્થીની પસંદ કરો:</label>
+        <select id="reportStudent" onchange="generateSubjectInputs()"></select>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>પરીક્ષાનો પ્રકાર:</label>
+          <select id="reportExamType" onchange="generateSubjectInputs()">
+            <option value="first">પ્રથમ સામાયિક પરીક્ષા</option>
+            <option value="second">દ્વિતીય સામાયિક પરીક્ષા</option>
+            <option value="annual">વાર્ષિક પરીક્ષા</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>વિદ્યાર્થીનીની વિગત:</label>
+          <div id="reportStudentInfo" style="font-size:14px; font-weight:bold; color:var(--primary); padding-top:8px; border-bottom:2px solid #ccc;">-</div>
+        </div>
+      </div>
+      
+      <!-- ડાયનેમિક વિષયો અને ગુણ માટેનું કન્ટેનર -->
+      <div id="subjectInputsContainer" style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px; margin-top:10px;">
+         <p style="text-align:center; color:#888; font-size:12px;">વિદ્યાર્થીની પસંદ કરો એટલે વિષયો જાતે જ આવી જશે.</p>
+      </div>
+
+      <div class="btn-grid">
+        <button class="btn btn-main" onclick="generateAndPrintPDF()">🖨️ PDF ડાઉનલોડ/પ્રિન્ટ કરો</button>
+        <button class="btn btn-success" onclick="calculateAndShareReport()">💬 WhatsApp પર રિઝલ્ટ</button>
+      </div>
+    </div>
   </div>
 
   <!-- ૨. ગૃહકાર્ય પેનલ -->
@@ -218,10 +251,10 @@
     </div>
   </div>
 
-  <!-- ૩. પરીક્ષા ગુણ પેનલ -->
+  <!-- ૩. એકલ પરીક્ષા ગુણ પેનલ (Unit Test માટે) -->
   <div id="examPanel" class="view-panel">
     <div class="card">
-      <h3 class="card-title">📝 પરીક્ષા અને ગુણ નોંધ</h3>
+      <h3 class="card-title">📝 એકમ કસોટી (Unit Test) ગુણ નોંધ</h3>
       <div class="form-group">
         <label>કસોટીનું નામ:</label>
         <input type="text" id="examTitle" value="પ્રથમ એકમ કસોટી (Unit Test)">
@@ -302,8 +335,6 @@
   <div id="leavePanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">🚨 વિશેષ રજા મંજૂરી</h3>
-      
-      <!-- રજાનો પ્રકાર પસંદ કરવાનો નવો વિકલ્પ -->
       <div class="form-group">
         <label>રજાનો પ્રકાર પસંદ કરો:</label>
         <select id="leaveType" onchange="toggleLeaveType()" style="font-weight:bold; color:var(--primary); background:#e3f2fd; border-color:#bbdefb;">
@@ -322,7 +353,6 @@
           <label>રજાની તારીખ:</label>
           <input type="date" id="leaveDateInput">
         </div>
-        <!-- આ બોક્સ માત્ર 'ચાલુ શાળાએ રજા' પસંદ કરશો ત્યારે જ દેખાશે -->
         <div class="form-group" id="timeGroup" style="display:none;">
           <label>રજા આપ્યાનો સમય:</label>
           <input type="time" id="leaveTimeInput">
@@ -338,7 +368,6 @@
         </select>
       </div>
 
-      <!-- લેવા આવનાર વ્યક્તિનું સેક્શન (માત્ર ચાલુ શાળાએ રજા માટે) -->
       <div id="pickupGroup" style="display:none;">
         <div class="form-group">
           <label>વિદ્યાર્થીનીને લેવા કોણ આવ્યું છે?</label>
@@ -380,11 +409,12 @@
       <div class="id-box">
         <div class="id-header">
           <h4>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ</h4>
-          <p>ગોપીપુરા, સુરત • ધોરણ ૧૨</p>
+          <p>ગોપીપુરા, સુરત • ધોરણ ૧૧/૧૨</p>
         </div>
         <div class="id-body">
           <img id="cPhoto" src="" alt="Student Photo">
           <div><b>નામ:</b> <span id="cName">-</span></div>
+          <div><b>ધોરણ:</b> <span id="cStd">-</span> (<span id="cStream">-</span>)</div>
           <div><b>રોલ નં:</b> <span id="cRoll">-</span> | <b>GR નં:</b> <span id="cGR">-</span></div>
           <div><b>જન્મ તારીખ:</b> <span id="cDOB">-</span></div>
           <div><b>બ્લડ ગ્રૂપ:</b> <span id="cBlood">-</span></div>
@@ -393,7 +423,7 @@
           <div><b>યુ-ડાયસ:</b> <span id="cUdise">-</span></div>
         </div>
       </div>
-      <button class="btn btn-main" onclick="window.print()">🖨️ આઈ-કાર્ડ પ્રિન્ટ / PDF</button>
+      <button class="btn btn-main" onclick="window.print()">🖨️️ આઈ-કાર્ડ પ્રિન્ટ / PDF</button>
     </div>
   </div>
 
@@ -404,8 +434,8 @@
       <div class="form-group">
         <label>લાગુ પડતું ધોરણ:</label>
         <select id="noticeClass">
-          <option value="12"> (ધોરણ ૧૨)</option>
-          <option value="11"> (ધોરણ ૧૧)</option>
+          <option value="12">ધોરણ ૧૨</option>
+          <option value="11">ધોરણ ૧૧</option>
           <option value="11 અને 12">બંને (ધોરણ ૧૧/૧૨)</option>
         </select>
       </div>
@@ -440,13 +470,54 @@
       <h4 class="card-title">📋 વિદ્યાર્થીનીઓની યાદી (<span id="totalStudentsCount">0</span>)</h4>
       <div class="table-container">
         <table>
-          <thead><tr><th>રોલ</th><th>નામ</th><th>GR નં</th><th>પિતા નં</th><th>ક્રિયા</th></tr></thead>
+          <thead><tr><th>રોલ</th><th>ધોરણ (પ્રવાહ)</th><th>નામ</th><th>પિતા નં</th><th>ક્રિયા</th></tr></thead>
           <tbody id="adminTableBody"></tbody>
         </table>
       </div>
     </div>
   </div>
 
+</div>
+
+<!-- 🖨️ PDF પ્રિન્ટ માટેનું અદ્રશ્ય ફોર્મેટ -->
+<div id="printReportArea" style="display:none;">
+    <div style="text-align:center; margin-bottom:20px; border-bottom:3px solid #0d47a1; padding-bottom:10px;">
+        <h1 style="margin:0; color:#0d47a1; font-size:24px;">શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત</h1>
+        <h3 style="margin:5px 0; color:#333;" id="prExamName">પરિણામ પત્રક</h3>
+    </div>
+    <table width="100%" style="margin-bottom:20px; font-size:16px; font-weight:bold;">
+        <tr>
+            <td>વિદ્યાર્થીની: <span id="prName" style="color:#0d47a1;"></span></td>
+            <td style="text-align:right;">ધોરણ: <span id="prStd" style="color:#0d47a1;"></span> (<span id="prStream"></span>)</td>
+        </tr>
+        <tr>
+            <td>રોલ નં: <span id="prRoll"></span></td>
+            <td style="text-align:right;">જી.આર. નં: <span id="prGr"></span></td>
+        </tr>
+    </table>
+    <table id="prMarksTable" width="100%" border="1" cellpadding="8" style="border-collapse:collapse; text-align:center; font-size:15px; margin-bottom:20px;">
+        <tr style="background:#f1f3f5; font-weight:bold;">
+            <th style="text-align:left;">વિષય</th>
+            <th>કુલ ગુણ</th>
+            <th>મેળવેલ ગુણ</th>
+        </tr>
+        <tbody id="prMarksBody"></tbody>
+    </table>
+    <table width="100%" border="1" cellpadding="8" style="border-collapse:collapse; text-align:center; font-size:15px; font-weight:bold; background:#e3f2fd;">
+        <tr>
+            <td>કુલ ગુણ: <span id="prTotalObt"></span> / <span id="prTotalMax"></span></td>
+            <td>ટકાવારી: <span id="prPercent"></span>%</td>
+            <td>ગ્રેડ: <span id="prGrade"></span></td>
+            <td>પરિણામ: <span id="prPass"></span></td>
+        </tr>
+    </table>
+    <table width="100%" style="margin-top:60px; font-size:16px; font-weight:bold; text-align:center;">
+        <tr>
+            <td>_________________<br><br>વર્ગ શિક્ષકની સહી</td>
+            <td>_________________<br><br>આચાર્યશ્રીની સહી</td>
+            <td>_________________<br><br>વાલીની સહી</td>
+        </tr>
+    </table>
 </div>
 
 <!-- JAVASCRIPT -->
@@ -493,37 +564,32 @@
     
     if(panelId === 'idPanel') renderCard();
     if(panelId === 'adminPanel') renderAdminTable();
+    if(panelId === 'reportPanel') generateSubjectInputs();
   }
 
   function setup(isSilentSync = false) {
-    // 1. તારીખો સેટ કરવી
     document.querySelectorAll('.lblDate').forEach(el => el.innerText = todayStr);
     document.getElementById('examDate').value = todayISO;
     document.getElementById('examResDate').value = todayISO;
     document.getElementById('leaveDateInput').value = todayISO;
 
-    // 2. વર્તમાન સમય ઓટોમેટિક સેટ કરવો
-    const nowTime = new Date();
-    document.getElementById('leaveTimeInput').value = nowTime.toTimeString().substring(0, 5);
-
     const list = document.getElementById('attContainer');
-    const sels = ['hwStudent', 'examStudent', 'feeStudent', 'leaveStudent', 'idStudent'];
+    const sels = ['hwStudent', 'examStudent', 'feeStudent', 'leaveStudent', 'idStudent', 'reportStudent'];
     
     list.innerHTML = '';
     sels.forEach(id => document.getElementById(id).innerHTML = '');
 
     let todayLeavesCount = 0;
 
-    // 3. Auto-Sync Logic (જો ડેટા ન હોય તો જાતે જ સિંક કરશે)
     if(roster.length === 0) {
       list.innerHTML = '<p style="text-align:center; color:var(--primary); font-weight:bold; padding:20px;">ડેટા લવાઈ રહ્યો છે... કૃપા કરીને રાહ જુઓ ⏳</p>';
       if (!isSilentSync) syncGoogleSheetLive(true);
       return;
     } 
     
-    // ડેટા બતાવવાનો લોજીક
     roster.forEach((st, i) => {
       let avatar = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR;
+      let streamTxt = st.stream.toLowerCase().includes('arts') ? 'Arts' : 'Commerce';
       
       let leaveHtml = "";
       if(st.leaveDate === todayISO) {
@@ -537,7 +603,7 @@
             <img class="student-avatar" src="${avatar}">
             <div>
               <h4>રોલ ${st.roll}: ${st.name}</h4>
-              <p>GR: ${st.gr} | પિતા: ${st.fPhone}</p>
+              <p>ધોરણ ${st.std} (${streamTxt}) | પિતા: ${st.fPhone}</p>
               ${leaveHtml}
             </div>
           </div>
@@ -556,9 +622,142 @@
     document.getElementById('dashTotalCount').innerText = roster.length;
     document.getElementById('dashLeaveCount').innerText = todayLeavesCount;
     renderCard();
+    generateSubjectInputs();
     if(isAdminLogged) renderAdminTable();
   }
 
+  // --- REPORT CARD (માર્કશીટ લોજીક) ---
+  function generateSubjectInputs() {
+    const stIdx = document.getElementById('reportStudent').value;
+    if(!stIdx || roster.length === 0) return;
+    const st = roster[stIdx];
+    const examType = document.getElementById('reportExamType').value;
+
+    let std = st.std || "12";
+    let stream = st.stream.toLowerCase().includes('arts') ? 'Arts' : 'Commerce';
+
+    document.getElementById('reportStudentInfo').innerText = `ધોરણ: ${std} | પ્રવાહ: ${stream}`;
+
+    let maxMarks = 100;
+    if(std === "11" && (examType === "first" || examType === "second")) {
+        maxMarks = 50;
+    }
+
+    let commonSubs = ["ગુજરાતી", "અંગ્રેજી", "અર્થશાસ્ત્ર"];
+    let streamSubs = stream === "Arts" ? ["હિન્દી", "સંસ્કૃત", "સમાજશાસ્ત્ર", "ચિત્રકામ"] : ["નામાના મૂળતત્વો", "વાણિજ્ય વ્યવસ્થા અને સંચાલન", "આંકડાશાસ્ત્ર", "એસ.પી.સી.સી."];
+    let allSubs = [...commonSubs, ...streamSubs];
+
+    let html = `<div style="font-size:13px; color:#c62828; margin-bottom:12px; font-weight:bold;">દરેક વિષયના કુલ ગુણ: ${maxMarks} (ગેરહાજર માટે AB લખો)</div>`;
+
+    allSubs.forEach((sub, i) => {
+      html += `
+        <div class="grid-2" style="margin-bottom:8px; align-items:center;">
+          <div style="font-size:13.5px; font-weight:600; color:#0d47a1;">${sub}:</div>
+          <input type="text" id="mark_sub_${i}" placeholder="ગુણ (દા.ત. ${maxMarks-5})" oninput="this.value = this.value.toUpperCase()">
+        </div>
+      `;
+    });
+    
+    html += `<input type="hidden" id="reportMaxMarks" value="${maxMarks}">`;
+    document.getElementById('subjectInputsContainer').innerHTML = html;
+  }
+
+  function getGrade(percentage) {
+    if(percentage >= 91) return 'A1';
+    if(percentage >= 81) return 'A2';
+    if(percentage >= 71) return 'B1';
+    if(percentage >= 61) return 'B2';
+    if(percentage >= 51) return 'C1';
+    if(percentage >= 41) return 'C2';
+    if(percentage >= 33) return 'D';
+    return 'E';
+  }
+
+  function extractReportData() {
+    const stIdx = document.getElementById('reportStudent').value;
+    if(!stIdx || roster.length === 0) return null;
+    const st = roster[stIdx];
+    const examTypeObj = document.getElementById('reportExamType');
+    const examName = examTypeObj.options[examTypeObj.selectedIndex].text;
+    const maxMarks = parseInt(document.getElementById('reportMaxMarks').value);
+
+    let stream = st.stream.toLowerCase().includes('arts') ? 'Arts' : 'Commerce';
+    let commonSubs = ["ગુજરાતી", "અંગ્રેજી", "અર્થશાસ્ત્ર"];
+    let streamSubs = stream === "Arts" ? ["હિન્દી", "સંસ્કૃત", "સમાજશાસ્ત્ર", "ચિત્રકામ"] : ["નામાના મૂળતત્વો", "વાણિજ્ય વ્યવસ્થા અને સંચાલન", "આંકડાશાસ્ત્ર", "એસ.પી.સી.સી."];
+    let allSubs = [...commonSubs, ...streamSubs];
+
+    let totalObtained = 0;
+    let totalMax = allSubs.length * maxMarks;
+    let isFail = false;
+    let subjectsData = [];
+
+    allSubs.forEach((sub, i) => {
+        let val = document.getElementById(`mark_sub_${i}`).value.trim();
+        if(val === 'AB' || val === 'ab') {
+            subjectsData.push({name: sub, marks: 'AB'});
+            isFail = true;
+        } else {
+            let m = parseInt(val) || 0;
+            totalObtained += m;
+            let passingMark = Math.ceil(maxMarks * 0.33); 
+            if(m < passingMark) isFail = true;
+            subjectsData.push({name: sub, marks: m});
+        }
+    });
+
+    let percentage = (totalObtained / totalMax) * 100;
+    let finalGrade = isFail ? "E (નાપાસ)" : getGrade(percentage);
+    let passStatus = isFail ? "નાપાસ" : "પાસ";
+
+    return { st, examName, maxMarks, subjectsData, totalObtained, totalMax, percentage, finalGrade, passStatus, stream };
+  }
+
+  function calculateAndShareReport() {
+    let d = extractReportData();
+    if(!d) return;
+
+    let resultText = "";
+    d.subjectsData.forEach(sub => resultText += `${sub.name}: *${sub.marks}*\n`);
+    let passIcon = d.passStatus === "પાસ" ? "🟢" : "🔴";
+
+    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📄 *${d.examName} પરિણામ*\n\nવિદ્યાર્થીની: *${d.st.name}*\nધોરણ: ${d.st.std || 12} (${d.stream})\n-------------------------\n${resultText}-------------------------\nકુલ ગુણ: *${d.totalObtained} / ${d.totalMax}*\nટકાવારી: *${d.percentage.toFixed(2)}%*\nગ્રેડ: *${d.finalGrade}*\nપરિણામ: ${passIcon} *${d.passStatus}*\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
+
+    window.open(`https://api.whatsapp.com/send?phone=${d.st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  function generateAndPrintPDF() {
+    let d = extractReportData();
+    if(!d) return;
+
+    document.getElementById('prExamName').innerText = d.examName + " પરિણામ";
+    document.getElementById('prName').innerText = d.st.name;
+    document.getElementById('prStd').innerText = d.st.std || 12;
+    document.getElementById('prStream').innerText = d.stream;
+    document.getElementById('prRoll').innerText = d.st.roll;
+    document.getElementById('prGr').innerText = d.st.gr;
+
+    let marksBody = "";
+    d.subjectsData.forEach(sub => {
+        let isAB = sub.marks === 'AB';
+        let isFail = !isAB && sub.marks < Math.ceil(d.maxMarks * 0.33);
+        let color = (isAB || isFail) ? "color:red; font-weight:bold;" : "";
+        marksBody += `<tr><td style="text-align:left;">${sub.name}</td><td>${d.maxMarks}</td><td style="${color}">${sub.marks}</td></tr>`;
+    });
+    document.getElementById('prMarksBody').innerHTML = marksBody;
+
+    document.getElementById('prTotalObt').innerText = d.totalObtained;
+    document.getElementById('prTotalMax').innerText = d.totalMax;
+    document.getElementById('prPercent').innerText = d.percentage.toFixed(2);
+    document.getElementById('prGrade').innerText = d.finalGrade;
+    let passEl = document.getElementById('prPass');
+    passEl.innerText = d.passStatus;
+    passEl.style.color = d.passStatus === "પાસ" ? "green" : "red";
+
+    // પ્રિન્ટ ડાયલોગ ખોલવો
+    window.print();
+  }
+
+  // --- TOGGLES & DATA SYNC ---
   function toggleHwStudent() {
     document.getElementById('hwStudentGroup').style.display = (document.getElementById('hwSendType').value === 'individual') ? 'block' : 'none';
   }
@@ -588,6 +787,27 @@
     }
   }
 
+  function toggleLeaveType() {
+    const lType = document.getElementById('leaveType').value;
+    const timeGroup = document.getElementById('timeGroup');
+    const pickupGroup = document.getElementById('pickupGroup');
+    
+    if(lType === 'halfday') {
+      timeGroup.style.display = 'block';
+      pickupGroup.style.display = 'block';
+      const nowTime = new Date();
+      document.getElementById('leaveTimeInput').value = nowTime.toTimeString().substring(0, 5);
+    } else {
+      timeGroup.style.display = 'none';
+      pickupGroup.style.display = 'none';
+    }
+  }
+
+  function togglePickupDetails() {
+    const isOther = document.getElementById('leavePickupPerson').value === 'other';
+    document.getElementById('otherPickupDetails').style.display = isOther ? 'block' : 'none';
+  }
+
   function approveLeave() {
     if(roster.length === 0) return;
     const idx = document.getElementById('leaveStudent').value;
@@ -600,7 +820,6 @@
     alert(`${roster[idx].name} ની તારીખ ${lDate.split('-').reverse().join('/')} ની રજા મંજૂર કરી દેવામાં આવી છે.`);
   }
 
-  // Auto-sync functionality added
   async function syncGoogleSheetLive(isAuto = false) {
     const scriptUrl = document.getElementById('scriptUrlInput').value;
     const btn = document.getElementById('btnSyncData');
@@ -617,6 +836,7 @@
     }
   }
 
+  // ધોરણ અને પ્રવાહ ખેંચવાનું મજબૂત લોજીક
   function processJSONData(data, isAuto = false) {
     if (data.length < 2) return;
     let importedRoster = [];
@@ -625,16 +845,21 @@
       if (col.length === 1 && typeof col[0] === 'string' && col[0].includes(',')) col = col[0].split(',');
       if (!col[2] || col[2].toString().trim() === "") continue;
 
+      let stdVal = (col[13] !== undefined && col[13] !== null && col[13].toString().trim() !== "") ? col[13].toString().trim() : "12";
+      let streamVal = (col[14] !== undefined && col[14] !== null && col[14].toString().trim() !== "") ? col[14].toString().trim() : "Commerce";
+
       importedRoster.push({
         roll: parseInt(col[0]) || (importedRoster.length + 1),
         gr: col[1] ? col[1].toString().trim() : "",
         name: col[2] ? col[2].toString().trim() : "",
         photo: col[3] && col[3].toString().trim() ? col[3].toString().trim() : "",
         dob: col[4] ? col[4].toString().trim() : "",
-        blood: col[12] ? col[12].toString().trim() : "",
-        fPhone: col[9] ? col[9].toString().replace(/[^0-9]/g, '') : "",
-        mPhone: col[10] ? col[10].toString().replace(/[^0-9]/g, '') : "",
-        udise: col[8] ? col[8].toString().trim() : "",
+        blood: col[12] ? col[12].toString().trim() : "", 
+        std: stdVal,
+        stream: streamVal,
+        fPhone: col[9] ? col[9].toString().replace(/[^0-9]/g, '') : "", 
+        mPhone: col[10] ? col[10].toString().replace(/[^0-9]/g, '') : "", 
+        udise: col[8] ? col[8].toString().trim() : "", 
         leaveDate: "" 
       });
     }
@@ -655,13 +880,17 @@
   }
 
   function processCSVText(csvText) {
-    const lines = csvText.split('\n'); // Syntax Error Fixed here!
+    const lines = csvText.split('\n'); 
     if (lines.length < 2) return alert("ફાઇલમાં કોઈ ડેટા મળ્યો નથી!");
     let importedRoster = [];
     for (let i = 1; i < lines.length; i++) {
       let line = lines[i].replace(/"/g, '').trim(); 
       if (!line) continue;
       const col = line.split(',');
+      
+      let stdVal = (col[13] !== undefined && col[13] !== null && col[13].trim() !== "") ? col[13].trim() : "12";
+      let streamVal = (col[14] !== undefined && col[14] !== null && col[14].trim() !== "") ? col[14].trim() : "Commerce";
+
       const student = {
         roll: parseInt(col[0]) || (importedRoster.length + 1),
         gr: col[1] ? col[1].trim() : "",
@@ -669,6 +898,8 @@
         photo: col[3] && col[3].trim() ? col[3].trim() : "",
         dob: col[4] ? col[4].trim() : "",
         blood: col[12] ? col[12].trim() : "",
+        std: stdVal,
+        stream: streamVal,
         fPhone: col[9] ? col[9].replace(/[^0-9]/g, '') : "",
         mPhone: col[10] ? col[10].replace(/[^0-9]/g, '') : "",
         udise: col[8] ? col[8].trim() : "",
@@ -678,12 +909,13 @@
     }
     if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setup(true); alert("સફળતાપૂર્વક અપડેટ થઈ ગયું!"); }
   }
-
+   
   function renderAdminTable() {
     const tbody = document.getElementById('adminTableBody');
     tbody.innerHTML = '';
     roster.forEach((st, i) => {
-      tbody.innerHTML += `<tr><td>${st.roll}</td><td>${st.name}</td><td>${st.gr}</td><td>${st.fPhone}</td>
+      let streamTxt = st.stream.toLowerCase().includes('arts') ? 'Arts' : 'Commerce';
+      tbody.innerHTML += `<tr><td>${st.roll}</td><td>${st.std} (${streamTxt})</td><td>${st.name}</td><td>${st.fPhone}</td>
       <td><button class="btn btn-danger" style="padding:5px 10px;" onclick="deleteStudent(${i})">ડિલીટ</button></td></tr>`;
     });
   }
@@ -692,15 +924,37 @@
     if (confirm(`શું તમે ${roster[index].name} ની માહિતી કાઢી નાખવા માંગો છો?`)) { roster.splice(index, 1); saveToStorage(); setup(true); }
   }
 
-  function exportDataJSON() {
-    const a = document.createElement('a');
-    a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2));
-    a.download = `Singapuri_Girls_Data_${todayStr.replace(/\//g, '-')}.json`; a.click();
+  // --- WHATSAPP MESSAGE DISPATCHERS ---
+  function dispatchLeave() {
+    if(roster.length === 0) return;
+    const st = roster[document.getElementById('leaveStudent').value];
+    const lDate = document.getElementById('leaveDateInput').value.split('-').reverse().join('/');
+    const reason = document.getElementById('leaveReason').value;
+    const lType = document.getElementById('leaveType').value;
+
+    let msg = "";
+
+    if(lType === 'advance') {
+      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ની તારીખ ${lDate} ની રજા (અગાઉથી જાણ કરવા બદલ) મંજૂર કરેલ છે.\n\nકારણ: ${reason}\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    } else {
+      const lTime = document.getElementById('leaveTimeInput').value;
+      const formatedTime = formatAMPM(lTime);
+      let pickupInfo = "વાલી (માતા/પિતા)";
+      if(document.getElementById('leavePickupPerson').value === 'other') {
+        const pName = document.getElementById('pickupName').value || "(નામ નથી)";
+        const pRel = document.getElementById('pickupRelation').value || "(સંબંધ નથી)";
+        const pPhone = document.getElementById('pickupPhone').value || "(નંબર નથી)";
+        pickupInfo = `${pName} (${pRel}) - મો. ${pPhone}`;
+      }
+      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n🚨 *સુરક્ષા ચેતવણી (ચાલુ શાળાએ રજા)*\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ને શાળા સમય દરમિયાન વિશેષ રજા આપવામાં આવેલ છે.\n\nતારીખ: ${lDate}\nસમય: *${formatedTime}*\nકારણ: ${reason}\nરજા લેવા આવનાર વ્યક્તિ: *${pickupInfo}*\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    }
+    
+    window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function sendAbsent(name, phone) {
     if(!phone || phone === "") return alert(`વાલી નો મોબાઈલ નંબર ઉપલબ્ધ નથી.`);
-    const msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\nસવિનય જણાવવાનું કે *વાલીશ્રી*, આપની દીકરી *${name}* આજે તારીખ ${todayStr} ના રોજ શાળામાં ગેરહાજર છે. કૃપા કરીને નોંધ લેશો.\n- હેમંત સર`;
+    const msg = `શ્રી એમ جی સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\nસવિનય જણાવવાનું કે *વાલીશ્રી*, આપની દીકરી *${name}* આજે તારીખ ${todayStr} ના રોજ શાળામાં ગેરહાજર છે. કૃપા કરીને નોંધ લેશો.\n- હેમંત સર`;
     window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
@@ -713,9 +967,7 @@
     msg += `વિષય: *${sub}*\nવિગત: ${document.getElementById('hwDesc').value}\n`;
     if(document.getElementById('hwLink').value) msg += `લિંક: ${document.getElementById('hwLink').value}\n`;
     msg += `- હેમંત સર`;
-    
-    if (type === 'group') window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
-    else window.open(`https://api.whatsapp.com/send?phone=${roster[document.getElementById('hwStudent').value].fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(type === 'group' ? `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?phone=${roster[document.getElementById('hwStudent').value].fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function dispatchMarks() {
@@ -743,78 +995,6 @@
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
-  function togglePickupDetails() {
-    const isOther = document.getElementById('leavePickupPerson').value === 'other';
-    document.getElementById('otherPickupDetails').style.display = isOther ? 'block' : 'none';
-  }
-
-  function formatAMPM(timeStr) {
-    if(!timeStr) return "";
-    let [hours, minutes] = timeStr.split(':');
-    hours = parseInt(hours);
-    let ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; 
-    return hours + ':' + minutes + ' ' + ampm;
-  }
-
-  // રજાનો પ્રકાર બદલવા પર ફોર્મ બદલાશે
-  function toggleLeaveType() {
-    const lType = document.getElementById('leaveType').value;
-    const timeGroup = document.getElementById('timeGroup');
-    const pickupGroup = document.getElementById('pickupGroup');
-    
-    if(lType === 'halfday') {
-      timeGroup.style.display = 'block';
-      pickupGroup.style.display = 'block';
-      // ચાલુ શાળા પસંદ કરતા જ વર્તમાન સમય ઓટોમેટિક આવી જશે
-      const nowTime = new Date();
-      document.getElementById('leaveTimeInput').value = nowTime.toTimeString().substring(0, 5);
-    } else {
-      timeGroup.style.display = 'none';
-      pickupGroup.style.display = 'none';
-    }
-  }
-
-  // લેવા આવનાર વ્યક્તિનું ડ્રોપડાઉન
-  function togglePickupDetails() {
-    const isOther = document.getElementById('leavePickupPerson').value === 'other';
-    document.getElementById('otherPickupDetails').style.display = isOther ? 'block' : 'none';
-  }
-
-  // રજાનો ફાઇનલ મેસેજ જનરેટ કરતું ફંક્શન
-  function dispatchLeave() {
-    if(roster.length === 0) return;
-    const st = roster[document.getElementById('leaveStudent').value];
-    const lDate = document.getElementById('leaveDateInput').value.split('-').reverse().join('/');
-    const reason = document.getElementById('leaveReason').value;
-    const lType = document.getElementById('leaveType').value;
-
-    let msg = "";
-
-    // જો અગાઉથી જાણ કરેલ રજા હોય (Advance Leave)
-    if(lType === 'advance') {
-      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ની તારીખ ${lDate} ની રજા (અગાઉથી જાણ કરવા બદલ) મંજૂર કરેલ છે.\n\nકારણ: ${reason}\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
-    } 
-    // જો ચાલુ શાળાએ રજા હોય (School Hours Leave)
-    else {
-      const lTime = document.getElementById('leaveTimeInput').value;
-      const formatedTime = formatAMPM(lTime);
-      
-      let pickupInfo = "વાલી (માતા/પિતા)";
-      if(document.getElementById('leavePickupPerson').value === 'other') {
-        const pName = document.getElementById('pickupName').value || "(નામ નથી)";
-        const pRel = document.getElementById('pickupRelation').value || "(સંબંધ નથી)";
-        const pPhone = document.getElementById('pickupPhone').value || "(નંબર નથી)";
-        pickupInfo = `${pName} (${pRel}) - મો. ${pPhone}`;
-      }
-
-      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n🚨 *સુરક્ષા ચેતવણી (ચાલુ શાળાએ રજા)*\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ને શાળા સમય દરમિયાન વિશેષ રજા આપવામાં આવેલ છે.\n\nતારીખ: ${lDate}\nસમય: *${formatedTime}*\nકારણ: ${reason}\nરજા લેવા આવનાર વ્યક્તિ: *${pickupInfo}*\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
-    }
-    
-    window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
-  }
-
   function dispatchNotice() {
     const std = document.getElementById('noticeClass').value;
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📢 *શાળા પરિપત્ર / અગત્યની સૂચના*\nતારીખ: ${todayStr}\n-------------------------\nઆથી *${std}* ની તમામ વિદ્યાર્થીનીઓને જણાવવાનું કે, ${document.getElementById('noticeDesc').value}\n`;
@@ -828,8 +1008,12 @@
     const idx = document.getElementById('idStudent').value || 0;
     const st = roster[idx] || roster[0];
     let avatar = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR;
+    let streamTxt = st.stream.toLowerCase().includes('arts') ? 'Arts' : 'Commerce';
+
     document.getElementById('cPhoto').src = avatar;
     document.getElementById('cName').innerText = st.name;
+    document.getElementById('cStd').innerText = st.std;
+    document.getElementById('cStream').innerText = streamTxt;
     document.getElementById('cRoll').innerText = st.roll;
     document.getElementById('cGR').innerText = st.gr;
     document.getElementById('cDOB').innerText = st.dob;
