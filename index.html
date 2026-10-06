@@ -57,7 +57,6 @@
     input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; background: #fafafa; transition: 0.2s; }
     input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: #fff; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
     .btn { padding: 10px 15px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s; }
     .btn:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -99,13 +98,19 @@
     #loginModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
     .modal-content { background-color: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
     
-    /* પ્રોફેશનલ A4 પ્રિન્ટ માટેનું સેટિંગ */
+    /* 🌟 સુધારેલું સ્માર્ટ પ્રિન્ટ સેટિંગ */
     @media print {
-      body * { visibility: hidden; }
-      #printReportArea, #printReportArea * { visibility: visible; }
-      #printReportArea { position: absolute; left: 0; top: 0; width: 100%; height:100%; padding:20mm; background:white; }
-      #mainApp { display: none; }
-      @page { size: A4; margin: 0; }
+      body.printing-report * { visibility: hidden; }
+      body.printing-report #printReportArea { display: block !important; visibility: visible !important; position: absolute; left: 0; top: 0; width: 100%; background: white; }
+      body.printing-report #printReportArea * { visibility: visible !important; }
+      body.printing-report #mainApp { display: none !important; }
+
+      body.printing-id * { visibility: hidden; }
+      body.printing-id .id-box { visibility: visible !important; position: absolute; left: 0; top: 0; width: 100%; max-width: 100%; margin: 0; background: white; }
+      body.printing-id .id-box * { visibility: visible !important; }
+      body.printing-id #mainApp { display: none !important; }
+
+      @page { size: A4; margin: 10mm; }
     }
   </style>
 </head>
@@ -148,7 +153,7 @@
     <button class="nav-btn" onclick="showPanel('leavePanel')">🚨 વિશેષ રજા</button>
     <button class="nav-btn" onclick="showPanel('idPanel')">🪪 આઈ-કાર્ડ</button>
     <button class="nav-btn" onclick="showPanel('noticePanel')">📢 પરિપત્ર</button>
-    <button class="nav-btn admin-btn" onclick="openAdminPanel()">⚙️️ Admin</button>
+    <button class="nav-btn admin-btn" onclick="openAdminPanel()">⚙ Admin</button>
   </div>
 
   <!-- ૦. ડેશબોર્ડ પેનલ -->
@@ -182,7 +187,7 @@
     <div id="attContainer"></div>
   </div>
 
-  <!-- 🌟 માર્કશીટ (પરિણામ પત્રક) પેનલ (UPDATED) -->
+  <!-- 🌟 માર્કશીટ (પરિણામ પત્રક) પેનલ -->
   <div id="reportPanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">📄 સ્માર્ટ પરિણામ પત્રક (માર્કશીટ)</h3>
@@ -427,7 +432,7 @@
         <label>વિદ્યાર્થીની પસંદ કરો:</label>
         <select id="idStudent" onchange="renderCard()"></select>
       </div>
-      <div class="id-box">
+      <div class="id-box" id="idCardPrintArea">
         <div class="id-header">
           <h4>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ</h4>
           <p>ગોપીપુરા, સુરત • ધોરણ ૧૧/૧૨</p>
@@ -444,7 +449,8 @@
           <div><b>યુ-ડાયસ:</b> <span id="cUdise">-</span></div>
         </div>
       </div>
-      <button class="btn btn-main" onclick="window.print()">🖨 આઈ-કાર્ડ પ્રિન્ટ / PDF</button>
+      <!-- 🌟 બદલાયેલું આઈ-કાર્ડ પ્રિન્ટ બટન -->
+      <button class="btn btn-main" onclick="printIDCard()">🖨 આઈ-કાર્ડ પ્રિન્ટ / PDF</button>
     </div>
   </div>
 
@@ -478,7 +484,7 @@
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
       <div class="form-group">
         <label>Google Apps Script URL:</label>
-        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzwydHXs_ICkvIcMaWlgy_ijlKpQsoXRSJshXckdWzkQK6wrIuE2e2KGMVDN2TletPz5A/exec">
+        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbyend8TF4mRyOpLSg6tNGBPsKFCjZl0vIo_cEQXgvuVsyRarTq8obqExkgG4MvibNb_ag/exec">
       </div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
@@ -497,6 +503,7 @@
       </div>
     </div>
   </div>
+
 </div>
 
 <!-- 🖨️ PDF પ્રિન્ટ માટેનું પ્રોફેશનલ A4 ફોર્મેટ (હાઇડ રાખેલ છે) -->
@@ -800,6 +807,7 @@
     window.open(`https://api.whatsapp.com/send?phone=${d.st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 
+  // 🌟 સ્માર્ટ ડીલે સાથે પ્રિન્ટ ફંક્શન
   function generateAndPrintPDF() {
     let d = extractReportData();
     if(!d) return;
@@ -848,8 +856,37 @@
     passEl.innerText = d.passStatus;
     passEl.style.color = d.passStatus.includes("પાસ") ? "green" : "red";
 
-    // પ્રિન્ટ ડાયલોગ ખોલવો
-    window.print();
+    // 🌟 મોબાઈલ માટે ખાસ ડીલે ટાઈમર
+    document.body.classList.add('printing-report');
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('printReportArea').style.display = 'block';
+
+    setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+            document.body.classList.remove('printing-report');
+            document.getElementById('mainApp').style.display = 'flex';
+            document.getElementById('printReportArea').style.display = 'none';
+        }, 1000);
+    }, 500);
+  }
+
+  function printIDCard() {
+    document.body.classList.add('printing-id');
+    document.getElementById('mainApp').style.display = 'none';
+    
+    // આઈકાર્ડ ને એકલું દેખાડવા માટે
+    let idCard = document.getElementById('idCardPrintArea');
+    document.body.appendChild(idCard);
+    
+    setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+            document.body.classList.remove('printing-id');
+            document.getElementById('idPanel').appendChild(idCard);
+            document.getElementById('mainApp').style.display = 'flex';
+        }, 1000);
+    }, 500);
   }
 
   // --- OTHER APP FUNCTIONS ---
