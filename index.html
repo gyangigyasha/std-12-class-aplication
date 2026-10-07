@@ -186,7 +186,7 @@
     <div id="attContainer"></div>
   </div>
 
-  <!-- 🌟 ઓટોમેટેડ માર્કશીટ પેનલ -->
+  <!-- 🌟 સ્માર્ટ માર્કશીટ પેનલ (Auto-Rank Engine) -->
   <div id="reportPanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">📄 સ્માર્ટ પરિણામ પત્રક (માર્કશીટ)</h3>
@@ -209,7 +209,6 @@
         </div>
       </div>
       
-      <!-- 🌟 ભૂલથી કાઢી નાખેલું હાજરી, અભિપ્રાય અને રેન્ક વાળું ટેબલ પાછું ઉમેર્યું -->
       <div class="grid-3" style="background:#f1f8e9; padding:10px; border-radius:8px; border:1px solid #c5e1a5; margin-bottom:12px; align-items:end;">
          <div class="form-group" style="margin:0;">
             <label style="font-size:11px;">કુલ / હાજર દિવસો:</label>
@@ -223,8 +222,8 @@
             <input type="text" id="repRemarks" placeholder="અભિપ્રાય" style="padding:6px;">
          </div>
          <div class="form-group" style="margin:0;">
-            <label style="font-size:11px;">વિદ્યાર્થીનો રેન્ક:</label>
-            <input type="text" id="repRank" placeholder="દા.ત. 1st" style="padding:6px;">
+            <label style="font-size:11px; color:#d32f2f;">ઓટોમેટિક રેન્ક:</label>
+            <input type="text" id="repRank" placeholder="App ગણતરી કરશે" style="padding:6px; background:#e0e0e0; font-weight:bold;" readonly>
          </div>
       </div>
 
@@ -627,12 +626,12 @@
 
     if(std === "12" && examType === "annual") {
         document.getElementById('subjectInputsContainer').innerHTML = `<p style="text-align:center; color:red; font-size:14px; font-weight:bold; border:2px dashed red; padding:15px;">⚠️ ધોરણ 12 ની વાર્ષિક પરીક્ષા ગુજરાત માધ્યમિક બોર્ડ દ્વારા લેવાય છે.</p>`;
+        document.getElementById('repRank').value = "Not Eligible";
         return;
     }
 
     let mainSubs = getSubjectsList(stream);
     let html = "";
-    
     let mData = st.marks ? st.marks[examType] : null;
 
     if(std === "11" && examType === "annual") {
@@ -673,7 +672,6 @@
         document.getElementById('repTotalDays').value = mData ? (mData[32]||"210") : "210";
         document.getElementById('repPresentDays').value = mData ? (mData[33]||"") : "";
         document.getElementById('repRemarks').value = mData ? (mData[34]||"") : "";
-        document.getElementById('repRank').value = mData ? (mData[35]||"") : "";
 
     } else {
         let maxMarks = (std === "11") ? 50 : 100;
@@ -691,10 +689,102 @@
         document.getElementById('repTotalDays').value = mData ? (mData[9]||"210") : "210";
         document.getElementById('repPresentDays').value = mData ? (mData[10]||"") : "";
         document.getElementById('repRemarks').value = mData ? (mData[11]||"") : "";
-        document.getElementById('repRank').value = ""; 
     }
 
     document.getElementById('subjectInputsContainer').innerHTML = html;
+    autoCalculateRank(); // 🌟 જાદુઈ ઓટો-રેન્ક એન્જિન અહી ચાલે છે
+  }
+
+  // 🌟 ઓટો-રેન્ક એન્જિન (Auto-Rank Engine)
+  function autoCalculateRank() {
+      const stIdx = parseInt(document.getElementById('reportStudent').value);
+      if(isNaN(stIdx) || roster.length === 0) return;
+      const st = roster[stIdx];
+      const examType = document.getElementById('reportExamType').value;
+      const setupType = document.getElementById('reportSetupType').value;
+
+      let std = st.std ? st.std.toString().trim() : "12";
+      let stream = st.stream ? st.stream : "Commerce";
+      let mainSubs = getSubjectsList(stream);
+
+      let allScores = [];
+
+      for(let i=0; i<roster.length; i++) {
+          let s = roster[i];
+          let s_std = s.std ? s.std.toString().trim() : "12";
+          let s_stream = s.stream ? s.stream : "Commerce";
+          
+          if(s_std !== std || s_stream !== stream) continue; // માત્ર સમાન ધોરણ-પ્રવાહમાં હરીફાઈ
+
+          let mData = s.marks ? s.marks[examType] : null;
+          if(!mData) continue;
+
+          let total = 0;
+          let isFail = false;
+          let hasKrupa = false;
+
+          if(setupType === "11_annual") {
+              for(let j=0; j<mainSubs.length; j++) {
+                  let b = 2 + (j*4);
+                  let vTh = parseInt(mData[b])||0;
+                  let vIn = parseInt(mData[b+1])||0;
+                  let vSi = parseInt(mData[b+2])||0;
+                  let vKr = parseInt(mData[b+3])||0;
+
+                  let vM1 = (s.marks && s.marks.first) ? (parseInt(s.marks.first[2+j])||0) : 0;
+                  let vM2 = (s.marks && s.marks.second) ? (parseInt(s.marks.second[2+j])||0) : 0;
+                  
+                  let isAB = (mData[b]==='AB' || mData[b+1]==='AB'); 
+                  if(s.marks && s.marks.first && s.marks.first[2+j]==='AB') isAB = true;
+                  if(s.marks && s.marks.second && s.marks.second[2+j]==='AB') isAB = true;
+
+                  if(vKr > 0) hasKrupa = true; // જો કૃપા ગુણ હોય તો
+                  
+                  let tot200 = vM1+vM2+vTh+vIn;
+                  let c100 = Math.round(tot200/2);
+                  let fMark = c100 + vSi + vKr;
+                  if(fMark > 100) fMark = 100;
+
+                  if(isAB || fMark < 33) isFail = true;
+                  total += fMark;
+              }
+          } else {
+              let maxMarks = (std === "11") ? 50 : 100;
+              for(let j=0; j<mainSubs.length; j++) {
+                  let val = mData[2+j] || "";
+                  let isAB = (val==='AB'||val==='ab');
+                  let m = isAB ? 0 : (parseInt(val)||0);
+                  if(isAB || m < Math.ceil(maxMarks*0.33)) isFail = true;
+                  total += m;
+              }
+          }
+
+          // જો વિદ્યાર્થી પાસ હોય અને કૃપા ગુણ ન હોય, તો જ રેન્ક માટે એલિજિબલ
+          if(!isFail && !hasKrupa) {
+              allScores.push({ index: i, score: total });
+          }
+      }
+
+      // માર્ક્સ મુજબ ઉતરતા ક્રમમાં ગોઠવો
+      allScores.sort((a,b) => b.score - a.score);
+
+      let rankStr = "Not Eligible";
+      let currRank = 1;
+      for(let k=0; k<allScores.length; k++) {
+          if(k > 0 && allScores[k].score < allScores[k-1].score) {
+              currRank = k + 1;
+          }
+          if(allScores[k].index === stIdx) {
+              let suffix = "th";
+              if(currRank % 10 === 1 && currRank !== 11) suffix = "st";
+              else if(currRank % 10 === 2 && currRank !== 12) suffix = "nd";
+              else if(currRank % 10 === 3 && currRank !== 13) suffix = "rd";
+              rankStr = currRank + suffix;
+              break;
+          }
+      }
+
+      document.getElementById('repRank').value = rankStr;
   }
 
   function getGrade(percentage) {
@@ -720,7 +810,7 @@
     const totDays = document.getElementById('repTotalDays').value || "-";
     const preDays = document.getElementById('repPresentDays').value || "-";
     const rems = document.getElementById('repRemarks').value || "-";
-    let inputRank = document.getElementById('repRank').value || "-";
+    let finalRank = document.getElementById('repRank').value || "-"; // સીધો ઓટો-રેન્ક ખેંચી લીધો
 
     let std = st.std ? st.std.toString().trim() : "12";
     let stream = st.stream ? st.stream : "Commerce";
@@ -802,9 +892,6 @@
     if(isFail) { passStatus = "નાપાસ (Needs Improvement)"; }
     else if(hasKrupa) { passStatus = "કૃપા થી પાસ (Pass with Promotion)"; }
     else { passStatus = "પાસ (Promoted)"; }
-
-    let finalRank = inputRank;
-    if(hasKrupa || isFail) finalRank = "Not Eligible";
 
     return { 
         st, examName, setupType, mainResults, minorResults, maxMarks,
