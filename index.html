@@ -182,7 +182,6 @@
     <div id="attContainer"></div>
   </div>
 
-  <!-- 🌟 માત્ર ધોરણ ૧૧ અને ૧૨ માટેની માર્કશીટ પેનલ -->
   <div id="reportPanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">📄 સ્માર્ટ પરિણામ પત્રક (માર્કશીટ)</h3>
@@ -419,7 +418,7 @@
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
       <div class="form-group">
         <label>Google Apps Script URL:</label>
-        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzwydHXs_ICkvIcMaWlgy_ijlKpQsoXRSJshXckdWzkQK6wrIuE2e2KGMVDN2TletPz5A/exec">
+        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbyend8TF4mRyOpLSg6tNGBPsKFCjZl0vIo_cEQXgvuVsyRarTq8obqExkgG4MvibNb_ag/exec">
       </div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
@@ -500,7 +499,6 @@
     </div>
 </div>
 
-<!-- JAVASCRIPT -->
 <script>
   const ADMIN_ID = "admin";
   const ADMIN_PASS = "97275";
@@ -612,12 +610,16 @@
     if(isAdminLogged) renderAdminTable();
   }
 
-  // 🌟 સ્માર્ટ વિષયોનું લોજીક (માત્ર 11 અને 12 માટે)
-  function getSubjectsList(std, streamStr) {
+  // 🌟 સ્માર્ટ વિષયોનું લોજીક (સીટી અને પીટી માત્ર વાર્ષિક પરીક્ષા માટે)
+  function getSubjectsList(std, streamStr, examType) {
       let commonSubs = ["ગુજરાતી", "અંગ્રેજી", "અર્થશાસ્ત્ર"];
       let streamSubs = streamStr.toLowerCase().includes('arts') ? ["હિન્દી", "સંસ્કૃત", "સમાજશાસ્ત્ર", "ચિત્રકામ"] : ["નામાના મૂળતત્વો", "વાણિજ્ય વ્યવસ્થા અને સંચાલન", "આંકડાશાસ્ત્ર", "એસ.પી.સી.સી."];
       let subs = [...commonSubs, ...streamSubs];
-      if(std.toString().trim() === "11") subs.push("સીટી", "પીટી");
+      
+      // માત્ર ધોરણ 11 ની વાર્ષિક પરીક્ષામાં જ સીટી અને પીટી ઉમેરવા
+      if(std.toString().trim() === "11" && examType === "annual") {
+          subs.push("સીટી", "પીટી");
+      }
       return subs;
   }
 
@@ -633,7 +635,6 @@
     
     document.getElementById('reportStudentInfo').innerText = `વિગત: ${formatStdStream(std, stream)}`;
 
-    // 🌟 ધોરણ 12 ની વાર્ષિક પરીક્ષા માટે રોક
     if(std === "12" && examType === "annual") {
         document.getElementById('subjectInputsContainer').innerHTML = `<p style="text-align:center; color:red; font-size:14px; font-weight:bold; border:2px dashed red; padding:15px;">⚠️ ધોરણ 12 ની વાર્ષિક પરીક્ષા ગુજરાત માધ્યમિક બોર્ડ દ્વારા લેવાય છે, તેથી શાળા કક્ષાની માર્કશીટ ઉપલબ્ધ નથી.</p>`;
         return;
@@ -644,7 +645,7 @@
         maxMarks = 50;
     }
 
-    let allSubs = getSubjectsList(std, stream);
+    let allSubs = getSubjectsList(std, stream, examType); // પરીક્ષાનો પ્રકાર પાસ કર્યો 
     let html = `<div style="font-size:13px; color:#c62828; margin-bottom:12px; font-weight:bold;">દરેક વિષયના કુલ ગુણ: ${maxMarks} (ગેરહાજર માટે AB લખો)</div>`;
 
     allSubs.forEach((sub, i) => {
@@ -686,11 +687,12 @@
     if(!stIdx || roster.length === 0) return null;
     const st = roster[stIdx];
     const examTypeObj = document.getElementById('reportExamType');
+    const examTypeVal = examTypeObj.value;
     const examName = examTypeObj.options[examTypeObj.selectedIndex].text;
     const markSystem = document.getElementById('reportMarkingSystem').value;
     
     let std = st.std ? st.std.toString().trim() : "12";
-    if(std === "12" && examTypeObj.value === "annual") {
+    if(std === "12" && examTypeVal === "annual") {
         alert(`ધોરણ 12 ની વાર્ષિક પરીક્ષા બોર્ડ લે છે. આ ઓપ્શન ઉપલબ્ધ નથી.`);
         return null;
     }
@@ -701,7 +703,7 @@
     const rems = document.getElementById('repRemarks').value || "-";
 
     let stream = st.stream ? st.stream : "Commerce";
-    let allSubs = getSubjectsList(std, stream);
+    let allSubs = getSubjectsList(std, stream, examTypeVal); // પરીક્ષાનો પ્રકાર પાસ કર્યો 
 
     let totalObtained = 0;
     let totalMax = allSubs.length * maxMarks;
