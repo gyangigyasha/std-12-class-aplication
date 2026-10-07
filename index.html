@@ -186,6 +186,7 @@
     <div id="attContainer"></div>
   </div>
 
+  <!-- 🌟 ઓટોમેટેડ માર્કશીટ પેનલ -->
   <div id="reportPanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">📄 સ્માર્ટ પરિણામ પત્રક (માર્કશીટ)</h3>
@@ -208,6 +209,25 @@
         </div>
       </div>
       
+      <!-- 🌟 ભૂલથી કાઢી નાખેલું હાજરી, અભિપ્રાય અને રેન્ક વાળું ટેબલ પાછું ઉમેર્યું -->
+      <div class="grid-3" style="background:#f1f8e9; padding:10px; border-radius:8px; border:1px solid #c5e1a5; margin-bottom:12px; align-items:end;">
+         <div class="form-group" style="margin:0;">
+            <label style="font-size:11px;">કુલ / હાજર દિવસો:</label>
+            <div style="display:flex; gap:5px;">
+              <input type="number" id="repTotalDays" placeholder="કુલ" value="210" style="padding:6px;">
+              <input type="number" id="repPresentDays" placeholder="હાજર" style="padding:6px;">
+            </div>
+         </div>
+         <div class="form-group" style="margin:0;">
+            <label style="font-size:11px;">વર્ગ શિક્ષકનો અભિપ્રાય:</label>
+            <input type="text" id="repRemarks" placeholder="અભિપ્રાય" style="padding:6px;">
+         </div>
+         <div class="form-group" style="margin:0;">
+            <label style="font-size:11px;">વિદ્યાર્થીનો રેન્ક:</label>
+            <input type="text" id="repRank" placeholder="દા.ત. 1st" style="padding:6px;">
+         </div>
+      </div>
+
       <div id="subjectInputsContainer" style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px; max-height:400px; overflow-y:auto;">
          <p style="text-align:center; color:#888; font-size:12px;">વિદ્યાર્થીની પસંદ કરો એટલે ગૂગલ શીટમાંથી માર્ક્સ ઓટોમેટિક આવી જશે.</p>
       </div>
@@ -395,7 +415,6 @@
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
       <div class="form-group">
         <label>Google Apps Script URL:</label>
-        <!-- અહી તમારી નવી લિંક મૂકવામાં આવી છે -->
         <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzUOTZeuGSZbz79HsaVWfixkvqwFI3aG8BiPMaMNnuCRlBB9L_aGD8HMeDnrFUAAO223A/exec">
       </div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
@@ -716,7 +735,7 @@
     let maxMarks = 0;
 
     if(setupType === "11_annual") {
-        totalMax = mainSubs.length * 100; // 700
+        totalMax = mainSubs.length * 100; 
         mainSubs.forEach((sub, i) => {
             let m1V = document.getElementById(`m_${i}_1`).value.trim();
             let m2V = document.getElementById(`m_${i}_2`).value.trim();
