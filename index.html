@@ -22,7 +22,7 @@
       --card-bg: #ffffff;
       --border: #e0e0e0;
       --text: #333;
-     }
+    }
 
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; justify-content: center; }
@@ -35,6 +35,13 @@
     }
     header h1 { margin: 0; font-size: 20px; letter-spacing: 0.5px; }
     header p { margin: 5px 0 0; font-size: 13px; opacity: 0.9; }
+
+    .filter-bar {
+      background: #fff; border-radius: 12px; padding: 10px; margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid var(--border);
+    }
+    .filter-bar select { width: auto; font-weight: bold; color: var(--primary); padding: 8px 12px; border: 2px solid var(--primary); outline: none; border-radius:6px; }
 
     .nav-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
     .nav-bar::-webkit-scrollbar { display: none; }
@@ -144,6 +151,15 @@
     <p>ધોરણ ૧૧/૧૨ (સામાન્ય પ્રવાહ) • વર્ગ શિક્ષક: હેમંત સર</p>
   </header>
 
+  <div class="filter-bar">
+    <label style="margin:0; font-size:14px;">કાર્ય માટે વર્ગ પસંદ કરો:</label>
+    <select id="globalClassFilter" onchange="setup()">
+      <option value="all">બધા (ધો. 11 અને 12)</option>
+      <option value="11">ફક્ત ધોરણ 11</option>
+      <option value="12">ફક્ત ધોરણ 12</option>
+    </select>
+  </div>
+
   <div class="nav-bar">
     <button class="nav-btn active" onclick="showPanel('dashPanel')">🏠 હોમ</button>
     <button class="nav-btn" onclick="showPanel('attPanel')">📋 હાજરી</button>
@@ -186,7 +202,7 @@
     <div id="attContainer"></div>
   </div>
 
-  <!-- 🌟 સ્માર્ટ માર્કશીટ પેનલ (Auto-Rank Engine) -->
+  <!-- 🌟 ઓટોમેટેડ માર્કશીટ પેનલ -->
   <div id="reportPanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">📄 સ્માર્ટ પરિણામ પત્રક (માર્કશીટ)</h3>
@@ -219,7 +235,13 @@
          </div>
          <div class="form-group" style="margin:0;">
             <label style="font-size:11px;">વર્ગ શિક્ષકનો અભિપ્રાય:</label>
-            <input type="text" id="repRemarks" placeholder="અભિપ્રાય" style="padding:6px;">
+            <select id="repRemarks" style="padding:6px;">
+              <option value="">-- ઓટો સિલેક્ટ --</option>
+              <option>ખૂબ સરસ પ્રદર્શન</option>
+              <option>સંતોષકારક પ્રદર્શન</option>
+              <option>વધુ મહેનતની જરૂર છે</option>
+              <option>વાલીએ શાળાએ રૂબરૂ મળવું</option>
+            </select>
          </div>
          <div class="form-group" style="margin:0;">
             <label style="font-size:11px; color:#d32f2f;">ઓટોમેટિક રેન્ક:</label>
@@ -232,8 +254,8 @@
       </div>
 
       <div class="btn-grid">
-        <button class="btn btn-main" onclick="generateAndPrintPDF()">🖨️ PDF પ્રિન્ટ કાઢો</button>
-        <button class="btn btn-success" onclick="calculateAndShareReport()">💬 WhatsApp પર રિઝલ્ટ</button>
+        <button class="btn btn-main" id="btnReportPrint" onclick="generateAndPrintPDF()">🖨️ PDF પ્રિન્ટ કાઢો</button>
+        <button class="btn btn-success" id="btnReportWA" onclick="calculateAndShareReport()">💬 WhatsApp પર રિઝલ્ટ</button>
       </div>
     </div>
   </div>
@@ -388,7 +410,7 @@
           <div><b>યુ-ડાયસ:</b> <span id="cUdise">-</span></div>
         </div>
       </div>
-      <button class="btn btn-main" onclick="printIDCard()">🖨 આઈ-કાર્ડ પ્રિન્ટ / PDF</button>
+      <button class="btn btn-main" id="btnIDPrint" onclick="printIDCard()">🖨 આઈ-કાર્ડ પ્રિન્ટ / PDF</button>
     </div>
   </div>
 
@@ -562,6 +584,9 @@
     sels.forEach(id => document.getElementById(id).innerHTML = '');
 
     let todayLeavesCount = 0;
+    let filteredCount = 0;
+    
+    let activeFilter = document.getElementById('globalClassFilter').value;
 
     if(roster.length === 0) {
       list.innerHTML = '<p style="text-align:center; color:var(--primary); font-weight:bold; padding:20px;">ડેટા લવાઈ રહ્યો છે... કૃપા કરીને રાહ જુઓ ⏳</p>';
@@ -570,6 +595,11 @@
     } 
     
     roster.forEach((st, i) => {
+      let stStd = st.std ? st.std.toString().trim() : "12";
+      
+      if(activeFilter !== "all" && activeFilter !== stStd) return;
+
+      filteredCount++;
       let avatar = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR;
       let dispStd = formatStdStream(st.std, st.stream);
       
@@ -600,11 +630,32 @@
       sels.forEach(id => document.getElementById(id).innerHTML += opt);
     });
 
+    // 🌟 ભૂલ સુધારો ૧: જો કોઈ વિદ્યાર્થી ન મળે તો ખાનાં સાફ કરવા
+    if(filteredCount === 0) {
+        list.innerHTML = `<p style="text-align:center; color:red; font-weight:bold; padding:20px;">આ ધોરણમાં કોઈ વિદ્યાર્થી નથી!</p>`;
+        sels.forEach(id => document.getElementById(id).innerHTML = `<option value="">-- કોઈ વિદ્યાર્થી નથી --</option>`);
+        document.getElementById('subjectInputsContainer').innerHTML = "<p style='text-align:center; color:#888;'>વિદ્યાર્થી ઉપલબ્ધ નથી.</p>";
+        document.getElementById('btnReportPrint').disabled = true;
+        document.getElementById('btnReportWA').disabled = true;
+        document.getElementById('btnIDPrint').disabled = true;
+        document.getElementById('reportStudentInfo').innerText = "-";
+        
+        let cPhoto = document.getElementById('cPhoto'); if(cPhoto) cPhoto.src = "";
+        ['cName','cStd','cRoll','cGR','cDOB','cBlood','cPhone','cMPhone','cUdise'].forEach(id => {
+            let el = document.getElementById(id); if(el) el.innerText = "-";
+        });
+    } else {
+        document.getElementById('btnReportPrint').disabled = false;
+        document.getElementById('btnReportWA').disabled = false;
+        document.getElementById('btnIDPrint').disabled = false;
+        renderCard();
+        generateSubjectInputs();
+    }
+
     document.getElementById('totalStudentsCount').innerText = roster.length;
-    document.getElementById('dashTotalCount').innerText = roster.length;
+    document.getElementById('dashTotalCount').innerText = filteredCount;
     document.getElementById('dashLeaveCount').innerText = todayLeavesCount;
-    renderCard();
-    generateSubjectInputs();
+    
     if(isAdminLogged) renderAdminTable();
   }
 
@@ -616,7 +667,7 @@
 
   function generateSubjectInputs() {
     const stIdx = document.getElementById('reportStudent').value;
-    if(!stIdx || roster.length === 0) return;
+    if(!stIdx || stIdx === "" || roster.length === 0) return;
     const st = roster[stIdx];
     const examType = document.getElementById('reportExamType').value;
 
@@ -632,6 +683,7 @@
 
     let mainSubs = getSubjectsList(stream);
     let html = "";
+    
     let mData = st.marks ? st.marks[examType] : null;
 
     if(std === "11" && examType === "annual") {
@@ -671,7 +723,14 @@
         
         document.getElementById('repTotalDays').value = mData ? (mData[32]||"210") : "210";
         document.getElementById('repPresentDays').value = mData ? (mData[33]||"") : "";
-        document.getElementById('repRemarks').value = mData ? (mData[34]||"") : "";
+        
+        let sheetRemark = mData ? (mData[34]||"") : "";
+        let remDropdown = document.getElementById('repRemarks');
+        if(sheetRemark !== "") {
+            remDropdown.innerHTML += `<option value="${sheetRemark}" selected>${sheetRemark} (શીટ)</option>`;
+        } else {
+            remDropdown.value = ""; 
+        }
 
     } else {
         let maxMarks = (std === "11") ? 50 : 100;
@@ -688,17 +747,26 @@
         
         document.getElementById('repTotalDays').value = mData ? (mData[9]||"210") : "210";
         document.getElementById('repPresentDays').value = mData ? (mData[10]||"") : "";
-        document.getElementById('repRemarks').value = mData ? (mData[11]||"") : "";
+        
+        let sheetRemark = mData ? (mData[11]||"") : "";
+        let remDropdown = document.getElementById('repRemarks');
+        if(sheetRemark !== "") {
+            remDropdown.innerHTML += `<option value="${sheetRemark}" selected>${sheetRemark} (શીટ)</option>`;
+        } else {
+            remDropdown.value = ""; 
+        }
     }
 
     document.getElementById('subjectInputsContainer').innerHTML = html;
-    autoCalculateRank(); // 🌟 જાદુઈ ઓટો-રેન્ક એન્જિન અહી ચાલે છે
+    autoCalculateRank(); 
   }
 
-  // 🌟 ઓટો-રેન્ક એન્જિન (Auto-Rank Engine)
   function autoCalculateRank() {
-      const stIdx = parseInt(document.getElementById('reportStudent').value);
+      const stIdxStr = document.getElementById('reportStudent').value;
+      if(!stIdxStr || stIdxStr === "") return;
+      const stIdx = parseInt(stIdxStr);
       if(isNaN(stIdx) || roster.length === 0) return;
+      
       const st = roster[stIdx];
       const examType = document.getElementById('reportExamType').value;
       const setupType = document.getElementById('reportSetupType').value;
@@ -714,7 +782,7 @@
           let s_std = s.std ? s.std.toString().trim() : "12";
           let s_stream = s.stream ? s.stream : "Commerce";
           
-          if(s_std !== std || s_stream !== stream) continue; // માત્ર સમાન ધોરણ-પ્રવાહમાં હરીફાઈ
+          if(s_std !== std || s_stream !== stream) continue; 
 
           let mData = s.marks ? s.marks[examType] : null;
           if(!mData) continue;
@@ -738,7 +806,7 @@
                   if(s.marks && s.marks.first && s.marks.first[2+j]==='AB') isAB = true;
                   if(s.marks && s.marks.second && s.marks.second[2+j]==='AB') isAB = true;
 
-                  if(vKr > 0) hasKrupa = true; // જો કૃપા ગુણ હોય તો
+                  if(vKr > 0) hasKrupa = true; 
                   
                   let tot200 = vM1+vM2+vTh+vIn;
                   let c100 = Math.round(tot200/2);
@@ -759,22 +827,23 @@
               }
           }
 
-          // જો વિદ્યાર્થી પાસ હોય અને કૃપા ગુણ ન હોય, તો જ રેન્ક માટે એલિજિબલ
           if(!isFail && !hasKrupa) {
               allScores.push({ index: i, score: total });
           }
       }
 
-      // માર્ક્સ મુજબ ઉતરતા ક્રમમાં ગોઠવો
       allScores.sort((a,b) => b.score - a.score);
 
       let rankStr = "Not Eligible";
       let currRank = 1;
+      let studentTotalScore = 0; 
+
       for(let k=0; k<allScores.length; k++) {
           if(k > 0 && allScores[k].score < allScores[k-1].score) {
               currRank = k + 1;
           }
           if(allScores[k].index === stIdx) {
+              studentTotalScore = allScores[k].score;
               let suffix = "th";
               if(currRank % 10 === 1 && currRank !== 11) suffix = "st";
               else if(currRank % 10 === 2 && currRank !== 12) suffix = "nd";
@@ -785,6 +854,20 @@
       }
 
       document.getElementById('repRank').value = rankStr;
+
+      let remDropdown = document.getElementById('repRemarks');
+      if(remDropdown.value === "") {
+          if(rankStr === "Not Eligible") {
+              remDropdown.value = "વાલીએ શાળાએ રૂબરૂ મળવું"; 
+          } else {
+              let maxP = (setupType === "11_annual") ? 700 : (mainSubs.length * parseInt(document.getElementById('reportMaxMarks').value));
+              let per = (studentTotalScore / maxP) * 100;
+              
+              if(per >= 80) remDropdown.value = "ખૂબ સરસ પ્રદર્શન";
+              else if(per >= 60) remDropdown.value = "સંતોષકારક પ્રદર્શન";
+              else remDropdown.value = "વધુ મહેનતની જરૂર છે";
+          }
+      }
   }
 
   function getGrade(percentage) {
@@ -800,7 +883,7 @@
 
   function extractReportData() {
     const stIdx = document.getElementById('reportStudent').value;
-    if(!stIdx || roster.length === 0) return null;
+    if(!stIdx || stIdx === "" || roster.length === 0) return null;
     const st = roster[stIdx];
     const examTypeObj = document.getElementById('reportExamType');
     const examTypeVal = examTypeObj.value;
@@ -810,7 +893,7 @@
     const totDays = document.getElementById('repTotalDays').value || "-";
     const preDays = document.getElementById('repPresentDays').value || "-";
     const rems = document.getElementById('repRemarks').value || "-";
-    let finalRank = document.getElementById('repRank').value || "-"; // સીધો ઓટો-રેન્ક ખેંચી લીધો
+    let finalRank = document.getElementById('repRank').value || "-";
 
     let std = st.std ? st.std.toString().trim() : "12";
     let stream = st.stream ? st.stream : "Commerce";
@@ -1127,10 +1210,16 @@
     };
     reader.readAsText(file, "UTF-8");
   }
+  // 🌟 ભૂલ સુધારો ૨: એડમિન પેનલમાં પણ ફિલ્ટર લગાવ્યું
   function renderAdminTable() {
     const tbody = document.getElementById('adminTableBody');
     tbody.innerHTML = '';
+    let activeFilter = document.getElementById('globalClassFilter').value;
+
     roster.forEach((st, i) => {
+      let stStd = st.std ? st.std.toString().trim() : "12";
+      if(activeFilter !== "all" && activeFilter !== stStd) return; 
+
       tbody.innerHTML += `<tr><td>${st.roll}</td><td>${formatStdStream(st.std, st.stream)}</td><td>${st.name}</td><td>${st.fPhone}</td>
       <td><button class="btn btn-danger" style="padding:5px 10px;" onclick="deleteStudent(${i})">ડિલીટ</button></td></tr>`;
     });
@@ -1198,7 +1287,9 @@
   }
   function renderCard() {
     if (!roster.length) return;
-    const st = roster[document.getElementById('idStudent').value || 0];
+    const stIdx = document.getElementById('idStudent').value;
+    if(!stIdx || stIdx === "") return;
+    const st = roster[stIdx];
     document.getElementById('cPhoto').src = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR;
     document.getElementById('cName').innerText = st.name; document.getElementById('cStd').innerText = formatStdStream(st.std, st.stream);
     document.getElementById('cRoll').innerText = st.roll; document.getElementById('cGR').innerText = st.gr;
