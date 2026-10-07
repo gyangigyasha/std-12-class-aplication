@@ -57,6 +57,7 @@
     input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; background: #fafafa; transition: 0.2s; }
     input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: #fff; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
     .btn { padding: 10px 15px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s; }
     .btn:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -111,6 +112,9 @@
 
       @page { size: A4; margin: 10mm; }
     }
+
+    .subject-block { background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .subject-name { font-size: 14px; font-weight: 700; color: #0d47a1; margin-bottom: 8px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -199,40 +203,13 @@
           </select>
         </div>
         <div class="form-group">
-          <label>માર્કિંગ સિસ્ટમ:</label>
-          <select id="reportMarkingSystem" onchange="generateSubjectInputs()" style="color:var(--primary); font-weight:bold;">
-            <option value="direct">સીધા કુલ ગુણમાંથી</option>
-            <option value="split">૮૦ (થિયરી) + ૨૦ (આંતરિક)</option>
-          </select>
+          <label>વિદ્યાર્થીનીની વિગત:</label>
+          <div id="reportStudentInfo" style="font-size:14px; font-weight:bold; color:var(--primary); padding-top:8px;">-</div>
         </div>
       </div>
       
-      <div class="grid-2" style="background:#f1f8e9; padding:10px; border-radius:8px; border:1px solid #c5e1a5; margin-bottom:12px;">
-         <div class="form-group" style="margin:0;">
-            <label>કુલ / હાજર દિવસો:</label>
-            <div style="display:flex; gap:5px;">
-              <input type="number" id="repTotalDays" placeholder="કુલ" value="210">
-              <input type="number" id="repPresentDays" placeholder="હાજર">
-            </div>
-         </div>
-         <div class="form-group" style="margin:0;">
-            <label>વર્ગ શિક્ષકનો અભિપ્રાય:</label>
-            <select id="repRemarks">
-              <option>ખૂબ સરસ પ્રદર્શન</option>
-              <option>સંતોષકારક પ્રદર્શન</option>
-              <option>વધુ મહેનતની જરૂર છે</option>
-              <option>નિયમિતતા જરૂરી છે</option>
-              <option>વાલીએ રૂબરૂ મળવું</option>
-            </select>
-         </div>
-      </div>
-
-      <div style="text-align:center; font-size:14px; font-weight:bold; color:var(--primary); padding:5px 0;">
-          <span id="reportStudentInfo">-</span>
-      </div>
-      
-      <div id="subjectInputsContainer" style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px;">
-         <p style="text-align:center; color:#888; font-size:12px;">વિદ્યાર્થીની પસંદ કરો એટલે વિષયો જાતે જ આવી જશે.</p>
+      <div id="subjectInputsContainer" style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px; max-height:400px; overflow-y:auto;">
+         <p style="text-align:center; color:#888; font-size:12px;">વિદ્યાર્થીની પસંદ કરો એટલે ગૂગલ શીટમાંથી માર્ક્સ ઓટોમેટિક આવી જશે.</p>
       </div>
 
       <div class="btn-grid">
@@ -418,7 +395,8 @@
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
       <div class="form-group">
         <label>Google Apps Script URL:</label>
-        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/library/d/10KDZj9gUydY5gWbgE7bz3B_n7Mlu16WrgFbhPOj8Brtk9ykAiHAOmY08/4">
+        <!-- અહી તમારી નવી લિંક મૂકવામાં આવી છે -->
+        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzUOTZeuGSZbz79HsaVWfixkvqwFI3aG8BiPMaMNnuCRlBB9L_aGD8HMeDnrFUAAO223A/exec">
       </div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
@@ -442,11 +420,11 @@
 
 <!-- 🖨️ PDF પ્રિન્ટ માટેનું પ્રોફેશનલ A4 ફોર્મેટ (હાઇડ રાખેલ છે) -->
 <div id="printReportArea" style="display:none; font-family: Arial, sans-serif; color:#000;">
-    <div style="text-align:center; border-bottom:3px solid #0d47a1; padding-bottom:15px; margin-bottom:20px;">
-        <h1 style="margin:0; color:#0d47a1; font-size:28px;">શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત</h1>
-        <h3 style="margin:5px 0 0 0; color:#333; font-size:20px;" id="prExamName">પરિણામ પત્રક</h3>
+    <div style="text-align:center; border-bottom:3px solid #0d47a1; padding-bottom:10px; margin-bottom:15px;">
+        <h1 style="margin:0; color:#0d47a1; font-size:26px;">શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત</h1>
+        <h3 style="margin:5px 0 0 0; color:#333; font-size:18px;" id="prExamName">પરિણામ પત્રક</h3>
     </div>
-    <table width="100%" style="margin-bottom:20px; font-size:16px; font-weight:bold;">
+    <table width="100%" style="margin-bottom:15px; font-size:14px; font-weight:bold;">
         <tr>
             <td width="60%">વિદ્યાર્થીની: <span id="prName" style="color:#0d47a1; border-bottom:1px dashed #000;"></span></td>
             <td width="40%" style="text-align:right;"><span id="prStd" style="color:#0d47a1;"></span></td>
@@ -457,44 +435,46 @@
         </tr>
     </table>
 
-    <table id="prMarksTable" width="100%" border="1" cellpadding="10" style="border-collapse:collapse; text-align:center; font-size:16px; margin-bottom:25px; border:2px solid #000;">
-        <thead>
-            <tr style="background:#e3f2fd; font-weight:bold;">
-                <th style="text-align:left;">વિષય</th>
-                <th id="prHeaderInternal" style="display:none;">આંતરિક ગુણ</th>
-                <th id="prHeaderTheory" style="display:none;">થિયરી ગુણ</th>
-                <th>કુલ ગુણ</th>
-                <th>મેળવેલ ગુણ</th>
-                <th>ગ્રેડ</th>
-            </tr>
-        </thead>
+    <table id="prMarksTable" width="100%" border="1" cellpadding="6" style="border-collapse:collapse; text-align:center; font-size:14px; margin-bottom:20px; border:2px solid #000;">
+        <thead id="prMarksHead"></thead>
         <tbody id="prMarksBody"></tbody>
     </table>
 
-    <table width="100%" border="1" cellpadding="10" style="border-collapse:collapse; text-align:center; font-size:16px; font-weight:bold; background:#f1f8e9; margin-bottom:25px; border:2px solid #000;">
+    <div id="prMinorSection" style="display:none; margin-bottom:20px;">
+        <h4 style="margin:0 0 5px 0; text-align:left; font-size:14px;">ગૌણ વિષયો (ફક્ત ગ્રેડ)</h4>
+        <table width="100%" border="1" cellpadding="6" style="border-collapse:collapse; text-align:center; font-size:13px;">
+            <tr style="background:#f1f3f5; font-weight:bold;">
+                <th style="text-align:left;">વિષય</th><th>કુલ ગુણ</th><th>મેળવેલ ગુણ</th><th>ગ્રેડ</th>
+            </tr>
+            <tbody id="prMinorBody"></tbody>
+        </table>
+    </div>
+
+    <table width="100%" border="1" cellpadding="8" style="border-collapse:collapse; text-align:center; font-size:15px; font-weight:bold; background:#f1f8e9; margin-bottom:20px; border:2px solid #000;">
         <tr>
-            <td>કુલ મેળવેલ ગુણ:<br><span id="prTotalObt" style="font-size:20px; color:#2e7d32;"></span> / <span id="prTotalMax"></span></td>
-            <td>ટકાવારી:<br><span id="prPercent" style="font-size:20px;"></span>%</td>
-            <td>ફાઇનલ ગ્રેડ:<br><span id="prGrade" style="font-size:20px; color:#0d47a1;"></span></td>
-            <td>પરિણામ:<br><span id="prPass" style="font-size:20px;"></span></td>
+            <td>કુલ મેળવેલ ગુણ:<br><span id="prTotalObt" style="font-size:18px; color:#2e7d32;"></span> / <span id="prTotalMax"></span></td>
+            <td>ટકાવારી:<br><span id="prPercent" style="font-size:18px;"></span>%</td>
+            <td>ફાઇનલ ગ્રેડ:<br><span id="prGrade" style="font-size:18px; color:#0d47a1;"></span></td>
+            <td>રેન્ક (ક્રમ):<br><span id="prRankView" style="font-size:18px; color:#d84315;"></span></td>
         </tr>
     </table>
 
-    <table width="100%" style="font-size:15px; margin-bottom:50px;">
+    <table width="100%" style="font-size:14px; margin-bottom:40px;">
         <tr>
-            <td><b>હાજરી (Attendance):</b> <span id="prPresentDays"></span> / <span id="prTotalDays"></span> દિવસો</td>
-            <td style="text-align:right;"><b>વર્ગ શિક્ષકનો અભિપ્રાય:</b> <span id="prRemarks" style="border-bottom:1px dashed #000;"></span></td>
+            <td width="33%"><b>પરિણામ:</b> <span id="prPass" style="font-size:16px; font-weight:bold;"></span></td>
+            <td width="33%" style="text-align:center;"><b>હાજરી:</b> <span id="prPresentDays"></span> / <span id="prTotalDays"></span></td>
+            <td width="33%" style="text-align:right;"><b>અભિપ્રાય:</b> <span id="prRemarks" style="border-bottom:1px dashed #000;"></span></td>
         </tr>
     </table>
 
-    <table width="100%" style="margin-top:60px; font-size:16px; font-weight:bold; text-align:center;">
+    <table width="100%" style="margin-top:40px; font-size:14px; font-weight:bold; text-align:center;">
         <tr>
             <td>_______________________<br><br>વર્ગ શિક્ષકની સહી</td>
             <td>_______________________<br><br>આચાર્યશ્રીની સહી</td>
             <td>_______________________<br><br>વાલીની સહી</td>
         </tr>
     </table>
-    <div style="text-align:center; font-size:12px; color:#666; margin-top:30px;">
+    <div style="text-align:center; font-size:11px; color:#666; margin-top:20px;">
         * AB = ગેરહાજર &nbsp; | &nbsp; આ માર્કશીટ કોમ્પ્યુટર જનરેટેડ છે.
     </div>
 </div>
@@ -610,17 +590,10 @@
     if(isAdminLogged) renderAdminTable();
   }
 
-  // 🌟 સ્માર્ટ વિષયોનું લોજીક (સીટી અને પીટી માત્ર વાર્ષિક પરીક્ષા માટે)
-  function getSubjectsList(std, streamStr, examType) {
+  function getSubjectsList(streamStr) {
       let commonSubs = ["ગુજરાતી", "અંગ્રેજી", "અર્થશાસ્ત્ર"];
       let streamSubs = streamStr.toLowerCase().includes('arts') ? ["હિન્દી", "સંસ્કૃત", "સમાજશાસ્ત્ર", "ચિત્રકામ"] : ["નામાના મૂળતત્વો", "વાણિજ્ય વ્યવસ્થા અને સંચાલન", "આંકડાશાસ્ત્ર", "એસ.પી.સી.સી."];
-      let subs = [...commonSubs, ...streamSubs];
-      
-      // માત્ર ધોરણ 11 ની વાર્ષિક પરીક્ષામાં જ સીટી અને પીટી ઉમેરવા
-      if(std.toString().trim() === "11" && examType === "annual") {
-          subs.push("સીટી", "પીટી");
-      }
-      return subs;
+      return [...commonSubs, ...streamSubs]; 
   }
 
   function generateSubjectInputs() {
@@ -628,46 +601,80 @@
     if(!stIdx || roster.length === 0) return;
     const st = roster[stIdx];
     const examType = document.getElementById('reportExamType').value;
-    const markSystem = document.getElementById('reportMarkingSystem').value; 
 
     let std = st.std ? st.std.toString().trim() : "12";
     let stream = st.stream ? st.stream : "Commerce";
-    
     document.getElementById('reportStudentInfo').innerText = `વિગત: ${formatStdStream(std, stream)}`;
 
     if(std === "12" && examType === "annual") {
-        document.getElementById('subjectInputsContainer').innerHTML = `<p style="text-align:center; color:red; font-size:14px; font-weight:bold; border:2px dashed red; padding:15px;">⚠️ ધોરણ 12 ની વાર્ષિક પરીક્ષા ગુજરાત માધ્યમિક બોર્ડ દ્વારા લેવાય છે, તેથી શાળા કક્ષાની માર્કશીટ ઉપલબ્ધ નથી.</p>`;
+        document.getElementById('subjectInputsContainer').innerHTML = `<p style="text-align:center; color:red; font-size:14px; font-weight:bold; border:2px dashed red; padding:15px;">⚠️ ધોરણ 12 ની વાર્ષિક પરીક્ષા ગુજરાત માધ્યમિક બોર્ડ દ્વારા લેવાય છે.</p>`;
         return;
     }
 
-    let maxMarks = 100;
-    if(std === "11" && (examType === "first" || examType === "second")) {
-        maxMarks = 50;
+    let mainSubs = getSubjectsList(stream);
+    let html = "";
+    
+    let mData = st.marks ? st.marks[examType] : null;
+
+    if(std === "11" && examType === "annual") {
+        html += `<div style="font-size:13px; color:#0d47a1; margin-bottom:12px; font-weight:bold;">મુખ્ય ૭ વિષયો (પ્રથમ અને દ્વિતીયના ગુણ આપમેળે શીટમાંથી લેવાશે)</div>`;
+        mainSubs.forEach((sub, i) => {
+            let b = 2 + (i*4);
+            let valTh = mData ? (mData[b]||"") : "";
+            let valIn = mData ? (mData[b+1]||"") : "";
+            let valSi = mData ? (mData[b+2]||"") : "";
+            let valKr = mData ? (mData[b+3]||"") : "";
+            
+            let valM1 = (st.marks && st.marks.first) ? (st.marks.first[2+i]||"") : "";
+            let valM2 = (st.marks && st.marks.second) ? (st.marks.second[2+i]||"") : "";
+
+            html += `
+            <div class="subject-block">
+                <div class="subject-name">${sub}</div>
+                <div class="grid-3">
+                    <input type="text" id="m_${i}_1" placeholder="પ્રથમ (50)" value="${valM1}" title="પ્રથમ પરીક્ષાના ગુણ">
+                    <input type="text" id="m_${i}_2" placeholder="દ્વિતીય (50)" value="${valM2}" title="દ્વિતીય પરીક્ષાના ગુણ">
+                    <input type="text" id="m_${i}_3" placeholder="વાર્. થિયરી (80)" value="${valTh}" title="વાર્ષિક થિયરી ગુણ">
+                    <input type="text" id="m_${i}_4" placeholder="વાર્. આંતરિક (20)" value="${valIn}" title="વાર્ષિક આંતરિક ગુણ">
+                    <input type="text" id="m_${i}_si" placeholder="સિધ્ધી ગુણ" value="${valSi}" style="background:#e8f5e9;">
+                    <input type="text" id="m_${i}_kr" placeholder="કૃપા ગુણ" value="${valKr}" style="background:#fff3e0;">
+                </div>
+            </div>`;
+        });
+        html += `<div style="font-size:13px; color:#0d47a1; margin-top:20px; margin-bottom:12px; font-weight:bold;">ગૌણ વિષયો</div>`;
+        ["સીટી", "પીટી"].forEach((sub, i) => {
+            let valMi = mData ? (mData[30+i]||"") : "";
+            html += `<div class="grid-2" style="margin-bottom:8px; align-items:center;">
+              <div style="font-size:13.5px; font-weight:600; color:#424242;">${sub}:</div>
+              <input type="text" id="minor_${i}" placeholder="ગુણ (100 માંથી)" value="${valMi}">
+            </div>`;
+        });
+        html += `<input type="hidden" id="reportSetupType" value="11_annual">`;
+        
+        document.getElementById('repTotalDays').value = mData ? (mData[32]||"210") : "210";
+        document.getElementById('repPresentDays').value = mData ? (mData[33]||"") : "";
+        document.getElementById('repRemarks').value = mData ? (mData[34]||"") : "";
+        document.getElementById('repRank').value = mData ? (mData[35]||"") : "";
+
+    } else {
+        let maxMarks = (std === "11") ? 50 : 100;
+        html += `<div style="font-size:13px; color:#c62828; margin-bottom:12px; font-weight:bold;">દરેક વિષયના કુલ ગુણ: ${maxMarks}</div>`;
+        mainSubs.forEach((sub, i) => {
+            let val = mData ? (mData[2+i]||"") : "";
+            html += `<div class="grid-2" style="margin-bottom:8px; align-items:center;">
+              <div style="font-size:13.5px; font-weight:600; color:#0d47a1;">${sub}:</div>
+              <input type="text" id="m_direct_${i}" placeholder="ગુણ (દા.ત. ${maxMarks-5})" value="${val}" oninput="this.value = this.value.toUpperCase()">
+            </div>`;
+        });
+        html += `<input type="hidden" id="reportSetupType" value="direct">`;
+        html += `<input type="hidden" id="reportMaxMarks" value="${maxMarks}">`;
+        
+        document.getElementById('repTotalDays').value = mData ? (mData[9]||"210") : "210";
+        document.getElementById('repPresentDays').value = mData ? (mData[10]||"") : "";
+        document.getElementById('repRemarks').value = mData ? (mData[11]||"") : "";
+        document.getElementById('repRank').value = ""; 
     }
 
-    let allSubs = getSubjectsList(std, stream, examType); // પરીક્ષાનો પ્રકાર પાસ કર્યો 
-    let html = `<div style="font-size:13px; color:#c62828; margin-bottom:12px; font-weight:bold;">દરેક વિષયના કુલ ગુણ: ${maxMarks} (ગેરહાજર માટે AB લખો)</div>`;
-
-    allSubs.forEach((sub, i) => {
-      if(markSystem === 'split' && maxMarks === 100) {
-          html += `
-            <div style="margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:5px;">
-              <div style="font-size:13.5px; font-weight:600; color:#0d47a1; margin-bottom:3px;">${sub}:</div>
-              <div class="grid-2">
-                 <input type="text" id="mark_sub_${i}_th" placeholder="થિયરી ગુણ (80)" oninput="this.value = this.value.toUpperCase()">
-                 <input type="text" id="mark_sub_${i}_in" placeholder="આંતરિક ગુણ (20)" oninput="this.value = this.value.toUpperCase()">
-              </div>
-            </div>`;
-      } else {
-          html += `
-            <div class="grid-2" style="margin-bottom:8px; align-items:center;">
-              <div style="font-size:13.5px; font-weight:600; color:#0d47a1;">${sub}:</div>
-              <input type="text" id="mark_sub_${i}" placeholder="કુલ ગુણ (દા.ત. ${maxMarks-5})" oninput="this.value = this.value.toUpperCase()">
-            </div>`;
-      }
-    });
-    
-    html += `<input type="hidden" id="reportMaxMarks" value="${maxMarks}">`;
     document.getElementById('subjectInputsContainer').innerHTML = html;
   }
 
@@ -689,65 +696,102 @@
     const examTypeObj = document.getElementById('reportExamType');
     const examTypeVal = examTypeObj.value;
     const examName = examTypeObj.options[examTypeObj.selectedIndex].text;
-    const markSystem = document.getElementById('reportMarkingSystem').value;
-    
-    let std = st.std ? st.std.toString().trim() : "12";
-    if(std === "12" && examTypeVal === "annual") {
-        alert(`ધોરણ 12 ની વાર્ષિક પરીક્ષા બોર્ડ લે છે. આ ઓપ્શન ઉપલબ્ધ નથી.`);
-        return null;
-    }
+    const setupType = document.getElementById('reportSetupType').value;
 
-    const maxMarks = parseInt(document.getElementById('reportMaxMarks').value);
-    const totDays = document.getElementById('repTotalDays').value || "0";
-    const preDays = document.getElementById('repPresentDays').value || "0";
+    const totDays = document.getElementById('repTotalDays').value || "-";
+    const preDays = document.getElementById('repPresentDays').value || "-";
     const rems = document.getElementById('repRemarks').value || "-";
+    let inputRank = document.getElementById('repRank').value || "-";
 
+    let std = st.std ? st.std.toString().trim() : "12";
     let stream = st.stream ? st.stream : "Commerce";
-    let allSubs = getSubjectsList(std, stream, examTypeVal); // પરીક્ષાનો પ્રકાર પાસ કર્યો 
-
-    let totalObtained = 0;
-    let totalMax = allSubs.length * maxMarks;
+    let mainSubs = getSubjectsList(stream);
+    
     let isFail = false;
-    let subjectsData = [];
+    let hasKrupa = false;
+    let mainResults = [];
+    let minorResults = [];
+    let totalObtained = 0;
+    let totalMax = 0;
+    let maxMarks = 0;
 
-    allSubs.forEach((sub, i) => {
-        let isSplit = (markSystem === 'split' && maxMarks === 100);
-        let mTotal = 0, mTh = '', mIn = '', isAB = false;
-        
-        if(isSplit) {
-            mTh = document.getElementById(`mark_sub_${i}_th`).value.trim();
-            mIn = document.getElementById(`mark_sub_${i}_in`).value.trim();
-            if(mTh === 'AB' && mIn === 'AB') isAB = true;
-            mTotal = (parseInt(mTh)||0) + (parseInt(mIn)||0);
-        } else {
-            let val = document.getElementById(`mark_sub_${i}`).value.trim();
-            if(val === 'AB') isAB = true;
-            else mTotal = parseInt(val) || 0;
-        }
+    if(setupType === "11_annual") {
+        totalMax = mainSubs.length * 100; // 700
+        mainSubs.forEach((sub, i) => {
+            let m1V = document.getElementById(`m_${i}_1`).value.trim();
+            let m2V = document.getElementById(`m_${i}_2`).value.trim();
+            let m3V = document.getElementById(`m_${i}_3`).value.trim();
+            let m4V = document.getElementById(`m_${i}_4`).value.trim();
+            
+            let isAB = (m1V==='AB' || m2V==='AB' || m3V==='AB' || m4V==='AB');
+            
+            let m1 = parseInt(m1V) || 0;
+            let m2 = parseInt(m2V) || 0;
+            let m3 = parseInt(m3V) || 0;
+            let m4 = parseInt(m4V) || 0;
+            let si = parseInt(document.getElementById(`m_${i}_si`).value) || 0;
+            let kr = parseInt(document.getElementById(`m_${i}_kr`).value) || 0;
 
-        let passingMark = Math.ceil(maxMarks * 0.33); 
-        let subFail = false;
-        if(isAB || mTotal < passingMark) { isFail = true; subFail = true; }
-        
-        let grade = isAB ? 'E' : getGrade((mTotal/maxMarks)*100);
-        if(subFail && grade !== 'E') grade = 'E';
+            if(kr > 0) hasKrupa = true;
 
-        totalObtained += mTotal;
-        subjectsData.push({
-            name: sub, 
-            marks: isAB ? 'AB' : mTotal, 
-            th: mTh, in: mIn, 
-            isSplit: isSplit, 
-            isFail: subFail,
-            grade: grade
+            let total200 = m1 + m2 + m3 + m4;
+            let converted100 = Math.round(total200 / 2);
+            let finalMark = converted100 + si + kr;
+            if(finalMark > 100) finalMark = 100;
+
+            if(isAB || finalMark < 33) isFail = true;
+            if(!isAB) totalObtained += finalMark;
+
+            mainResults.push({
+                name: sub, m1, m2, m3, m4, total200, converted100, si, kr, 
+                marks: isAB ? 'AB' : finalMark, grade: isAB ? 'E' : getGrade(finalMark), isFail: isAB || finalMark < 33
+            });
         });
-    });
+
+        ["સીટી", "પીટી"].forEach((sub, i) => {
+            let val = document.getElementById(`minor_${i}`).value.trim();
+            let isAB = (val === 'AB');
+            let m = isAB ? 0 : (parseInt(val) || 0);
+            minorResults.push({ name: sub, marks: isAB?'AB':m, grade: isAB?'E':getGrade(m) });
+        });
+    } else {
+        maxMarks = parseInt(document.getElementById('reportMaxMarks').value);
+        totalMax = mainSubs.length * maxMarks;
+        
+        mainSubs.forEach((sub, i) => {
+            let val = document.getElementById(`m_direct_${i}`).value.trim();
+            let isAB = (val === 'AB' || val === 'ab');
+            let mTotal = isAB ? 0 : (parseInt(val) || 0);
+            
+            let passingMark = Math.ceil(maxMarks * 0.33); 
+            let subFail = (isAB || mTotal < passingMark);
+            if(subFail) isFail = true;
+
+            let grade = isAB ? 'E' : getGrade((mTotal/maxMarks)*100);
+            if(!isAB) totalObtained += mTotal;
+
+            mainResults.push({
+                name: sub, marks: isAB ? 'AB' : mTotal, grade: grade, isFail: subFail
+            });
+        });
+    }
 
     let percentage = (totalObtained / totalMax) * 100;
     let finalGrade = isFail ? "E (નાપાસ)" : getGrade(percentage);
-    let passStatus = isFail ? "નાપાસ (Needs Improvement)" : "પાસ (Promoted)";
+    
+    let passStatus = "";
+    if(isFail) { passStatus = "નાપાસ (Needs Improvement)"; }
+    else if(hasKrupa) { passStatus = "કૃપા થી પાસ (Pass with Promotion)"; }
+    else { passStatus = "પાસ (Promoted)"; }
 
-    return { st, examName, maxMarks, subjectsData, totalObtained, totalMax, percentage, finalGrade, passStatus, stream, totDays, preDays, rems };
+    let finalRank = inputRank;
+    if(hasKrupa || isFail) finalRank = "Not Eligible";
+
+    return { 
+        st, examName, setupType, mainResults, minorResults, maxMarks,
+        totalObtained, totalMax, percentage, finalGrade, passStatus, 
+        stream, totDays, preDays, rems, finalRank 
+    };
   }
 
   function calculateAndShareReport() {
@@ -755,14 +799,22 @@
     if(!d) return;
 
     let resultText = "";
-    d.subjectsData.forEach(sub => {
+    d.mainResults.forEach(sub => {
         let markTxt = sub.marks;
         if(sub.isFail) markTxt += " 🔴";
         resultText += `${sub.name}: *${markTxt}* (${sub.grade})\n`;
     });
-    let passIcon = d.passStatus.includes("પાસ (Pro") ? "🟢" : "🔴";
+    
+    if(d.setupType === "11_annual") {
+        resultText += `\nગૌણ વિષયો:\n`;
+        d.minorResults.forEach(sub => {
+            resultText += `${sub.name}: ${sub.marks} (${sub.grade})\n`;
+        });
+    }
 
-    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📄 *${d.examName} પરિણામ*\n\nવિદ્યાર્થીની: *${d.st.name}*\n${formatStdStream(d.st.std, d.stream)}\nહાજરી: ${d.preDays}/${d.totDays}\n-------------------------\n${resultText}-------------------------\nકુલ ગુણ: *${d.totalObtained} / ${d.totalMax}*\nટકાવારી: *${d.percentage.toFixed(2)}%*\nગ્રેડ: *${d.finalGrade}*\nપરિણામ: ${passIcon} *${d.passStatus.split(' ')[0]}*\n\nઅભિપ્રાય: ${d.rems}\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    let passIcon = d.passStatus.includes("પાસ") ? "🟢" : "🔴";
+
+    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📄 *${d.examName} પરિણામ*\n\nવિદ્યાર્થીની: *${d.st.name}*\n${formatStdStream(d.st.std, d.stream)}\nહાજરી: ${d.preDays}/${d.totDays}\n-------------------------\n${resultText}-------------------------\nકુલ ગુણ (માત્ર મુખ્ય વિષયો): *${d.totalObtained} / ${d.totalMax}*\nટકાવારી: *${d.percentage.toFixed(2)}%*\nગ્રેડ: *${d.finalGrade}*\nરેન્ક: *${d.finalRank}*\nપરિણામ: ${passIcon} *${d.passStatus.split(' (')[0]}*\n\nઅભિપ્રાય: ${d.rems}\n- હેમંત સર (વર્ગ શિક્ષક)`;
 
     window.open(`https://api.whatsapp.com/send?phone=${d.st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
@@ -781,25 +833,64 @@
     document.getElementById('prPresentDays').innerText = d.preDays;
     document.getElementById('prTotalDays').innerText = d.totDays;
     document.getElementById('prRemarks').innerText = d.rems;
+    document.getElementById('prRankView').innerText = d.finalRank;
 
-    let thH = document.getElementById('prHeaderTheory');
-    let inH = document.getElementById('prHeaderInternal');
-    let hasSplit = d.subjectsData.some(s => s.isSplit);
-    
-    if(hasSplit) { thH.style.display = ''; inH.style.display = ''; } 
-    else { thH.style.display = 'none'; inH.style.display = 'none'; }
-
+    let headHtml = "";
     let marksBody = "";
-    d.subjectsData.forEach(sub => {
-        let color = sub.isFail ? "color:red; font-weight:bold;" : "";
-        let marksTxt = sub.marks === 'AB' ? 'AB' : sub.marks;
+
+    if(d.setupType === "11_annual") {
+        headHtml = `<tr style="background:#e3f2fd; font-weight:bold;">
+            <th style="text-align:left;">વિષય</th>
+            <th title="પ્રથમ+દ્વિતીય+વાર્ષિક">કુલ (200)</th>
+            <th title="200 માંથી અડધા">રૂપાંતરિત (100)</th>
+            <th>સિધ્ધી ગુણ</th>
+            <th>કૃપા ગુણ</th>
+            <th>ફાઇનલ ગુણ (100)</th>
+            <th>ગ્રેડ</th>
+        </tr>`;
         
-        marksBody += `<tr><td style="text-align:left; font-weight:bold;">${sub.name}</td>`;
-        if(hasSplit) {
-            marksBody += `<td>${sub.in || '-'}</td><td>${sub.th || '-'}</td>`;
-        }
-        marksBody += `<td>${d.maxMarks}</td><td style="${color}">${marksTxt}</td><td>${sub.grade}</td></tr>`;
-    });
+        d.mainResults.forEach(sub => {
+            let color = sub.isFail ? "color:red; font-weight:bold;" : "";
+            marksBody += `<tr>
+                <td style="text-align:left; font-weight:bold;">${sub.name}</td>
+                <td>${sub.total200}</td>
+                <td>${sub.converted100}</td>
+                <td>${sub.si > 0 ? sub.si : '-'}</td>
+                <td>${sub.kr > 0 ? sub.kr : '-'}</td>
+                <td style="${color}">${sub.marks}</td>
+                <td>${sub.grade}</td>
+            </tr>`;
+        });
+
+        document.getElementById('prMinorSection').style.display = 'block';
+        let minorHtml = "";
+        d.minorResults.forEach(sub => {
+            let color = sub.marks==='AB' ? "color:red;" : "";
+            minorHtml += `<tr><td style="text-align:left;">${sub.name}</td><td>100</td><td style="${color}">${sub.marks}</td><td>${sub.grade}</td></tr>`;
+        });
+        document.getElementById('prMinorBody').innerHTML = minorHtml;
+
+    } else {
+        document.getElementById('prMinorSection').style.display = 'none';
+        headHtml = `<tr style="background:#e3f2fd; font-weight:bold;">
+            <th style="text-align:left;">વિષય</th>
+            <th>કુલ ગુણ</th>
+            <th>મેળવેલ ગુણ</th>
+            <th>ગ્રેડ</th>
+        </tr>`;
+
+        d.mainResults.forEach(sub => {
+            let color = sub.isFail ? "color:red; font-weight:bold;" : "";
+            marksBody += `<tr>
+                <td style="text-align:left; font-weight:bold;">${sub.name}</td>
+                <td>${d.maxMarks}</td>
+                <td style="${color}">${sub.marks}</td>
+                <td>${sub.grade}</td>
+            </tr>`;
+        });
+    }
+
+    document.getElementById('prMarksHead').innerHTML = headHtml;
     document.getElementById('prMarksBody').innerHTML = marksBody;
 
     document.getElementById('prTotalObt').innerText = d.totalObtained;
@@ -811,7 +902,7 @@
     gradeEl.style.color = d.passStatus.includes("પાસ") ? "#0d47a1" : "red";
     
     let passEl = document.getElementById('prPass');
-    passEl.innerText = d.passStatus;
+    passEl.innerText = d.passStatus.split(' (')[0];
     passEl.style.color = d.passStatus.includes("પાસ") ? "green" : "red";
 
     document.body.classList.add('printing-report');
@@ -828,9 +919,7 @@
     }, 500);
   }
 
-  // --- OTHER APP FUNCTIONS ---
   function toggleHwStudent() { document.getElementById('hwStudentGroup').style.display = (document.getElementById('hwSendType').value === 'individual') ? 'block' : 'none'; }
-  
   function toggleExamMarks() {
     const isAbsent = document.getElementById('examAttendance').value === 'absent';
     const marksInput = document.getElementById('marksObt');
@@ -846,32 +935,22 @@
       btn.innerText = "💬 પરિણામ મેસેજ મોકલો"; btn.className = "btn btn-main";
     }
   }
-
   function toggleLeaveType() {
-    const lType = document.getElementById('leaveType').value;
-    const timeGroup = document.getElementById('timeGroup');
-    const pickupGroup = document.getElementById('pickupGroup');
-    if(lType === 'halfday') {
-      timeGroup.style.display = 'block'; pickupGroup.style.display = 'block';
+    if(document.getElementById('leaveType').value === 'halfday') {
+      document.getElementById('timeGroup').style.display = 'block'; document.getElementById('pickupGroup').style.display = 'block';
       document.getElementById('leaveTimeInput').value = new Date().toTimeString().substring(0, 5);
     } else {
-      timeGroup.style.display = 'none'; pickupGroup.style.display = 'none';
+      document.getElementById('timeGroup').style.display = 'none'; document.getElementById('pickupGroup').style.display = 'none';
     }
   }
-
-  function togglePickupDetails() {
-    document.getElementById('otherPickupDetails').style.display = document.getElementById('leavePickupPerson').value === 'other' ? 'block' : 'none';
-  }
-
+  function togglePickupDetails() { document.getElementById('otherPickupDetails').style.display = document.getElementById('leavePickupPerson').value === 'other' ? 'block' : 'none'; }
   function approveLeave() {
     if(roster.length === 0) return;
-    const idx = document.getElementById('leaveStudent').value;
     const lDate = document.getElementById('leaveDateInput').value;
     if(!lDate) return alert("કૃપા કરીને રજાની તારીખ પસંદ કરો.");
-    roster[idx].leaveDate = lDate; saveToStorage(); setup(true); 
-    alert(`${roster[idx].name} ની તારીખ ${lDate.split('-').reverse().join('/')} ની રજા મંજૂર કરી દેવામાં આવી છે.`);
+    roster[document.getElementById('leaveStudent').value].leaveDate = lDate; saveToStorage(); setup(true); 
+    alert("રજા મંજૂર કરી દેવામાં આવી છે.");
   }
-
   async function syncGoogleSheetLive(isAuto = false) {
     const scriptUrl = document.getElementById('scriptUrlInput').value;
     const btn = document.getElementById('btnSyncData');
@@ -886,65 +965,62 @@
       if(!isAuto) btn.innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)";
     }
   }
-
-  function processJSONData(data, isAuto = false) {
-    if (data.length < 2) return;
+  function processJSONData(dataObj, isAuto = false) {
+    let rosterData = dataObj.roster || dataObj; 
+    if (rosterData.length < 2) return;
+    
     let importedRoster = [];
-    for (let i = 1; i < data.length; i++) {
-      let col = data[i];
+    for (let i = 1; i < rosterData.length; i++) {
+      let col = rosterData[i];
       if (col.length === 1 && typeof col[0] === 'string' && col[0].includes(',')) col = col[0].split(',');
       if (!col[2] || col[2].toString().trim() === "") continue;
 
       let stdVal = (col[13] !== undefined && col[13] !== null && col[13].toString().trim() !== "") ? col[13].toString().trim() : "12";
       let streamVal = (col[14] !== undefined && col[14] !== null && col[14].toString().trim() !== "") ? col[14].toString().trim() : "Commerce";
+      
+      let rollNo = parseInt(col[0]) || (importedRoster.length + 1);
 
-      importedRoster.push({
-        roll: parseInt(col[0]) || (importedRoster.length + 1),
-        gr: col[1] ? col[1].toString().trim() : "",
-        name: col[2] ? col[2].toString().trim() : "",
-        photo: col[3] && col[3].toString().trim() ? col[3].toString().trim() : "",
-        dob: col[4] ? col[4].toString().trim() : "",
-        blood: col[12] ? col[12].toString().trim() : "", 
-        std: stdVal, stream: streamVal,
-        fPhone: col[9] ? col[9].toString().replace(/[^0-9]/g, '') : "", 
-        mPhone: col[10] ? col[10].toString().replace(/[^0-9]/g, '') : "", 
-        udise: col[8] ? col[8].toString().trim() : "", 
-        leaveDate: "" 
-      });
+      let student = {
+        roll: rollNo, gr: col[1] ? col[1].toString().trim() : "", name: col[2] ? col[2].toString().trim() : "",
+        photo: col[3] && col[3].toString().trim() ? col[3].toString().trim() : "", dob: col[4] ? col[4].toString().trim() : "",
+        blood: col[12] ? col[12].toString().trim() : "", std: stdVal, stream: streamVal,
+        fPhone: col[9] ? col[9].toString().replace(/[^0-9]/g, '') : "", mPhone: col[10] ? col[10].toString().replace(/[^0-9]/g, '') : "", 
+        udise: col[8] ? col[8].toString().trim() : "", leaveDate: "", marks: { first: null, second: null, annual: null }
+      };
+
+      if(dataObj.first) student.marks.first = dataObj.first.find(r => r[0] == rollNo);
+      if(dataObj.second) student.marks.second = dataObj.second.find(r => r[0] == rollNo);
+      if(dataObj.annual) student.marks.annual = dataObj.annual.find(r => r[0] == rollNo);
+
+      importedRoster.push(student);
     }
+    
     if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setup(true); if(!isAuto) alert("સફળતાપૂર્વક સિંક થયું!"); }
   }
-
   function importDataCSV(event) {
     const file = event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(e) { processCSVText(e.target.result); };
+    reader.onload = function(e) { 
+      const lines = e.target.result.split('\n'); 
+      if (lines.length < 2) return alert("ફાઇલમાં કોઈ ડેટા મળ્યો નથી!");
+      let importedRoster = [];
+      for (let i = 1; i < lines.length; i++) {
+        let line = lines[i].replace(/"/g, '').trim(); 
+        if (!line) continue;
+        const col = line.split(',');
+        let student = {
+          roll: parseInt(col[0]) || (importedRoster.length + 1), gr: col[1]?col[1].trim():"", name: col[2]?col[2].trim():"",
+          photo: col[3]&&col[3].trim()?col[3].trim():"", dob: col[4]?col[4].trim():"", blood: col[12]?col[12].trim():"",
+          std: (col[13]&&col[13].trim()!=="")?col[13].trim():"12", stream: (col[14]&&col[14].trim()!=="")?col[14].trim():"Commerce",
+          fPhone: col[9]?col[9].replace(/[^0-9]/g, ''):"", mPhone: col[10]?col[10].replace(/[^0-9]/g, ''):"", udise: col[8]?col[8].trim():"", leaveDate: "", marks: { first: null, second: null, annual: null }
+        };
+        if (student.name) importedRoster.push(student);
+      }
+      if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setup(true); alert("સફળતાપૂર્વક અપડેટ થઈ ગયું!"); }
+    };
     reader.readAsText(file, "UTF-8");
   }
-
-  function processCSVText(csvText) {
-    const lines = csvText.split('\n'); 
-    if (lines.length < 2) return alert("ફાઇલમાં કોઈ ડેટા મળ્યો નથી!");
-    let importedRoster = [];
-    for (let i = 1; i < lines.length; i++) {
-      let line = lines[i].replace(/"/g, '').trim(); 
-      if (!line) continue;
-      const col = line.split(',');
-      let stdVal = (col[13] !== undefined && col[13] !== null && col[13].trim() !== "") ? col[13].trim() : "12";
-      let streamVal = (col[14] !== undefined && col[14] !== null && col[14].trim() !== "") ? col[14].trim() : "Commerce";
-
-      const student = {
-        roll: parseInt(col[0]) || (importedRoster.length + 1), gr: col[1] ? col[1].trim() : "", name: col[2] ? col[2].trim() : "",
-        photo: col[3] && col[3].trim() ? col[3].trim() : "", dob: col[4] ? col[4].trim() : "", blood: col[12] ? col[12].trim() : "",
-        std: stdVal, stream: streamVal, fPhone: col[9] ? col[9].replace(/[^0-9]/g, '') : "", mPhone: col[10] ? col[10].replace(/[^0-9]/g, '') : "",
-        udise: col[8] ? col[8].trim() : "", leaveDate: ""
-      };
-      if (student.name) importedRoster.push(student);
-    }
-    if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setup(true); alert("સફળતાપૂર્વક અપડેટ થઈ ગયું!"); }
-  }
-   
   function renderAdminTable() {
     const tbody = document.getElementById('adminTableBody');
     tbody.innerHTML = '';
@@ -953,115 +1029,77 @@
       <td><button class="btn btn-danger" style="padding:5px 10px;" onclick="deleteStudent(${i})">ડિલીટ</button></td></tr>`;
     });
   }
-
-  function deleteStudent(index) {
-    if (confirm(`શું તમે ${roster[index].name} ની માહિતી કાઢી નાખવા માંગો છો?`)) { roster.splice(index, 1); saveToStorage(); setup(true); }
-  }
-
+  function deleteStudent(index) { if (confirm("શું તમે આ માહિતી કાઢી નાખવા માંગો છો?")) { roster.splice(index, 1); saveToStorage(); setup(true); } }
   function exportDataJSON() {
-    const a = document.createElement('a');
-    a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2));
+    const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2));
     a.download = `School_Data_${todayStr.replace(/\//g, '-')}.json`; a.click();
   }
-
   function dispatchLeave() {
-    if(roster.length === 0) return;
     const st = roster[document.getElementById('leaveStudent').value];
     const lDate = document.getElementById('leaveDateInput').value.split('-').reverse().join('/');
     const reason = document.getElementById('leaveReason').value;
-    const lType = document.getElementById('leaveType').value;
     let msg = "";
-    if(lType === 'advance') {
-      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ની તારીખ ${lDate} ની રજા (અગાઉથી જાણ કરવા બદલ) મંજૂર કરેલ છે.\n\nકારણ: ${reason}\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    if(document.getElementById('leaveType').value === 'advance') {
+      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ની તારીખ ${lDate} ની રજા મંજૂર કરેલ છે.\n\nકારણ: ${reason}\n\n- હેમંત સર`;
     } else {
-      let formatedTime = "";
-      const tInput = document.getElementById('leaveTimeInput').value;
-      if(tInput) {
-        let [h, m] = tInput.split(':');
-        formatedTime = (h%12||12) + ':' + m + (h>=12?' PM':' AM');
-      }
-      let pickupInfo = "વાલી (માતા/પિતા)";
-      if(document.getElementById('leavePickupPerson').value === 'other') {
-        pickupInfo = `${document.getElementById('pickupName').value || "(નામ નથી)"} (${document.getElementById('pickupRelation').value || "(સંબંધ નથી)"}) - મો. ${document.getElementById('pickupPhone').value || "(નંબર નથી)"}`;
-      }
-      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n🚨 *સુરક્ષા ચેતવણી (ચાલુ શાળાએ રજા)*\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ને શાળા સમય દરમિયાન વિશેષ રજા આપવામાં આવેલ છે.\n\nતારીખ: ${lDate}\nસમય: *${formatedTime}*\nકારણ: ${reason}\nરજા લેવા આવનાર વ્યક્તિ: *${pickupInfo}*\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
+      let tInput = document.getElementById('leaveTimeInput').value;
+      let formatedTime = tInput ? ((tInput.split(':')[0]%12||12) + ':' + tInput.split(':')[1] + (tInput.split(':')[0]>=12?' PM':' AM')) : "";
+      let pickupInfo = document.getElementById('leavePickupPerson').value === 'other' ? `${document.getElementById('pickupName').value||"-"} (${document.getElementById('pickupRelation').value||"-"}) - મો.${document.getElementById('pickupPhone').value||"-"}` : "વાલી (માતા/પિતા)";
+      msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n🚨 *સુરક્ષા ચેતવણી (ચાલુ શાળાએ રજા)*\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ને શાળા સમય દરમિયાન વિશેષ રજા આપવામાં આવેલ છે.\n\nતારીખ: ${lDate}\nસમય: *${formatedTime}*\nકારણ: ${reason}\nલેવા આવનાર: *${pickupInfo}*\n\n- હેમંત સર`;
     }
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
-
   function sendAbsent(name, phone) {
     if(!phone || phone === "") return alert(`વાલી નો મોબાઈલ નંબર ઉપલબ્ધ નથી.`);
     window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\nસવિનય જણાવવાનું કે *વાલીશ્રી*, આપની દીકરી *${name}* આજે તારીખ ${todayStr} ના રોજ શાળામાં ગેરહાજર છે. કૃપા કરીને નોંધ લેશો.\n- હેમંત સર`)}`, '_blank');
   }
-
   function dispatchHomework() {
-    if(roster.length === 0) return;
     const type = document.getElementById('hwSendType').value;
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n📚 *ગૃહકાર્ય* (${todayStr})\n`;
     if (type === 'individual') msg += `વિદ્યાર્થીની: ${roster[document.getElementById('hwStudent').value].name}\n`;
-    let sub = document.getElementById('hwSubject').value;
-    if(sub) msg += `વિષય: *${sub}*\n`;
+    let sub = document.getElementById('hwSubject').value; if(sub) msg += `વિષય: *${sub}*\n`;
     msg += `વિગત: ${document.getElementById('hwDesc').value}\n`;
     if(document.getElementById('hwLink').value) msg += `લિંક: ${document.getElementById('hwLink').value}\n`;
     msg += `- હેમંત સર`;
     window.open(type === 'group' ? `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?phone=${roster[document.getElementById('hwStudent').value].fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
-
   function dispatchMarks() {
-    if(roster.length === 0) return;
     const st = roster[document.getElementById('examStudent').value];
     const examDate = document.getElementById('examDate').value.split('-').reverse().join('/');
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n📝 *${document.getElementById('examTitle').value}*\n`;
     if (document.getElementById('examAttendance').value === 'present') {
-      msg += `📊 *પરિણામ*\nવિદ્યાર્થીની: *${st.name}*\nવિષય: ${document.getElementById('examSubject').value}\nપરીક્ષા તારીખ: ${examDate}\nગુણ: *${document.getElementById('marksObt').value} / ${document.getElementById('marksTotal').value}*\n- હેમંત સર`;
+      msg += `📊 *પરિણામ*\nવિદ્યાર્થીની: *${st.name}*\nવિષય: ${document.getElementById('examSubject').value}\nપરીક્ષા તારીખ: ${examDate}\nગુણ: *${document.getElementById('marksObt').value}/${document.getElementById('marksTotal').value}*\n- હેમંત સર`;
     } else {
       msg += `⚠️ સવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* તારીખ ${examDate} ના રોજ લેવાયેલ *${document.getElementById('examSubject').value}* ની પરીક્ષામાં ગેરહાજર રહેલ છે.\n- હેમંત સર`;
     }
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
-
   function dispatchFee() {
-    if(roster.length === 0) return;
     const st = roster[document.getElementById('feeStudent').value];
     const note = document.getElementById('feeStatus').value === 'due' ? `બાકી છે` : `જમા મળી ગયેલ છે`;
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n💰 *ફી સૂચના*\nવાલીશ્રી, આપની દીકરી ${st.name} ની ફી પેટે ${document.getElementById('feeAmt').value}${note}.\n- કાર્યાલય`)}`, '_blank');
   }
-
   function dispatchNotice() {
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📢 *શાળા પરિપત્ર / અગત્યની સૂચના*\nતારીખ: ${todayStr}\n-------------------------\nઆથી *${document.getElementById('noticeClass').value}* ના તમામ વિદ્યાર્થીનીઓને જણાવવાનું કે, ${document.getElementById('noticeDesc').value}\n`;
     if (document.getElementById('noticeLink').value) msg += `\n🔗 પરિપત્ર લિંક: ${document.getElementById('noticeLink').value}\n`;
-    msg += `\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    msg += `\n- હેમંત સર`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
   }
-
   function printIDCard() {
-    document.body.classList.add('printing-id');
-    document.getElementById('mainApp').style.display = 'none';
-    let idCard = document.getElementById('idCardPrintArea');
-    document.body.appendChild(idCard);
-    
-    setTimeout(() => {
-        window.print();
-        setTimeout(() => {
-            document.body.classList.remove('printing-id');
-            document.getElementById('idPanel').insertBefore(idCard, document.getElementById('idPanel').querySelector('button'));
-            document.getElementById('mainApp').style.display = 'flex';
-        }, 1000);
-    }, 500);
+    document.body.classList.add('printing-id'); document.getElementById('mainApp').style.display = 'none';
+    let idCard = document.getElementById('idCardPrintArea'); document.body.appendChild(idCard);
+    setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-id'); document.getElementById('idPanel').insertBefore(idCard, document.getElementById('idPanel').querySelector('button')); document.getElementById('mainApp').style.display = 'flex'; }, 1000); }, 500);
   }
-
   function renderCard() {
     if (!roster.length) return;
     const st = roster[document.getElementById('idStudent').value || 0];
     document.getElementById('cPhoto').src = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR;
-    document.getElementById('cName').innerText = st.name; 
-    document.getElementById('cStd').innerText = formatStdStream(st.std, st.stream);
+    document.getElementById('cName').innerText = st.name; document.getElementById('cStd').innerText = formatStdStream(st.std, st.stream);
     document.getElementById('cRoll').innerText = st.roll; document.getElementById('cGR').innerText = st.gr;
     document.getElementById('cDOB').innerText = st.dob; document.getElementById('cBlood').innerText = st.blood;
     document.getElementById('cPhone').innerText = st.fPhone; document.getElementById('cMPhone').innerText = st.mPhone;
     document.getElementById('cUdise').innerText = st.udise;
   }
-
   window.onload = setup;
 </script>
 </body>
