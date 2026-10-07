@@ -122,6 +122,11 @@
 
     .subject-block { background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .subject-name { font-size: 14px; font-weight: 700; color: #0d47a1; margin-bottom: 8px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
+
+    /* 🌟 ઓટો-સિંક બેનર */
+    #syncBanner {
+      display: none; background: #e8f5e9; color: #2e7d32; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; border-radius: 8px; margin-bottom: 10px; border: 1px solid #c8e6c9;
+    }
   </style>
 </head>
 <body>
@@ -150,6 +155,8 @@
     <h1>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત</h1>
     <p>ધોરણ ૧૧/૧૨ (સામાન્ય પ્રવાહ) • વર્ગ શિક્ષક: હેમંત સર</p>
   </header>
+
+  <div id="syncBanner">🔄 ગૂગલ શીટમાંથી નવો ડેટા ચેક થઈ રહ્યો છે...</div>
 
   <div class="filter-bar">
     <label style="margin:0; font-size:14px;">કાર્ય માટે વર્ગ પસંદ કરો:</label>
@@ -630,7 +637,6 @@
       sels.forEach(id => document.getElementById(id).innerHTML += opt);
     });
 
-    // 🌟 ભૂલ સુધારો ૧: જો કોઈ વિદ્યાર્થી ન મળે તો ખાનાં સાફ કરવા
     if(filteredCount === 0) {
         list.innerHTML = `<p style="text-align:center; color:red; font-weight:bold; padding:20px;">આ ધોરણમાં કોઈ વિદ્યાર્થી નથી!</p>`;
         sels.forEach(id => document.getElementById(id).innerHTML = `<option value="">-- કોઈ વિદ્યાર્થી નથી --</option>`);
@@ -882,9 +888,11 @@
   }
 
   function extractReportData() {
-    const stIdx = document.getElementById('reportStudent').value;
-    if(!stIdx || stIdx === "" || roster.length === 0) return null;
+    const stIdxStr = document.getElementById('reportStudent').value;
+    if(!stIdxStr || stIdxStr === "" || roster.length === 0) return null;
+    const stIdx = parseInt(stIdxStr);
     const st = roster[stIdx];
+    
     const examTypeObj = document.getElementById('reportExamType');
     const examTypeVal = examTypeObj.value;
     const examName = examTypeObj.options[examTypeObj.selectedIndex].text;
@@ -1143,15 +1151,24 @@
   async function syncGoogleSheetLive(isAuto = false) {
     const scriptUrl = document.getElementById('scriptUrlInput').value;
     const btn = document.getElementById('btnSyncData');
-    if(!isAuto) btn.innerText = "🔄 સિંક થઈ રહ્યું છે...";
+    const banner = document.getElementById('syncBanner');
+    
+    if(!isAuto) {
+        btn.innerText = "🔄 સિંક થઈ રહ્યું છે...";
+    } else {
+        banner.style.display = 'block';
+    }
+    
     try {
       const response = await fetch(scriptUrl);
       if (!response.ok) throw new Error("નેટવર્ક એરર.");
       processJSONData(await response.json(), isAuto);
       if(!isAuto) btn.innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)";
+      banner.style.display = 'none';
     } catch (error) {
       if(!isAuto) alert("ભૂલ: " + error.message);
       if(!isAuto) btn.innerText = "🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)";
+      banner.style.display = 'none';
     }
   }
   function processJSONData(dataObj, isAuto = false) {
@@ -1210,7 +1227,6 @@
     };
     reader.readAsText(file, "UTF-8");
   }
-  // 🌟 ભૂલ સુધારો ૨: એડમિન પેનલમાં પણ ફિલ્ટર લગાવ્યું
   function renderAdminTable() {
     const tbody = document.getElementById('adminTableBody');
     tbody.innerHTML = '';
@@ -1230,7 +1246,9 @@
     a.download = `School_Data_${todayStr.replace(/\//g, '-')}.json`; a.click();
   }
   function dispatchLeave() {
-    const st = roster[document.getElementById('leaveStudent').value];
+    const stIdx = document.getElementById('leaveStudent').value;
+    if(!stIdx || stIdx === "") return;
+    const st = roster[stIdx];
     const lDate = document.getElementById('leaveDateInput').value.split('-').reverse().join('/');
     const reason = document.getElementById('leaveReason').value;
     let msg = "";
@@ -1251,15 +1269,26 @@
   function dispatchHomework() {
     const type = document.getElementById('hwSendType').value;
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n📚 *ગૃહકાર્ય* (${todayStr})\n`;
-    if (type === 'individual') msg += `વિદ્યાર્થીની: ${roster[document.getElementById('hwStudent').value].name}\n`;
+    if (type === 'individual') {
+        const stIdx = document.getElementById('hwStudent').value;
+        if(stIdx && stIdx !== "") msg += `વિદ્યાર્થીની: ${roster[stIdx].name}\n`;
+    }
     let sub = document.getElementById('hwSubject').value; if(sub) msg += `વિષય: *${sub}*\n`;
     msg += `વિગત: ${document.getElementById('hwDesc').value}\n`;
     if(document.getElementById('hwLink').value) msg += `લિંક: ${document.getElementById('hwLink').value}\n`;
     msg += `- હેમંત સર`;
-    window.open(type === 'group' ? `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?phone=${roster[document.getElementById('hwStudent').value].fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
+    
+    let phone = "";
+    if(type === 'individual') {
+        const stIdx = document.getElementById('hwStudent').value;
+        if(stIdx && stIdx !== "") phone = roster[stIdx].fPhone;
+    }
+    window.open(type === 'group' ? `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
   function dispatchMarks() {
-    const st = roster[document.getElementById('examStudent').value];
+    const stIdx = document.getElementById('examStudent').value;
+    if(!stIdx || stIdx === "") return;
+    const st = roster[stIdx];
     const examDate = document.getElementById('examDate').value.split('-').reverse().join('/');
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n📝 *${document.getElementById('examTitle').value}*\n`;
     if (document.getElementById('examAttendance').value === 'present') {
@@ -1270,7 +1299,9 @@
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
   function dispatchFee() {
-    const st = roster[document.getElementById('feeStudent').value];
+    const stIdx = document.getElementById('feeStudent').value;
+    if(!stIdx || stIdx === "") return;
+    const st = roster[stIdx];
     const note = document.getElementById('feeStatus').value === 'due' ? `બાકી છે` : `જમા મળી ગયેલ છે`;
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n💰 *ફી સૂચના*\nવાલીશ્રી, આપની દીકરી ${st.name} ની ફી પેટે ${document.getElementById('feeAmt').value}${note}.\n- કાર્યાલય`)}`, '_blank');
   }
@@ -1297,7 +1328,14 @@
     document.getElementById('cPhone').innerText = st.fPhone; document.getElementById('cMPhone').innerText = st.mPhone;
     document.getElementById('cUdise').innerText = st.udise;
   }
-  window.onload = setup;
+  
+  // 🌟 પેજ લોડ થતાં જ ડેટા લોડ કરો અને બેકગ્રાઉન્ડ સિંક ચાલુ કરો
+  window.onload = function() {
+      setup(); // તરત જ જૂનો ડેટા બતાવો 
+      if(roster.length > 0) {
+          syncGoogleSheetLive(true); // બેકગ્રાઉન્ડમાં નવો ડેટા ચેક કરો
+      }
+  };
 </script>
 </body>
 </html>
