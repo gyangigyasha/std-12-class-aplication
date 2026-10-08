@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ - સ્માર્ટ વર્ગ સંચાલન</title>
   <style>
-     :root {
+    :root {
       --primary: #0d47a1; 
       --primary-dark: #0a3375;
       --secondary: #1976d2;
@@ -123,25 +123,22 @@
     .subject-block { background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .subject-name { font-size: 14px; font-weight: 700; color: #0d47a1; margin-bottom: 8px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
 
-    /* 🌟 ઓટો-સિંક બેનર */
     #syncBanner {
       display: none; background: #e8f5e9; color: #2e7d32; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; border-radius: 8px; margin-bottom: 10px; border: 1px solid #c8e6c9;
     }
-    
   </style>
-  <script>
-  // રાઈટ-ક્લિક બંધ કરવા
-  document.addEventListener('contextmenu', event => event.preventDefault());
 
-  // F12 અને Ctrl+Shift+I (Inspect) બંધ કરવા
-  document.onkeydown = function(e) {
-    if(event.keyCode == 123) { return false; }
-    if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
-    if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
-    if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
-    if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
-  }
-</script>
+  <script>
+    // રાઈટ-ક્લિક અને Inspect બંધ કરવાની સિક્યોરિટી સિસ્ટમ
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.onkeydown = function(e) {
+      if(event.keyCode == 123) { return false; }
+      if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
+      if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
+      if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
+      if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
+    }
+  </script>
 </head>
 <body>
 
@@ -194,6 +191,7 @@
     <button class="nav-btn admin-btn" onclick="openAdminPanel()">⚙ Admin</button>
   </div>
 
+  <!-- 🌟 ડેશબોર્ડ પેનલ (આજની રજાના લિસ્ટ સાથે) -->
   <div id="dashPanel" class="view-panel active">
     <div class="dashboard-stats">
       <div class="stat-box">
@@ -205,6 +203,13 @@
         <p>આજની મંજૂર રજા</p>
       </div>
     </div>
+    
+    <!-- 🌟 નવું: આજે રજા પર રહેલ વિદ્યાર્થીઓનું લિસ્ટ -->
+    <div id="dashboardLeaveList" style="display:none; background:#fff3cd; padding:15px; border-radius:12px; border:1px solid #ffeeba; margin-bottom:12px;">
+        <h4 style="margin:0 0 8px; color:#856404; font-size:14px;">🟡 આજે રજા પર રહેલ વિદ્યાર્થીઓ:</h4>
+        <ul id="todayLeaveUl" style="margin:0; padding-left:20px; font-size:13px; color:#666; font-weight:bold; line-height:1.6;"></ul>
+    </div>
+
     <div class="card" style="border-left: 4px solid var(--primary);">
       <h4 class="card-title" style="border:none; margin-bottom:5px;">📌 ઝડપી કાર્યો (Quick Actions)</h4>
       <div class="btn-grid">
@@ -223,7 +228,6 @@
     <div id="attContainer"></div>
   </div>
 
-  <!-- 🌟 ઓટોમેટેડ માર્કશીટ પેનલ -->
   <div id="reportPanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">📄 સ્માર્ટ પરિણામ પત્રક (માર્કશીટ)</h3>
@@ -268,6 +272,11 @@
             <label style="font-size:11px; color:#d32f2f;">ઓટોમેટિક રેન્ક:</label>
             <input type="text" id="repRank" placeholder="App ગણતરી કરશે" style="padding:6px; background:#e0e0e0; font-weight:bold;" readonly>
          </div>
+      </div>
+
+      <div class="form-group" style="background:#fff3e0; padding:10px; border-radius:8px; border:1px solid #ffe0b2; margin-bottom:12px;">
+         <label style="font-size:11px; color:#e65100;">ખાસ નોંધ (વેકેશન / નવા સત્રની તારીખ વગેરે):</label>
+         <input type="text" id="repSpecialNote" placeholder="તારીખ ઉમેરો..." style="padding:8px; width:100%; border:1px solid #ffcc80; font-weight:bold;">
       </div>
 
       <div id="subjectInputsContainer" style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px; max-height:400px; overflow-y:auto;">
@@ -457,7 +466,7 @@
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
       <div class="form-group">
         <label>Google Apps Script URL:</label>
-        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzbZLI-8VBtLKxzJawhygiLLCtYKStHEIlwQb7RyUjtKpBl0kK2AzIiNgbS27Wt-kyUpw/exec">
+        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzUOTZeuGSZbz79HsaVWfixkvqwFI3aG8BiPMaMNnuCRlBB9L_aGD8HMeDnrFUAAO223A/exec">
       </div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
@@ -520,13 +529,17 @@
         </tr>
     </table>
 
-    <table width="100%" style="font-size:14px; margin-bottom:40px;">
+    <table width="100%" style="font-size:14px; margin-bottom:20px;">
         <tr>
             <td width="33%"><b>પરિણામ:</b> <span id="prPass" style="font-size:16px; font-weight:bold;"></span></td>
             <td width="33%" style="text-align:center;"><b>હાજરી:</b> <span id="prPresentDays"></span> / <span id="prTotalDays"></span></td>
             <td width="33%" style="text-align:right;"><b>અભિપ્રાય:</b> <span id="prRemarks" style="border-bottom:1px dashed #000;"></span></td>
         </tr>
     </table>
+
+    <div id="prSpecialNoteBox" style="margin-bottom:30px; border:2px solid #000; padding:10px; text-align:center; font-size:14px; font-weight:bold; display:none;">
+        <span id="prSpecialNoteText"></span>
+    </div>
 
     <table width="100%" style="margin-top:40px; font-size:14px; font-weight:bold; text-align:center;">
         <tr>
@@ -541,8 +554,8 @@
 </div>
 
 <script>
-  const ADMIN_ID = "hemantsir";
-  const ADMIN_PASS = "Mhp@0424";
+  const ADMIN_ID = "admin";
+  const ADMIN_PASS = "97275";
   const DEFAULT_AVATAR = "https://lh3.googleusercontent.com/a/default-user=s70-c"; 
 
   let isAdminLogged = false;
@@ -606,6 +619,7 @@
 
     let todayLeavesCount = 0;
     let filteredCount = 0;
+    let leaveNames = []; // 🌟 આજની રજા માટેનું એરે 
     
     let activeFilter = document.getElementById('globalClassFilter').value;
 
@@ -617,7 +631,6 @@
     
     roster.forEach((st, i) => {
       let stStd = st.std ? st.std.toString().trim() : "12";
-      
       if(activeFilter !== "all" && activeFilter !== stStd) return;
 
       filteredCount++;
@@ -628,6 +641,7 @@
       if(st.leaveDate === todayISO) {
         leaveHtml = `<div class="leave-badge">🟡 આજની રજા મંજૂર</div>`;
         todayLeavesCount++;
+        leaveNames.push(`રોલ ${st.roll}: ${st.name} ${activeFilter==='all' ? '('+dispStd+')' : ''}`); // 🌟 લિસ્ટમાં નામ ઉમેરો
       }
 
       list.innerHTML += `
@@ -676,6 +690,17 @@
     document.getElementById('dashTotalCount').innerText = filteredCount;
     document.getElementById('dashLeaveCount').innerText = todayLeavesCount;
     
+    // 🌟 આજની રજાનું લિસ્ટ બતાવવાનું લોજીક
+    let leaveListDiv = document.getElementById('dashboardLeaveList');
+    if(leaveListDiv) {
+        if(todayLeavesCount > 0) {
+            leaveListDiv.style.display = 'block';
+            document.getElementById('todayLeaveUl').innerHTML = leaveNames.map(n => `<li>${n}</li>`).join('');
+        } else {
+            leaveListDiv.style.display = 'none';
+        }
+    }
+
     if(isAdminLogged) renderAdminTable();
   }
 
@@ -694,6 +719,15 @@
     let std = st.std ? st.std.toString().trim() : "12";
     let stream = st.stream ? st.stream : "Commerce";
     document.getElementById('reportStudentInfo').innerText = `વિગત: ${formatStdStream(std, stream)}`;
+
+    let noteEl = document.getElementById('repSpecialNote');
+    if(examType === 'first') {
+        noteEl.value = "નોંધ: ૨૧ દિવસનું દિવાળી વેકેશન. નવું સત્ર તા. __/__/____ થી શરૂ થશે.";
+    } else if(examType === 'annual' && std === "11") {
+        noteEl.value = "નોંધ: ૩૫ દિવસનું ઉનાળુ વેકેશન. નવું શૈક્ષણિક સત્ર તા. __/__/____ થી શરૂ થશે.";
+    } else {
+        noteEl.value = "";
+    }
 
     if(std === "12" && examType === "annual") {
         document.getElementById('subjectInputsContainer').innerHTML = `<p style="text-align:center; color:red; font-size:14px; font-weight:bold; border:2px dashed red; padding:15px;">⚠️ ધોરણ 12 ની વાર્ષિક પરીક્ષા ગુજરાત માધ્યમિક બોર્ડ દ્વારા લેવાય છે.</p>`;
@@ -916,6 +950,7 @@
     const preDays = document.getElementById('repPresentDays').value || "-";
     const rems = document.getElementById('repRemarks').value || "-";
     let finalRank = document.getElementById('repRank').value || "-";
+    const spNote = document.getElementById('repSpecialNote').value || "";
 
     let std = st.std ? st.std.toString().trim() : "12";
     let stream = st.stream ? st.stream : "Commerce";
@@ -1001,7 +1036,7 @@
     return { 
         st, examName, setupType, mainResults, minorResults, maxMarks,
         totalObtained, totalMax, percentage, finalGrade, passStatus, 
-        stream, totDays, preDays, rems, finalRank 
+        stream, totDays, preDays, rems, finalRank, spNote 
     };
   }
 
@@ -1025,7 +1060,13 @@
 
     let passIcon = d.passStatus.includes("પાસ") ? "🟢" : "🔴";
 
-    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📄 *${d.examName} પરિણામ*\n\nવિદ્યાર્થીની: *${d.st.name}*\n${formatStdStream(d.st.std, d.stream)}\nહાજરી: ${d.preDays}/${d.totDays}\n-------------------------\n${resultText}-------------------------\nકુલ ગુણ (માત્ર મુખ્ય વિષયો): *${d.totalObtained} / ${d.totalMax}*\nટકાવારી: *${d.percentage.toFixed(2)}%*\nગ્રેડ: *${d.finalGrade}*\nરેન્ક: *${d.finalRank}*\nપરિણામ: ${passIcon} *${d.passStatus.split(' (')[0]}*\n\nઅભિપ્રાય: ${d.rems}\n- હેમંત સર (વર્ગ શિક્ષક)`;
+    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📄 *${d.examName} પરિણામ*\n\nવિદ્યાર્થીની: *${d.st.name}*\n${formatStdStream(d.st.std, d.stream)}\nહાજરી: ${d.preDays}/${d.totDays}\n-------------------------\n${resultText}-------------------------\nકુલ ગુણ (માત્ર મુખ્ય વિષયો): *${d.totalObtained} / ${d.totalMax}*\nટકાવારી: *${d.percentage.toFixed(2)}%*\nગ્રેડ: *${d.finalGrade}*\nરેન્ક: *${d.finalRank}*\nપરિણામ: ${passIcon} *${d.passStatus.split(' (')[0]}*\n\nઅભિપ્રાય: ${d.rems}\n`;
+    
+    if(d.spNote && d.spNote.trim() !== "") {
+        msg += `\n📌 *ખાસ નોંધ:* ${d.spNote}\n`;
+    }
+
+    msg += `\n- હેમંત સર (વર્ગ શિક્ષક)`;
 
     window.open(`https://api.whatsapp.com/send?phone=${d.st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
@@ -1116,6 +1157,13 @@
     passEl.innerText = d.passStatus.split(' (')[0];
     passEl.style.color = d.passStatus.includes("પાસ") ? "green" : "red";
 
+    if(d.spNote && d.spNote.trim() !== "") {
+        document.getElementById('prSpecialNoteText').innerText = d.spNote;
+        document.getElementById('prSpecialNoteBox').style.display = 'block';
+    } else {
+        document.getElementById('prSpecialNoteBox').style.display = 'none';
+    }
+
     document.body.classList.add('printing-report');
     document.getElementById('mainApp').style.display = 'none';
     document.getElementById('printReportArea').style.display = 'block';
@@ -1155,13 +1203,18 @@
     }
   }
   function togglePickupDetails() { document.getElementById('otherPickupDetails').style.display = document.getElementById('leavePickupPerson').value === 'other' ? 'block' : 'none'; }
+  
   function approveLeave() {
-    if(roster.length === 0) return;
+    const stIdx = document.getElementById('leaveStudent').value;
+    if(!stIdx || roster.length === 0) return;
     const lDate = document.getElementById('leaveDateInput').value;
     if(!lDate) return alert("કૃપા કરીને રજાની તારીખ પસંદ કરો.");
-    roster[document.getElementById('leaveStudent').value].leaveDate = lDate; saveToStorage(); setup(true); 
+    roster[stIdx].leaveDate = lDate; 
+    saveToStorage(); 
+    setup(true); 
     alert("રજા મંજૂર કરી દેવામાં આવી છે.");
   }
+
   async function syncGoogleSheetLive(isAuto = false) {
     const scriptUrl = document.getElementById('scriptUrlInput').value;
     const btn = document.getElementById('btnSyncData');
@@ -1185,6 +1238,7 @@
       banner.style.display = 'none';
     }
   }
+
   function processJSONData(dataObj, isAuto = false) {
     let rosterData = dataObj.roster || dataObj; 
     if (rosterData.length < 2) return;
@@ -1197,15 +1251,20 @@
 
       let stdVal = (col[13] !== undefined && col[13] !== null && col[13].toString().trim() !== "") ? col[13].toString().trim() : "12";
       let streamVal = (col[14] !== undefined && col[14] !== null && col[14].toString().trim() !== "") ? col[14].toString().trim() : "Commerce";
-      
       let rollNo = parseInt(col[0]) || (importedRoster.length + 1);
+
+      // 🌟 નવો સુધારો: જૂના સેવ કરેલા રજાના ડેટાને સાચવી રાખવા
+      let existingStudent = roster.find(s => s.roll === rollNo && s.std === stdVal && s.stream === streamVal);
+      let savedLeave = existingStudent ? existingStudent.leaveDate : "";
 
       let student = {
         roll: rollNo, gr: col[1] ? col[1].toString().trim() : "", name: col[2] ? col[2].toString().trim() : "",
         photo: col[3] && col[3].toString().trim() ? col[3].toString().trim() : "", dob: col[4] ? col[4].toString().trim() : "",
         blood: col[12] ? col[12].toString().trim() : "", std: stdVal, stream: streamVal,
         fPhone: col[9] ? col[9].toString().replace(/[^0-9]/g, '') : "", mPhone: col[10] ? col[10].toString().replace(/[^0-9]/g, '') : "", 
-        udise: col[8] ? col[8].toString().trim() : "", leaveDate: "", marks: { first: null, second: null, annual: null }
+        udise: col[8] ? col[8].toString().trim() : "", 
+        leaveDate: savedLeave, // જૂની રજા પાછી મૂકી
+        marks: { first: null, second: null, annual: null }
       };
 
       if(dataObj.first) student.marks.first = dataObj.first.find(r => r[0] == rollNo);
@@ -1217,6 +1276,7 @@
     
     if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setup(true); if(!isAuto) alert("સફળતાપૂર્વક સિંક થયું!"); }
   }
+
   function importDataCSV(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -1229,11 +1289,21 @@
         let line = lines[i].replace(/"/g, '').trim(); 
         if (!line) continue;
         const col = line.split(',');
+
+        let stdVal = (col[13]&&col[13].trim()!=="")?col[13].trim():"12";
+        let streamVal = (col[14]&&col[14].trim()!=="")?col[14].trim():"Commerce";
+        let rollNo = parseInt(col[0]) || (importedRoster.length + 1);
+
+        let existingStudent = roster.find(s => s.roll === rollNo && s.std === stdVal && s.stream === streamVal);
+        let savedLeave = existingStudent ? existingStudent.leaveDate : "";
+
         let student = {
-          roll: parseInt(col[0]) || (importedRoster.length + 1), gr: col[1]?col[1].trim():"", name: col[2]?col[2].trim():"",
+          roll: rollNo, gr: col[1]?col[1].trim():"", name: col[2]?col[2].trim():"",
           photo: col[3]&&col[3].trim()?col[3].trim():"", dob: col[4]?col[4].trim():"", blood: col[12]?col[12].trim():"",
-          std: (col[13]&&col[13].trim()!=="")?col[13].trim():"12", stream: (col[14]&&col[14].trim()!=="")?col[14].trim():"Commerce",
-          fPhone: col[9]?col[9].replace(/[^0-9]/g, ''):"", mPhone: col[10]?col[10].replace(/[^0-9]/g, ''):"", udise: col[8]?col[8].trim():"", leaveDate: "", marks: { first: null, second: null, annual: null }
+          std: stdVal, stream: streamVal,
+          fPhone: col[9]?col[9].replace(/[^0-9]/g, ''):"", mPhone: col[10]?col[10].replace(/[^0-9]/g, ''):"", udise: col[8]?col[8].trim():"", 
+          leaveDate: savedLeave, 
+          marks: { first: null, second: null, annual: null }
         };
         if (student.name) importedRoster.push(student);
       }
@@ -1241,6 +1311,7 @@
     };
     reader.readAsText(file, "UTF-8");
   }
+
   function renderAdminTable() {
     const tbody = document.getElementById('adminTableBody');
     tbody.innerHTML = '';
@@ -1254,11 +1325,14 @@
       <td><button class="btn btn-danger" style="padding:5px 10px;" onclick="deleteStudent(${i})">ડિલીટ</button></td></tr>`;
     });
   }
+
   function deleteStudent(index) { if (confirm("શું તમે આ માહિતી કાઢી નાખવા માંગો છો?")) { roster.splice(index, 1); saveToStorage(); setup(true); } }
+  
   function exportDataJSON() {
     const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2));
     a.download = `School_Data_${todayStr.replace(/\//g, '-')}.json`; a.click();
   }
+
   function dispatchLeave() {
     const stIdx = document.getElementById('leaveStudent').value;
     if(!stIdx || stIdx === "") return;
@@ -1276,10 +1350,12 @@
     }
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
+
   function sendAbsent(name, phone) {
     if(!phone || phone === "") return alert(`વાલી નો મોબાઈલ નંબર ઉપલબ્ધ નથી.`);
     window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\nસવિનય જણાવવાનું કે *વાલીશ્રી*, આપની દીકરી *${name}* આજે તારીખ ${todayStr} ના રોજ શાળામાં ગેરહાજર છે. કૃપા કરીને નોંધ લેશો.\n- હેમંત સર`)}`, '_blank');
   }
+
   function dispatchHomework() {
     const type = document.getElementById('hwSendType').value;
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n📚 *ગૃહકાર્ય* (${todayStr})\n`;
@@ -1299,6 +1375,7 @@
     }
     window.open(type === 'group' ? `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
+
   function dispatchMarks() {
     const stIdx = document.getElementById('examStudent').value;
     if(!stIdx || stIdx === "") return;
@@ -1312,6 +1389,7 @@
     }
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
   }
+
   function dispatchFee() {
     const stIdx = document.getElementById('feeStudent').value;
     if(!stIdx || stIdx === "") return;
@@ -1319,17 +1397,20 @@
     const note = document.getElementById('feeStatus').value === 'due' ? `બાકી છે` : `જમા મળી ગયેલ છે`;
     window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n💰 *ફી સૂચના*\nવાલીશ્રી, આપની દીકરી ${st.name} ની ફી પેટે ${document.getElementById('feeAmt').value}${note}.\n- કાર્યાલય`)}`, '_blank');
   }
+
   function dispatchNotice() {
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📢 *શાળા પરિપત્ર / અગત્યની સૂચના*\nતારીખ: ${todayStr}\n-------------------------\nઆથી *${document.getElementById('noticeClass').value}* ના તમામ વિદ્યાર્થીનીઓને જણાવવાનું કે, ${document.getElementById('noticeDesc').value}\n`;
     if (document.getElementById('noticeLink').value) msg += `\n🔗 પરિપત્ર લિંક: ${document.getElementById('noticeLink').value}\n`;
     msg += `\n- હેમંત સર`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
   }
+
   function printIDCard() {
     document.body.classList.add('printing-id'); document.getElementById('mainApp').style.display = 'none';
     let idCard = document.getElementById('idCardPrintArea'); document.body.appendChild(idCard);
     setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-id'); document.getElementById('idPanel').insertBefore(idCard, document.getElementById('idPanel').querySelector('button')); document.getElementById('mainApp').style.display = 'flex'; }, 1000); }, 500);
   }
+
   function renderCard() {
     if (!roster.length) return;
     const stIdx = document.getElementById('idStudent').value;
@@ -1343,11 +1424,10 @@
     document.getElementById('cUdise').innerText = st.udise;
   }
   
-  // 🌟 પેજ લોડ થતાં જ ડેટા લોડ કરો અને બેકગ્રાઉન્ડ સિંક ચાલુ કરો
   window.onload = function() {
-      setup(); // તરત જ જૂનો ડેટા બતાવો 
+      setup(); 
       if(roster.length > 0) {
-          syncGoogleSheetLive(true); // બેકગ્રાઉન્ડમાં નવો ડેટા ચેક કરો
+          syncGoogleSheetLive(true); 
       }
   };
 </script>
