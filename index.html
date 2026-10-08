@@ -191,7 +191,6 @@
     <button class="nav-btn admin-btn" onclick="openAdminPanel()">⚙ Admin</button>
   </div>
 
-  <!-- 🌟 ડેશબોર્ડ પેનલ (આજની રજાના લિસ્ટ સાથે) -->
   <div id="dashPanel" class="view-panel active">
     <div class="dashboard-stats">
       <div class="stat-box">
@@ -204,7 +203,6 @@
       </div>
     </div>
     
-    <!-- 🌟 નવું: આજે રજા પર રહેલ વિદ્યાર્થીઓનું લિસ્ટ -->
     <div id="dashboardLeaveList" style="display:none; background:#fff3cd; padding:15px; border-radius:12px; border:1px solid #ffeeba; margin-bottom:12px;">
         <h4 style="margin:0 0 8px; color:#856404; font-size:14px;">🟡 આજે રજા પર રહેલ વિદ્યાર્થીઓ:</h4>
         <ul id="todayLeaveUl" style="margin:0; padding-left:20px; font-size:13px; color:#666; font-weight:bold; line-height:1.6;"></ul>
@@ -466,7 +464,7 @@
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
       <div class="form-group">
         <label>Google Apps Script URL:</label>
-        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzbZLI-8VBtLKxzJawhygiLLCtYKStHEIlwQb7RyUjtKpBl0kK2AzIiNgbS27Wt-kyUpw/exec">
+        <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzUOTZeuGSZbz79HsaVWfixkvqwFI3aG8BiPMaMNnuCRlBB9L_aGD8HMeDnrFUAAO223A/exec">
       </div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
@@ -619,7 +617,7 @@
 
     let todayLeavesCount = 0;
     let filteredCount = 0;
-    let leaveNames = []; // 🌟 આજની રજા માટેનું એરે 
+    let leaveNames = []; 
     
     let activeFilter = document.getElementById('globalClassFilter').value;
 
@@ -631,6 +629,10 @@
     
     roster.forEach((st, i) => {
       let stStd = st.std ? st.std.toString().trim() : "12";
+      
+      // 🌟 Left Filter (જે શાળા છોડી ગયા છે તેમને હાઈડ કરવા)
+      if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return; 
+
       if(activeFilter !== "all" && activeFilter !== stStd) return;
 
       filteredCount++;
@@ -641,7 +643,7 @@
       if(st.leaveDate === todayISO) {
         leaveHtml = `<div class="leave-badge">🟡 આજની રજા મંજૂર</div>`;
         todayLeavesCount++;
-        leaveNames.push(`રોલ ${st.roll}: ${st.name} ${activeFilter==='all' ? '('+dispStd+')' : ''}`); // 🌟 લિસ્ટમાં નામ ઉમેરો
+        leaveNames.push(`રોલ ${st.roll}: ${st.name} ${activeFilter==='all' ? '('+dispStd+')' : ''}`);
       }
 
       list.innerHTML += `
@@ -690,7 +692,6 @@
     document.getElementById('dashTotalCount').innerText = filteredCount;
     document.getElementById('dashLeaveCount').innerText = todayLeavesCount;
     
-    // 🌟 આજની રજાનું લિસ્ટ બતાવવાનું લોજીક
     let leaveListDiv = document.getElementById('dashboardLeaveList');
     if(leaveListDiv) {
         if(todayLeavesCount > 0) {
@@ -837,6 +838,9 @@
           let s_stream = s.stream ? s.stream : "Commerce";
           
           if(s_std !== std || s_stream !== stream) continue; 
+          
+          // 🌟 Left વાળાને રેન્કમાંથી બાકાત રાખવા
+          if(s.status && (s.status.toLowerCase().includes('left') || s.status.includes('કમી'))) continue;
 
           let mData = s.marks ? s.marks[examType] : null;
           if(!mData) continue;
@@ -1253,7 +1257,9 @@
       let streamVal = (col[14] !== undefined && col[14] !== null && col[14].toString().trim() !== "") ? col[14].toString().trim() : "Commerce";
       let rollNo = parseInt(col[0]) || (importedRoster.length + 1);
 
-      // 🌟 નવો સુધારો: જૂના સેવ કરેલા રજાના ડેટાને સાચવી રાખવા
+      // 🌟 નવો સુધારો: Left સ્ટેટસ પકડવું (કોલમ P એટલે કે Index 15)
+      let statusVal = (col[15] !== undefined && col[15] !== null) ? col[15].toString().trim() : "";
+
       let existingStudent = roster.find(s => s.roll === rollNo && s.std === stdVal && s.stream === streamVal);
       let savedLeave = existingStudent ? existingStudent.leaveDate : "";
 
@@ -1263,7 +1269,8 @@
         blood: col[12] ? col[12].toString().trim() : "", std: stdVal, stream: streamVal,
         fPhone: col[9] ? col[9].toString().replace(/[^0-9]/g, '') : "", mPhone: col[10] ? col[10].toString().replace(/[^0-9]/g, '') : "", 
         udise: col[8] ? col[8].toString().trim() : "", 
-        leaveDate: savedLeave, // જૂની રજા પાછી મૂકી
+        leaveDate: savedLeave, 
+        status: statusVal, // 🌟 સ્ટેટસ કોલમ સેટ કરી
         marks: { first: null, second: null, annual: null }
       };
 
@@ -1293,6 +1300,7 @@
         let stdVal = (col[13]&&col[13].trim()!=="")?col[13].trim():"12";
         let streamVal = (col[14]&&col[14].trim()!=="")?col[14].trim():"Commerce";
         let rollNo = parseInt(col[0]) || (importedRoster.length + 1);
+        let statusVal = (col[15] !== undefined && col[15] !== null) ? col[15].trim() : "";
 
         let existingStudent = roster.find(s => s.roll === rollNo && s.std === stdVal && s.stream === streamVal);
         let savedLeave = existingStudent ? existingStudent.leaveDate : "";
@@ -1302,7 +1310,7 @@
           photo: col[3]&&col[3].trim()?col[3].trim():"", dob: col[4]?col[4].trim():"", blood: col[12]?col[12].trim():"",
           std: stdVal, stream: streamVal,
           fPhone: col[9]?col[9].replace(/[^0-9]/g, ''):"", mPhone: col[10]?col[10].replace(/[^0-9]/g, ''):"", udise: col[8]?col[8].trim():"", 
-          leaveDate: savedLeave, 
+          leaveDate: savedLeave, status: statusVal,
           marks: { first: null, second: null, annual: null }
         };
         if (student.name) importedRoster.push(student);
@@ -1320,6 +1328,7 @@
     roster.forEach((st, i) => {
       let stStd = st.std ? st.std.toString().trim() : "12";
       if(activeFilter !== "all" && activeFilter !== stStd) return; 
+      if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return; 
 
       tbody.innerHTML += `<tr><td>${st.roll}</td><td>${formatStdStream(st.std, st.stream)}</td><td>${st.name}</td><td>${st.fPhone}</td>
       <td><button class="btn btn-danger" style="padding:5px 10px;" onclick="deleteStudent(${i})">ડિલીટ</button></td></tr>`;
