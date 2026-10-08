@@ -127,7 +127,21 @@
     #syncBanner {
       display: none; background: #e8f5e9; color: #2e7d32; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; border-radius: 8px; margin-bottom: 10px; border: 1px solid #c8e6c9;
     }
+    
   </style>
+  <script>
+  // રાઈટ-ક્લિક બંધ કરવા
+  document.addEventListener('contextmenu', event => event.preventDefault());
+
+  // F12 અને Ctrl+Shift+I (Inspect) બંધ કરવા
+  document.onkeydown = function(e) {
+    if(event.keyCode == 123) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
+    if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
+  }
+</script>
 </head>
 <body>
 
