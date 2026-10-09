@@ -189,32 +189,50 @@
 
   <div id="attPanel" class="view-panel">
     
-    <!-- 🌟 નવું: વેકેશન અને સળંગ રજા સેટિંગ -->
-    <div class="card" style="background: #fff3e0; border: 1px solid #ffe0b2; margin-bottom:15px; text-align:center;">
-        <div style="font-size: 13.5px; font-weight: bold; margin-bottom: 12px; color: #e65100;">
-          🌴 વેકેશન / સળંગ રજા જાહેર કરો:
+    <!-- 🌟 રજા અને વેકેશન છુપાવવા માટેનું સ્માર્ટ બટન -->
+    <div style="text-align: right; margin-bottom: 10px;">
+        <button class="btn" style="background:#fff3e0; color:#e65100; border:1px solid #ffcc80; font-size:12px; padding:6px 12px; border-radius:20px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.05);" onclick="toggleVacationBox()">⚙️ વિશેષ રજા / વેકેશન સેટિંગ 🔽</button>
+    </div>
+
+    <!-- 🌟 છુપાવેલું વેકેશન બોક્સ (જ્યારે ક્લિક કરશો ત્યારે જ ખુલશે) -->
+    <div id="vacationBox" style="display:none; animation: fadeIn 0.3s; margin-bottom:15px;">
+        <div class="card" style="background: #fff3e0; border: 1px solid #ffe0b2; margin-bottom:0; text-align:center;">
+            <div style="font-size: 13.5px; font-weight: bold; margin-bottom: 12px; color: #e65100;">
+              🌴 વેકેશન અને રજા સેટિંગ
+            </div>
+            
+            <!-- વિકલ્પ ૧: લાંબી રજા / વેકેશન -->
+            <div style="background:#fff; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #ffcc80;">
+                <p style="font-size:11px; margin:0 0 8px 0; color:#d84315; font-weight:bold;">લાંબી રજા / વેકેશન:</p>
+                <div class="grid-2" style="margin-bottom:10px;">
+                   <div class="form-group" style="margin:0;"><label style="font-size:11px; text-align:left;">શરૂઆત:</label><input type="date" id="vacStartDate"></div>
+                   <div class="form-group" style="margin:0;"><label style="font-size:11px; text-align:left;">અંતિમ:</label><input type="date" id="vacEndDate"></div>
+                </div>
+                <input type="text" id="vacReason" placeholder="રજાનું કારણ (દા.ત. દિવાળી વેકેશન)" style="margin-bottom:8px; border-color:#ffcc80;">
+                <button class="btn btn-warning" id="btnSaveVacation" onclick="declareBulkVacation()" style="width:100%;">🌴 વેકેશન સેવ કરો</button>
+            </div>
+
+            <!-- વિકલ્પ ૨: ૧ દિવસની રજા -->
+            <div style="background:#fff; padding:10px; border-radius:8px; border:1px solid #ffcc80;">
+                <p style="font-size:11px; margin:0 0 4px 0; color:#d84315; font-weight:bold;">કોઈ ૧ દિવસની સ્થાનિક રજા:</p>
+                <p style="font-size:10px; color:#666; margin:0 0 8px 0;">(નીચે પસંદ કરેલી 'દૈનિક હાજરી' તારીખ મુજબ જાહેર થશે)</p>
+                <button class="btn btn-danger" onclick="declareHoliday()" style="background:#d84315; width:100%;">🏖️ ૧ દિવસની રજા જાહેર કરો</button>
+            </div>
         </div>
-        <div class="grid-2" style="margin-bottom:10px;">
-           <div class="form-group" style="margin:0;"><label style="font-size:11px; text-align:left;">શરૂઆતની તારીખ:</label><input type="date" id="vacStartDate"></div>
-           <div class="form-group" style="margin:0;"><label style="font-size:11px; text-align:left;">અંતિમ તારીખ:</label><input type="date" id="vacEndDate"></div>
-        </div>
-        <input type="text" id="vacReason" placeholder="રજાનું કારણ (દા.ત. દિવાળી વેકેશન)" style="margin-bottom:12px; border-color:#ffcc80;">
-        <button class="btn btn-warning" id="btnSaveVacation" onclick="declareBulkVacation()">🌴 વેકેશન / રજા સેવ કરો</button>
     </div>
 
     <!-- દૈનિક હાજરી સેક્શન -->
     <div class="card" style="background: #f8f9fa; border: 1px solid #dee2e6; margin-bottom:12px; text-align:center;">
         <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: var(--primary);">
-          તારીખ પસંદ કરો (જૂની હાજરી ભરવા/સુધારવા):
+          આજની અથવા જૂની તારીખની હાજરી:
         </div>
-        <input type="date" id="attDailyDate" onchange="setupList()" style="width:100%; max-width:250px; font-weight:bold; margin-bottom:15px; text-align:center;">
-        
-        <div class="grid-2">
-            <button class="btn btn-success" id="btnSaveAttendance" onclick="submitAttendanceToSheet()">💾 હાજરી સેવ કરો</button>
-            <button class="btn btn-warning" onclick="declareHoliday()" style="background:#f57c00; color:white;">🏖️ ૧ દિવસની જાહેર રજા</button>
+        <div style="display:flex; gap:10px;">
+           <input type="date" id="attDailyDate" onchange="setupList()" style="flex:1; font-weight:bold; text-align:center;">
+           <button class="btn btn-success" id="btnSaveAttendance" onclick="submitAttendanceToSheet()" style="width:auto;">💾 સેવ</button>
         </div>
     </div>
 
+    <!-- માસિક પ્રિન્ટ સેક્શન -->
     <div class="card" style="background: #e3f2fd; border-color: #bbdefb; margin-bottom:15px;">
         <h4 style="margin:0 0 10px; color:var(--primary); font-size:14px;">📄 માસિક હાજરી પત્રક (PDF)</h4>
         <div style="display:flex; gap:10px;">
@@ -224,6 +242,7 @@
     </div>
 
     <div id="attContainer"></div>
+  </div>
   </div>
 
   <div id="rankPanel" class="view-panel">
