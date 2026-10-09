@@ -41,21 +41,31 @@
     .btn-warning { background-color: var(--warning); width: 100%; }
     .btn-danger { background-color: var(--danger); width: 100%; }
     .btn-secondary { background-color: #757575; }
-    .btn-father { background-color: var(--father); flex: 1; font-size: 13px; padding: 8px; }
-    .btn-mother { background-color: var(--mother); flex: 1; font-size: 13px; padding: 8px; }
+    .btn-father { background-color: var(--father); font-size: 11px; padding: 5px 8px; border-radius: 4px; }
+    .btn-mother { background-color: var(--mother); font-size: 11px; padding: 5px 8px; border-radius: 4px; }
     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
     .dashboard-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
     .stat-box { background: #e3f2fd; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #bbdefb; }
     .stat-box h2 { margin: 0 0 5px; color: var(--primary); font-size: 26px; }
     .stat-box p { margin: 0; font-size: 13px; color: #555; font-weight: bold; }
-    .student-item { display: flex; flex-direction: column; gap: 10px; padding: 15px; border-radius: 10px; background: #fff; border-left: 4px solid var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 10px; }
-    @media (min-width: 600px) { .student-item { flex-direction: row; align-items: center; justify-content: space-between; } }
+    
+    /* સ્માર્ટ હાજરી આઇટમ સ્ટાઇલ */
+    .student-item { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 10px; background: #fff; border-left: 4px solid var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 10px; }
+    @media (min-width: 650px) { .student-item { flex-direction: row; align-items: center; justify-content: space-between; } }
     .student-meta { display: flex; align-items: center; gap: 12px; }
-    .student-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); }
-    .student-meta h4 { margin: 0; font-size: 15px; color: #222; }
-    .student-meta p { margin: 4px 0 0; font-size: 12px; color: #666; }
-    .actions { display: flex; gap: 8px; }
-    .leave-badge { display: inline-block; background: #fff3cd; color: #856404; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 4px; margin-top: 5px; border: 1px solid #ffeeba; }
+    .student-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); }
+    .student-meta h4 { margin: 0; font-size: 14px; color: #222; }
+    .student-meta p { margin: 3px 0 0; font-size: 12px; color: #666; }
+    .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .leave-badge { display: inline-block; background: #fff3cd; color: #856404; font-size: 11px; font-weight: bold; padding: 2px 6px; border-radius: 4px; border: 1px solid #ffeeba; }
+    
+    /* હાજરી ટૉગલ બટન */
+    .att-toggle-group { display: inline-flex; border-radius: 8px; overflow: hidden; border: 1px solid #ccc; }
+    .att-btn { border: none; padding: 6px 12px; font-size: 12px; font-weight: bold; cursor: pointer; background: #f0f0f0; color: #555; }
+    .att-btn.p-active { background: var(--success); color: white; }
+    .att-btn.a-active { background: var(--danger); color: white; }
+    .att-btn.l-active { background: var(--warning); color: white; }
+
     .id-box { max-width: 320px; margin: 15px auto; border: 2px solid var(--primary); border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
     .id-header { background: var(--primary); color: white; padding: 12px; text-align: center; }
     .id-header h4 { margin: 0; font-size: 14px; }
@@ -161,7 +171,6 @@
   </div>
 
   <div id="dashPanel" class="view-panel active">
-    <!-- 🌟 નવું: જન્મદિવસ બેનર -->
     <div id="birthdayBanner">
         <h3 style="margin:0 0 10px; font-size:16px;">🎂 આજના જન્મદિવસ!</h3>
         <div id="birthdayList"></div>
@@ -195,7 +204,14 @@
   </div>
 
   <div id="attPanel" class="view-panel">
-    <!-- 🌟 નવું: માસિક હાજરી પત્રક -->
+    <!-- 🌟 ડિજિટલ હાજરી સેવિંગ બટન -->
+    <div class="card" style="background: #e8f5e9; border: 1px solid #c8e6c9; margin-bottom:12px; text-align:center;">
+        <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: var(--success);">
+          તારીખ: <span class="lblDate"></span> | વર્ગ હાજરી ડિજિટલ સબમિશન
+        </div>
+        <button class="btn btn-success" id="btnSaveAttendance" onclick="submitAttendanceToSheet()">💾 આજની હાજરી Google Sheet માં સેવ કરો</button>
+    </div>
+
     <div class="card" style="background: #e3f2fd; border-color: #bbdefb; margin-bottom:15px;">
         <h4 style="margin:0 0 10px; color:var(--primary); font-size:14px;">📄 માસિક હાજરી પત્રક (PDF)</h4>
         <div style="display:flex; gap:10px;">
@@ -204,13 +220,9 @@
         </div>
     </div>
 
-    <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: var(--primary);">
-      રોજિંદી હાજરી મેસેજ (તારીખ: <span class="lblDate"></span>) :
-    </div>
     <div id="attContainer"></div>
   </div>
 
-  <!-- 🌟 નવું: ટોપર્સ પેનલ -->
   <div id="rankPanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">🏆 ક્લાસ ટોપર્સ (Top 3)</h3>
@@ -232,7 +244,6 @@
         </div>
       </div>
       <button class="btn btn-main" onclick="generateToppers()">📊 ટોપર્સ લિસ્ટ જનરેટ કરો</button>
-      
       <div id="toppersResult" style="margin-top:20px; display:none;"></div>
     </div>
   </div>
@@ -348,7 +359,6 @@
         <button class="btn btn-main" onclick="approveLeave()">💾 સેવ કરો</button>
         <button class="btn btn-danger" onclick="dispatchLeave()">💬 વાલીને મેસેજ મોકલો</button>
       </div>
-      <!-- 🌟 રજા રદ કરવાનું બટન -->
       <button class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="cancelLeave()">❌ ભૂલથી થયેલ રજા રદ કરો</button>
     </div>
   </div>
@@ -388,7 +398,7 @@
   <div id="adminPanel" class="view-panel">
     <div class="card" style="border-left: 4px solid var(--success); background-color: #f1f8e9;">
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
-      <div class="form-group"><label>Google Apps Script URL:</label><input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbydbOmhomiOaFdMWbJWDmeTFb0dYyBZ7LvsMoRVWelth9-aalfGmTB1vUWarpSnS5GgSA/exec"></div>
+      <div class="form-group"><label>Google Apps Script URL:</label><input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzUOTZeuGSZbz79HsaVWfixkvqwFI3aG8BiPMaMNnuCRlBB9L_aGD8HMeDnrFUAAO223A/exec"></div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
         <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="importDataCSV(event)">
@@ -406,7 +416,7 @@
 
 </div>
 
-<!-- માર્કશીટ પ્રિન્ટ એરિયા -->
+<!-- પ્રિન્ટ એરિયા - માર્કશીટ -->
 <div id="printReportArea" style="display:none; font-family: Arial, sans-serif; color:#000;">
     <div style="text-align:center; border-bottom:3px solid #0d47a1; padding-bottom:10px; margin-bottom:15px;">
         <h1 style="margin:0; color:#0d47a1; font-size:26px;">શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત</h1>
@@ -448,7 +458,7 @@
     <div style="text-align:center; font-size:11px; color:#666; margin-top:20px;">* AB = ગેરહાજર &nbsp; | &nbsp; આ માર્કશીટ કોમ્પ્યુટર જનરેટેડ છે.</div>
 </div>
 
-<!-- 🌟 માસિક હાજરી પત્રક પ્રિન્ટ એરિયા -->
+<!-- પ્રિન્ટ એરિયા - માસિક હાજરી -->
 <div id="printAttArea" style="display:none; font-family: Arial, sans-serif; color:#000;">
     <div style="text-align:center; border-bottom:3px solid #0d47a1; padding-bottom:10px; margin-bottom:15px;">
         <h1 style="margin:0; color:#0d47a1; font-size:22px;">શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત</h1>
@@ -475,6 +485,7 @@
 
   let isAdminLogged = false;
   let roster = JSON.parse(localStorage.getItem('singapuri_roster')) || [];
+  let attendanceStatusMap = {}; // આજની હાજરી સ્ટોર કરવા: { roll: 'P' | 'A' | 'L' }
 
   const todayDateObj = new Date();
   const todayStr = todayDateObj.toLocaleDateString('gu-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }); 
@@ -535,7 +546,6 @@
       let stStd = st.std ? st.std.toString().trim() : "12";
       if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return; 
       
-      // 🌟 જન્મદિવસ ચેક 
       if(st.dob && (activeFilter === "all" || activeFilter === stStd)) {
           let dParts = st.dob.split('/');
           if(dParts.length >= 2 && parseInt(dParts[0]) == parseInt(tDay) && parseInt(dParts[1]) == parseInt(tMonth)) {
@@ -553,23 +563,36 @@
       let dispStd = formatStdStream(st.std, st.stream);
       
       let leaveHtml = "";
+      let defaultStatus = 'P';
+
       if(st.leaveDate === todayISO) {
-        leaveHtml = `<div class="leave-badge">🟡 આજની રજા મંજૂર</div>`;
+        leaveHtml = `<div class="leave-badge">🟡 રજા મંજૂર</div>`;
         todayLeavesCount++;
         leaveNames.push(`રોલ ${st.roll}: ${st.name} ${activeFilter==='all' ? '('+dispStd+')' : ''}`);
+        defaultStatus = 'L';
       }
+
+      if(!attendanceStatusMap[st.roll]) {
+        attendanceStatusMap[st.roll] = defaultStatus;
+      }
+      let curStatus = attendanceStatusMap[st.roll];
 
       list.innerHTML += `
         <div class="student-item">
           <div class="student-meta">
             <img class="student-avatar" src="${avatar}">
             <div>
-              <h4>રોલ ${st.roll}: ${st.name}</h4>
+              <h4>રોલ ${st.roll}: ${st.name} ${leaveHtml}</h4>
               <p>${dispStd} | પિતા: ${st.fPhone}</p>
-              ${leaveHtml}
             </div>
           </div>
           <div class="actions">
+            <!-- હાજરી ટૉગલ -->
+            <div class="att-toggle-group">
+               <button class="att-btn ${curStatus==='P'?'p-active':''}" onclick="setAttendanceStatus(${st.roll}, 'P', this)">P</button>
+               <button class="att-btn ${curStatus==='A'?'a-active':''}" onclick="setAttendanceStatus(${st.roll}, 'A', this)">A</button>
+               <button class="att-btn ${curStatus==='L'?'l-active':''}" onclick="setAttendanceStatus(${st.roll}, 'L', this)">L</button>
+            </div>
             <button class="btn btn-father" onclick="sendAbsent('${st.name}', '${st.fPhone}')">📲 પિતા</button>
             <button class="btn btn-mother" onclick="sendAbsent('${st.name}', '${st.mPhone}')">📲 માતા</button>
           </div>
@@ -621,6 +644,66 @@
     }
 
     if(isAdminLogged) renderAdminTable();
+  }
+
+  // 🌟 હાજરી બટન ક્લિક હેન્ડલર
+  function setAttendanceStatus(roll, status, btnElement) {
+    attendanceStatusMap[roll] = status;
+    let group = btnElement.parentElement;
+    group.querySelectorAll('.att-btn').forEach(b => {
+      b.classList.remove('p-active', 'a-active', 'l-active');
+    });
+    if(status === 'P') btnElement.classList.add('p-active');
+    if(status === 'A') btnElement.classList.add('a-active');
+    if(status === 'L') btnElement.classList.add('l-active');
+  }
+
+  // 🌟 ગૂગલ શીટમાં હાજરી સેવ કરવાની સિસ્ટમ (Two-Way Sync)
+  async function submitAttendanceToSheet() {
+    let scriptUrl = document.getElementById('scriptUrlInput').value;
+    let activeFilter = document.getElementById('globalClassFilter').value;
+    let btn = document.getElementById('btnSaveAttendance');
+
+    let records = [];
+    roster.forEach(st => {
+      let stStd = st.std ? st.std.toString().trim() : "12";
+      if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return;
+      if(activeFilter !== "all" && activeFilter !== stStd) return;
+
+      let stat = attendanceStatusMap[st.roll] || 'P';
+      let fullStat = stat === 'P' ? 'હાજર (Present)' : (stat === 'A' ? 'ગેરહાજર (Absent)' : 'રજા (Leave)');
+      records.push({ roll: st.roll, name: st.name, status: fullStat });
+    });
+
+    if(records.length === 0) return alert("સેવ કરવા માટે કોઈ વિદ્યાર્થી નથી.");
+
+    btn.innerText = "⏳ Google Sheet માં સેવ થઈ રહ્યું છે...";
+    btn.disabled = true;
+
+    let payload = {
+      date: todayStr,
+      std: activeFilter === "all" ? "ધોરણ ૧૧ અને ૧૨" : `ધોરણ ${activeFilter}`,
+      records: records
+    };
+
+    try {
+      let res = await fetch(scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      let json = await res.json();
+      if(json.status === "success") {
+        alert("✅ " + json.message);
+      } else {
+        alert("ભૂલ: " + json.message);
+      }
+    } catch(e) {
+      alert("નેટવર્ક અથવા ડેપ્લોયમેન્ટ ભૂલ: " + e.toString());
+    } finally {
+      btn.innerText = "💾 આજની હાજરી Google Sheet માં સેવ કરો";
+      btn.disabled = false;
+    }
   }
 
   function getSubjectsList(streamStr) {
@@ -793,7 +876,6 @@
       }
   }
 
-  // 🌟 નવું: ટોપર્સ લિસ્ટ જનરેટ કરવા માટે
   function generateToppers() {
       const examType = document.getElementById('rankExamType').value;
       const std = document.getElementById('rankStd').value;
@@ -843,7 +925,6 @@
       if(allScores.length === 0) {
           html = `<p style="text-align:center; color:red;">આ પરીક્ષાનું કોઈ પરિણામ ઉપલબ્ધ નથી.</p>`;
       } else {
-          // માત્ર ટોપ 3
           let top3 = allScores.slice(0, 3);
           top3.forEach((st, idx) => {
              let avatar = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR;
@@ -971,7 +1052,6 @@
     setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-report'); document.getElementById('mainApp').style.display = 'flex'; document.getElementById('printReportArea').style.display = 'none'; }, 1000); }, 500);
   }
 
-  // 🌟 નવું: માસિક હાજરી પત્રક PDF જનરેટર
   function printAttendanceSheet() {
     let activeFilter = document.getElementById('globalClassFilter').value;
     let selectedMonth = document.getElementById('attMonthPicker').value; 
@@ -1021,7 +1101,6 @@
     roster[stIdx].leaveDate = lDate; saveToStorage(); setup(true); alert("રજા મંજૂર કરી દેવામાં આવી છે.");
   }
 
-  // 🌟 ભૂલ સુધારો: રજા રદ કરવાનું બટન 
   function cancelLeave() {
     const stIdxStr = document.getElementById('leaveStudent').value;
     if(!stIdxStr || stIdxStr === "") return;
@@ -1041,7 +1120,6 @@
     }
   }
 
-  // 🌟 નવું: બર્થડે વિશ 
   function wishBirthday(name, phone) {
     if(!phone || phone === "") return alert("વાલી નો મોબાઈલ નંબર ઉપલબ્ધ નથી.");
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ પરિવાર તરફથી 🎂\n\nવાહલી દીકરી *${name}* ને જન્મદિવસની ખૂબ ખૂબ શુભેચ્છાઓ! 🎉\nજીવનમાં ખૂબ પ્રગતિ કરો અને શાળાનું નામ રોશન કરો એવી પ્રાર્થના. 🌟\n\n- હેમંત સર (વર્ગ શિક્ષક)`;
@@ -1149,7 +1227,7 @@
   }
   function dispatchFee() {
     const stIdx = document.getElementById('feeStudent').value; if(!stIdx || stIdx === "") return; const st = roster[stIdx];
-    const note = document.getElementById('feeStatus').value === 'due' ? `બાકી છે` : `જમા મળી ગયેલ છે`; window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n💰 *ફી સૂચના*\nવાલીશ્રી, આપની દીકરી ${st.name} ની ફી પેટે ${document.getElementById('feeAmt').value} ${note}.\n- કાર્યાલય`)}`, '_blank');
+    const note = document.getElementById('feeStatus').value === 'due' ? `બાકી છે` : `જમા મળી ગયેલ છે`; window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n💰 *ફી સૂચના*\nવાલીશ્રી, આપની દીકરી ${st.name} ની ફી પેટે ${document.getElementById('feeAmt').value}${note}.\n- કાર્યાલય`)}`, '_blank');
   }
   function dispatchNotice() {
     let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📢 *શાળા પરિપત્ર / અગત્યની સૂચના*\nતારીખ: ${todayStr}\n-------------------------\nઆથી *${document.getElementById('noticeClass').value}* ના તમામ વિદ્યાર્થીનીઓને જણાવવાનું કે, ${document.getElementById('noticeDesc').value}\n`;
