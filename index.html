@@ -394,7 +394,7 @@
   <div id="adminPanel" class="view-panel">
     <div class="card" style="border-left: 4px solid var(--success); background-color: #f1f8e9;">
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
-      <div class="form-group"><label>Google Apps Script URL:</label><input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbz9UY_H3U5EdMxwuT6o7fpf4bGTMn0FHbfEQQXWwjLSTi3PFkYm96eR8PSdnlhngVmP/exec"></div>
+      <div class="form-group"><label>Google Apps Script URL:</label><input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbyhFMlpjyiLJVCM3WaMBytioP70-QoinUYy_duEfEt8e7ZamPBJOsGt3pPI3Dd_t8fMAg/exec"></div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
         <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="importDataCSV(event)">
@@ -402,7 +402,7 @@
         <button class="btn btn-secondary" onclick="exportDataJSON()">📥 JSON ડાઉનલોડ</button>
       </div>
     </div>
-    <!-- 🌟 કુલ વિદ્યાર્થીઓનું ટેબલ અને સ્પાન (આની જ ભૂલ હતી જે ઉમેરી દીધું છે) -->
+    <!-- 🌟 કુલ વિદ્યાર્થીઓનું ટેબલ અને સ્પાન -->
     <div class="card">
       <h4 class="card-title">📋 વિદ્યાર્થીનીઓની યાદી (<span id="totalStudentsCount">0</span>)</h4>
       <div class="table-container">
@@ -479,9 +479,13 @@
   let attendanceDB = {}; 
   let currentSessionAttMap = {}; 
 
+  // 🌟 ડેટ ફિક્સ ૧: આંકડા હંમેશા અંગ્રેજી જ રહે અને બરાબર સેટ થાય 🌟
   const todayDateObj = new Date();
-  const todayStr = todayDateObj.toLocaleDateString('gu-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }); 
-  const todayISO = todayDateObj.toISOString().split('T')[0]; 
+  const dd = String(todayDateObj.getDate()).padStart(2, '0');
+  const mm = String(todayDateObj.getMonth() + 1).padStart(2, '0');
+  const yyyy = todayDateObj.getFullYear();
+  const todayStr = `${dd}/${mm}/${yyyy}`; 
+  const todayISO = `${yyyy}-${mm}-${dd}`; 
 
   function saveToStorage() { localStorage.setItem('singapuri_roster', JSON.stringify(roster)); }
   function openAdminPanel() { if (isAdminLogged) showPanel('adminPanel'); else { document.getElementById('loginModal').style.display = 'flex'; document.getElementById('loginError').style.display = 'none'; document.getElementById('adminPass').value = ''; } }
@@ -497,7 +501,7 @@
     if(panelId === 'idPanel') renderCard();
     if(panelId === 'reportPanel') generateSubjectInputs();
     if(panelId === 'rankPanel') generateToppers();
-    if(panelId === 'adminPanel') renderAdminTable(); // 🌟 ટેબલ બતાવવા માટે
+    if(panelId === 'adminPanel') renderAdminTable(); 
   }
 
   function formatStdStream(std, streamStr) {
@@ -512,7 +516,6 @@
       return p[2] + '/' + p[1] + '/' + p[0];
   }
 
-  // 🌟 હંમેશા લોડ થતાં સિંક થવા માટેનો કોડ 
   function initApp() {
       document.getElementById('examDate').value = todayISO;
       document.getElementById('examResDate').value = todayISO;
@@ -541,11 +544,8 @@
 
     if(roster.length === 0) {
       list.innerHTML = '<p style="text-align:center; color:var(--primary); font-weight:bold; padding:20px;">ડેટા લવાઈ રહ્યો છે... કૃપા કરીને રાહ જુઓ ⏳</p>';
-      
-      // 🌟 Null Check ઉમેર્યું જેથી એરર ન આવે
       let elTotalStudents = document.getElementById('totalStudentsCount');
       if (elTotalStudents) elTotalStudents.innerText = 0;
-      
       return;
     } 
     
@@ -601,7 +601,6 @@
     let bBanner = document.getElementById('birthdayBanner');
     if(bdayHtml !== "") { document.getElementById('birthdayList').innerHTML = bdayHtml; bBanner.style.display = 'block'; } else { bBanner.style.display = 'none'; }
     
-    // 🌟 Null Checks સાથે ડેટા અપડેટ 
     let elTotalStudents = document.getElementById('totalStudentsCount');
     if(elTotalStudents) elTotalStudents.innerText = roster.length;
     
@@ -801,8 +800,20 @@
         if(dataObj.attLog && Array.isArray(dataObj.attLog) && dataObj.attLog.length > 1) {
             for(let j=1; j<dataObj.attLog.length; j++) {
                 let row = dataObj.attLog[j];
-                let d = row[0]; let r = row[3]; let s = row[5] || "";
-                if(!d || !r) continue;
+                let dRaw = row[0]; let r = row[3]; let s = row[5] || "";
+                if(!dRaw || !r) continue;
+
+                // 🌟 ડેટ ફિક્સ ૨: ગૂગલ શીટની ઇન્ટરનેશનલ તારીખને લોકલ DD/MM/YYYY માં ફેરવવી 🌟
+                let d = dRaw;
+                if (typeof dRaw === 'string') {
+                    if (dRaw.includes('T')) {
+                        let dt = new Date(dRaw);
+                        d = String(dt.getDate()).padStart(2, '0') + '/' + String(dt.getMonth() + 1).padStart(2, '0') + '/' + dt.getFullYear();
+                    } else if (dRaw.includes('-') && dRaw.split('-')[0].length === 4) {
+                        let p = dRaw.split('-');
+                        d = `${p[2]}/${p[1]}/${p[0]}`;
+                    }
+                }
 
                 let shortS = 'P';
                 if(s.includes('ગેરહાજર')) shortS = 'A';
@@ -822,7 +833,6 @@
     }
   }
 
-  // 🌟 એડમિન પેનલના ટેબલના ફંક્શન્સ (પાછા ઉમેરેલ)
   function renderAdminTable() {
     const tbody = document.getElementById('adminTableBody'); 
     if(!tbody) return;
