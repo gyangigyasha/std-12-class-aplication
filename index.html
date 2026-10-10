@@ -201,12 +201,12 @@
 
   <div id="attPanel" class="view-panel">
     
-    <!-- 🌟 રજા અને વેકેશન છુપાવવા માટેનું સ્માર્ટ બટન -->
+    <!-- રજા અને વેકેશન છુપાવવા માટેનું સ્માર્ટ બટન -->
     <div style="text-align: right; margin-bottom: 10px;">
         <button class="btn" style="background:#fff3e0; color:#e65100; border:1px solid #ffcc80; font-size:12px; padding:6px 12px; border-radius:20px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.05);" onclick="toggleVacationBox()">⚙️ વિશેષ રજા / વેકેશન સેટિંગ 🔽</button>
     </div>
 
-    <!-- 🌟 છુપાવેલું વેકેશન બોક્સ -->
+    <!-- છુપાવેલું વેકેશન બોક્સ -->
     <div id="vacationBox" style="display:none; animation: fadeIn 0.3s; margin-bottom:15px;">
         <div class="card" style="background: #fff3e0; border: 1px solid #ffe0b2; margin-bottom:0; text-align:center;">
             <div style="font-size: 13.5px; font-weight: bold; margin-bottom: 12px; color: #e65100;">
@@ -256,7 +256,7 @@
 
     <div id="attContainer"></div>
     
-    <!-- 🌟 લિસ્ટના છેવાડે મૂકેલું નવું સેવ બટન 🌟 -->
+    <!-- 🌟 લિસ્ટના છેવાડે મૂકેલું નવું સેવ બટન -->
     <div id="bottomSaveBtnBox" style="display:none; margin-top: 15px; margin-bottom: 25px;">
        <button class="btn btn-success" id="btnSaveAttendanceBottom" onclick="submitAttendanceToSheet()" style="width:100%; font-size:16px; padding:12px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">💾 હાજરી સેવ કરો</button>
     </div>
@@ -620,7 +620,6 @@
     else { 
         renderCard(); 
         generateSubjectInputs(); 
-        // 🌟 ડેટા હોય તો જ નીચેનું સેવ બટન બતાવવું
         if(document.getElementById('bottomSaveBtnBox')) document.getElementById('bottomSaveBtnBox').style.display = 'block';
     }
     
@@ -714,7 +713,6 @@
     let scriptUrl = document.getElementById('scriptUrlInput').value;
     let activeFilter = document.getElementById('globalClassFilter').value;
     
-    // 🌟 બંને સેવ બટનને હેન્ડલ કરવા
     let btnTop = document.getElementById('btnSaveAttendance');
     let btnBottom = document.getElementById('btnSaveAttendanceBottom');
     
@@ -769,6 +767,12 @@
 
   function processJSONData(dataObj, isAuto = false) {
     try {
+        // 🌟 એલર્ટ જો ગૂગલ સ્ક્રિપ્ટ અપડેટ નહિ હોય તો
+        if(dataObj.attLog === undefined) {
+             if(!isAuto) alert("⚠️ સિસ્ટમ એલર્ટ: તમારો ગૂગલ શીટનો કોડ જૂનો છે! એપ જૂના વર્ઝન સાથે જોડાયેલી છે, એટલે હાજરીનો ડેટા સિંક નથી થઈ રહ્યો. કૃપા કરીને Apps Script માં નવો કોડ મૂકી 'New Deployment' કરો.");
+             return;
+        }
+
         let rosterData = dataObj.roster || dataObj; 
         if (!rosterData || rosterData.length < 2) {
              if(!isAuto) alert("શીટમાં કોઈ ડેટા નથી!");
@@ -778,11 +782,7 @@
         let importedRoster = [];
         for (let i = 1; i < rosterData.length; i++) {
           let col = rosterData[i];
-          
-          if (col.length === 1 && typeof col[0] === 'string' && col[0].includes(',')) {
-              col = col[0].split(',');
-          }
-
+          if (col.length === 1 && typeof col[0] === 'string' && col[0].includes(',')) { col = col[0].split(','); }
           if (!col[2] || col[2].toString().trim() === "") continue;
           
           let stdVal = (col[13] !== undefined && col[13] !== null && col[13].toString().trim() !== "") ? col[13].toString().trim() : "12";
@@ -793,32 +793,12 @@
           let savedLeave = existingStudent && existingStudent.leaveDate ? existingStudent.leaveDate : "";
 
           let student = { 
-              roll: rollNo, 
-              gr: col[1]?col[1].toString().trim():"", 
-              name: col[2].toString().trim(), 
-              photo: col[3]?col[3].toString().trim():"", 
-              dob: col[4]?col[4].toString().trim():"", 
-              blood: col[12]?col[12].toString().trim():"", 
-              std: stdVal, 
-              stream: streamVal, 
-              fPhone: col[9]?col[9].toString().replace(/[^0-9]/g, ''):"", 
-              mPhone: col[10]?col[10].toString().replace(/[^0-9]/g, ''):"", 
-              udise: col[8]?col[8].toString().trim():"", 
-              leaveDate: savedLeave, 
-              status: col[15]?col[15].toString().trim():"", 
-              marks: { 
-                  first: (dataObj.first && Array.isArray(dataObj.first)) ? dataObj.first.find(r=>r[0]==rollNo) : null, 
-                  second: (dataObj.second && Array.isArray(dataObj.second)) ? dataObj.second.find(r=>r[0]==rollNo) : null, 
-                  annual: (dataObj.annual && Array.isArray(dataObj.annual)) ? dataObj.annual.find(r=>r[0]==rollNo) : null 
-              } 
+              roll: rollNo, gr: col[1]?col[1].toString().trim():"", name: col[2].toString().trim(), photo: col[3]?col[3].toString().trim():"", dob: col[4]?col[4].toString().trim():"", blood: col[12]?col[12].toString().trim():"", std: stdVal, stream: streamVal, fPhone: col[9]?col[9].toString().replace(/[^0-9]/g, ''):"", mPhone: col[10]?col[10].toString().replace(/[^0-9]/g, ''):"", udise: col[8]?col[8].toString().trim():"", leaveDate: savedLeave, status: col[15]?col[15].toString().trim():"", 
+              marks: { first: (dataObj.first && Array.isArray(dataObj.first)) ? dataObj.first.find(r=>r[0]==rollNo) : null, second: (dataObj.second && Array.isArray(dataObj.second)) ? dataObj.second.find(r=>r[0]==rollNo) : null, annual: (dataObj.annual && Array.isArray(dataObj.annual)) ? dataObj.annual.find(r=>r[0]==rollNo) : null } 
           };
           importedRoster.push(student);
         }
-        
-        if (importedRoster.length > 0) { 
-            roster = importedRoster; 
-            saveToStorage(); 
-        }
+        if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); }
 
         attendanceDB = {};
         if(dataObj.attLog && Array.isArray(dataObj.attLog) && dataObj.attLog.length > 1) {
@@ -827,16 +807,17 @@
                 let dRaw = row[0]; let r = row[3]; let s = row[5] || "";
                 if(!dRaw || !r) continue;
 
-                let d = String(dRaw).trim();
-                if (d.includes('T')) {
-                    let dt = new Date(d);
-                    d = String(dt.getDate()).padStart(2, '0') + '/' + String(dt.getMonth() + 1).padStart(2, '0') + '/' + dt.getFullYear();
-                } else if (d.includes('-') && d.split('-')[0].length === 4) {
+                // 🌟 માસ્ટર ડેટ ફિલ્ટર (Date Parser) 🌟
+                let dStr = String(dRaw).trim().split(' ')[0]; 
+                if (dStr.includes('T')) dStr = dStr.split('T')[0];
+
+                let d = dStr;
+                if (d.includes('-')) {
                     let p = d.split('-');
-                    d = `${p[2]}/${p[1]}/${p[0]}`;
+                    if (p[0].length === 4) d = `${p[2]}/${p[1]}/${p[0]}`; 
                 } else if (d.includes('/')) {
                     let p = d.split('/');
-                    if(p.length === 3) d = `${p[0].padStart(2,'0')}/${p[1].padStart(2,'0')}/${p[2].substring(0,4)}`;
+                    if (p.length === 3) d = `${p[0].padStart(2,'0')}/${p[1].padStart(2,'0')}/${p[2].substring(0,4)}`;
                 }
 
                 let shortS = 'P';
@@ -849,7 +830,6 @@
                 attendanceDB[d][r] = shortS;
             }
         }
-        
         setupList();
         if(!isAuto) alert("સફળતાપૂર્વક સિંક થયું! કુલ વિદ્યાર્થીઓ: " + roster.length);
     } catch(e) {
@@ -857,20 +837,17 @@
     }
   }
 
-  // 🌟 નવો ટૉગલ પ્રિવ્યૂ કોડ (Toggle Preview) 🌟
+  // 🌟 નવો પ્રિવ્યૂ અને ટૉગલ કોડ 🌟
   function togglePreviewAttendanceSheet() {
     let preContainer = document.getElementById('monthlyPreviewContainer');
     let toggleBtn = document.getElementById('btnPreviewToggle');
     let printBtn = document.getElementById('btnPrintMonthBtn');
     
-    // જો પ્રિવ્યૂ ખુલ્લું હોય તો તેને છુપાવી દો
     if (preContainer.style.display === 'block') {
         preContainer.style.display = 'none';
         printBtn.style.display = 'none';
         toggleBtn.innerHTML = '👁️ પત્રક જુઓ';
-    } 
-    // જો છુપાયેલું હોય તો જનરેટ કરીને બતાવો
-    else {
+    } else {
         let activeFilter = document.getElementById('globalClassFilter').value;
         let selectedMonth = document.getElementById('attMonthPicker').value; 
         if(!selectedMonth) return alert("કૃપા કરીને મહિનો પસંદ કરો.");
@@ -919,8 +896,6 @@
         });
 
         document.getElementById('prAttBody').innerHTML = tbodyHtml;
-
-        // પ્રિવ્યૂ બતાવવા માટે
         preContainer.innerHTML = `<table width="100%" border="1" cellpadding="3" style="border-collapse:collapse; text-align:center; font-size:11px; min-width:800px;"><thead>${theadHtml}</thead><tbody>${tbodyHtml}</tbody></table>`;
         preContainer.style.display = 'block';
         printBtn.style.display = 'inline-block';
@@ -928,7 +903,6 @@
     }
   }
 
-  // પ્રિવ્યૂ જોયા પછી પ્રિન્ટ કરવા માટે
   function printPreviewedSheet() {
     document.body.classList.add('printing-att'); 
     document.getElementById('mainApp').style.display = 'none'; 
@@ -958,24 +932,15 @@
   }
 
   function deleteStudent(index) { 
-    if (confirm("શું તમે ખરેખર આ વિદ્યાર્થીની માહિતી કાઢી નાખવા માંગો છો?")) { 
-        roster.splice(index, 1); 
-        saveToStorage(); 
-        setupList(); 
-        renderAdminTable(); 
-    } 
+    if (confirm("શું તમે ખરેખર આ વિદ્યાર્થીની માહિતી કાઢી નાખવા માંગો છો?")) { roster.splice(index, 1); saveToStorage(); setupList(); renderAdminTable(); } 
   }
 
   function exportDataJSON() { 
-    const a = document.createElement('a'); 
-    a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2)); 
-    a.download = `School_Data_${todayStr.replace(/\//g, '-')}.json`; 
-    a.click(); 
+    const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(roster, null, 2)); a.download = `School_Data_${todayStr.replace(/\//g, '-')}.json`; a.click(); 
   }
 
   function importDataCSV(event) {
-    const file = event.target.files[0]; if (!file) return;
-    const reader = new FileReader();
+    const file = event.target.files[0]; if (!file) return; const reader = new FileReader();
     reader.onload = function(e) { 
       const lines = e.target.result.split('\n'); if (lines.length < 2) return alert("ફાઇલમાં કોઈ ડેટા મળ્યો નથી!");
       let importedRoster = [];
@@ -998,44 +963,30 @@
   function generateSubjectInputs() {
     const stIdx = document.getElementById('reportStudent').value;
     if(!stIdx || stIdx === "" || roster.length === 0) return;
-    const st = roster[stIdx];
-    const examType = document.getElementById('reportExamType').value;
-    let std = st.std ? st.std.toString().trim() : "12";
-    let stream = st.stream ? st.stream : "Commerce";
+    const st = roster[stIdx]; const examType = document.getElementById('reportExamType').value;
+    let std = st.std ? st.std.toString().trim() : "12"; let stream = st.stream ? st.stream : "Commerce";
     let elInfo = document.getElementById('reportStudentInfo'); if(elInfo) elInfo.innerText = `વિગત: ${formatStdStream(std, stream)}`;
     let noteEl = document.getElementById('repSpecialNote');
-    if(noteEl) {
-        if(examType === 'first') noteEl.value = "નોંધ: ૨૧ દિવસનું દિવાળી વેકેશન. નવું સત્ર તા. __/__/____ થી શરૂ થશે.";
-        else if(examType === 'annual' && std === "11") noteEl.value = "નોંધ: ૩૫ દિવસનું ઉનાળુ વેકેશન. નવું શૈક્ષણિક સત્ર તા. __/__/____ થી શરૂ થશે.";
-        else noteEl.value = "";
-    }
-    if(std === "12" && examType === "annual") {
-        document.getElementById('subjectInputsContainer').innerHTML = `<p style="text-align:center; color:red; font-size:14px; font-weight:bold; border:2px dashed red; padding:15px;">⚠️ ધોરણ 12 ની વાર્ષિક પરીક્ષા બોર્ડ દ્વારા લેવાય છે.</p>`;
-        if(document.getElementById('repRank')) document.getElementById('repRank').value = "Not Eligible"; return;
-    }
+    if(noteEl) { if(examType === 'first') noteEl.value = "નોંધ: ૨૧ દિવસનું દિવાળી વેકેશન. નવું સત્ર તા. __/__/____ થી શરૂ થશે."; else if(examType === 'annual' && std === "11") noteEl.value = "નોંધ: ૩૫ દિવસનું ઉનાળુ વેકેશન. નવું શૈક્ષણિક સત્ર તા. __/__/____ થી શરૂ થશે."; else noteEl.value = ""; }
+    if(std === "12" && examType === "annual") { document.getElementById('subjectInputsContainer').innerHTML = `<p style="text-align:center; color:red; font-size:14px; font-weight:bold; border:2px dashed red; padding:15px;">⚠️ ધોરણ 12 ની વાર્ષિક પરીક્ષા બોર્ડ દ્વારા લેવાય છે.</p>`; if(document.getElementById('repRank')) document.getElementById('repRank').value = "Not Eligible"; return; }
     let mainSubs = getSubjectsList(stream); let html = ""; let mData = st.marks ? st.marks[examType] : null;
     if(std === "11" && examType === "annual") {
         html += `<div style="font-size:13px; color:#0d47a1; margin-bottom:12px; font-weight:bold;">મુખ્ય ૭ વિષયો</div>`;
         mainSubs.forEach((sub, i) => {
-            let b = 2 + (i*4); let valTh = mData ? (mData[b]||"") : ""; let valIn = mData ? (mData[b+1]||"") : ""; let valSi = mData ? (mData[b+2]||"") : ""; let valKr = mData ? (mData[b+3]||"") : "";
-            let valM1 = (st.marks && st.marks.first) ? (st.marks.first[2+i]||"") : ""; let valM2 = (st.marks && st.marks.second) ? (st.marks.second[2+i]||"") : "";
+            let b = 2 + (i*4); let valTh = mData ? (mData[b]||"") : ""; let valIn = mData ? (mData[b+1]||"") : ""; let valSi = mData ? (mData[b+2]||"") : ""; let valKr = mData ? (mData[b+3]||"") : ""; let valM1 = (st.marks && st.marks.first) ? (st.marks.first[2+i]||"") : ""; let valM2 = (st.marks && st.marks.second) ? (st.marks.second[2+i]||"") : "";
             html += `<div class="subject-block"><div class="subject-name">${sub}</div><div class="grid-3"><input type="text" id="m_${i}_1" placeholder="પ્રથમ (50)" value="${valM1}"><input type="text" id="m_${i}_2" placeholder="દ્વિતીય (50)" value="${valM2}"><input type="text" id="m_${i}_3" placeholder="વાર્. થિયરી (80)" value="${valTh}"><input type="text" id="m_${i}_4" placeholder="વાર્. આંતરિક (20)" value="${valIn}"><input type="text" id="m_${i}_si" placeholder="સિધ્ધી ગુણ" value="${valSi}" style="background:#e8f5e9;"><input type="text" id="m_${i}_kr" placeholder="કૃપા ગુણ" value="${valKr}" style="background:#fff3e0;"></div></div>`;
         });
         html += `<div style="font-size:13px; color:#0d47a1; margin-top:20px; margin-bottom:12px; font-weight:bold;">ગૌણ વિષયો</div>`;
         ["સીટી", "પીટી"].forEach((sub, i) => { let valMi = mData ? (mData[30+i]||"") : ""; html += `<div class="grid-2" style="margin-bottom:8px; align-items:center;"><div style="font-size:13.5px; font-weight:600;">${sub}:</div><input type="text" id="minor_${i}" placeholder="ગુણ (100 માંથી)" value="${valMi}"></div>`; });
         html += `<input type="hidden" id="reportSetupType" value="11_annual">`;
-        if(document.getElementById('repTotalDays')) document.getElementById('repTotalDays').value = mData ? (mData[32]||"210") : "210"; 
-        if(document.getElementById('repPresentDays')) document.getElementById('repPresentDays').value = mData ? (mData[33]||"") : "";
-        let sheetRemark = mData ? (mData[34]||"") : ""; let remDropdown = document.getElementById('repRemarks');
-        if(remDropdown) { if(sheetRemark !== "") remDropdown.innerHTML += `<option value="${sheetRemark}" selected>${sheetRemark} (શીટ)</option>`; else remDropdown.value = ""; }
+        if(document.getElementById('repTotalDays')) document.getElementById('repTotalDays').value = mData ? (mData[32]||"210") : "210"; if(document.getElementById('repPresentDays')) document.getElementById('repPresentDays').value = mData ? (mData[33]||"") : "";
+        let sheetRemark = mData ? (mData[34]||"") : ""; let remDropdown = document.getElementById('repRemarks'); if(remDropdown) { if(sheetRemark !== "") remDropdown.innerHTML += `<option value="${sheetRemark}" selected>${sheetRemark} (શીટ)</option>`; else remDropdown.value = ""; }
     } else {
         let maxMarks = (std === "11") ? 50 : 100; html += `<div style="font-size:13px; color:#c62828; margin-bottom:12px; font-weight:bold;">કુલ ગુણ: ${maxMarks}</div>`;
         mainSubs.forEach((sub, i) => { let val = mData ? (mData[2+i]||"") : ""; html += `<div class="grid-2" style="margin-bottom:8px; align-items:center;"><div style="font-size:13.5px; font-weight:600; color:#0d47a1;">${sub}:</div><input type="text" id="m_direct_${i}" placeholder="ગુણ" value="${val}" oninput="this.value = this.value.toUpperCase()"></div>`; });
         html += `<input type="hidden" id="reportSetupType" value="direct"><input type="hidden" id="reportMaxMarks" value="${maxMarks}">`;
-        if(document.getElementById('repTotalDays')) document.getElementById('repTotalDays').value = mData ? (mData[9]||"210") : "210"; 
-        if(document.getElementById('repPresentDays')) document.getElementById('repPresentDays').value = mData ? (mData[10]||"") : "";
-        let sheetRemark = mData ? (mData[11]||"") : ""; let remDropdown = document.getElementById('repRemarks');
-        if(remDropdown) { if(sheetRemark !== "") remDropdown.innerHTML += `<option value="${sheetRemark}" selected>${sheetRemark} (શીટ)</option>`; else remDropdown.value = ""; }
+        if(document.getElementById('repTotalDays')) document.getElementById('repTotalDays').value = mData ? (mData[9]||"210") : "210"; if(document.getElementById('repPresentDays')) document.getElementById('repPresentDays').value = mData ? (mData[10]||"") : "";
+        let sheetRemark = mData ? (mData[11]||"") : ""; let remDropdown = document.getElementById('repRemarks'); if(remDropdown) { if(sheetRemark !== "") remDropdown.innerHTML += `<option value="${sheetRemark}" selected>${sheetRemark} (શીટ)</option>`; else remDropdown.value = ""; }
     }
     document.getElementById('subjectInputsContainer').innerHTML = html; autoCalculateRank(); 
   }
@@ -1044,8 +995,7 @@
       const stIdxStr = document.getElementById('reportStudent').value; if(!stIdxStr || stIdxStr === "") return;
       const stIdx = parseInt(stIdxStr); if(isNaN(stIdx) || roster.length === 0) return;
       const st = roster[stIdx]; const examType = document.getElementById('reportExamType').value; const setupType = document.getElementById('reportSetupType').value;
-      let std = st.std ? st.std.toString().trim() : "12"; let stream = st.stream ? st.stream : "Commerce"; let mainSubs = getSubjectsList(stream);
-      let allScores = [];
+      let std = st.std ? st.std.toString().trim() : "12"; let stream = st.stream ? st.stream : "Commerce"; let mainSubs = getSubjectsList(stream); let allScores = [];
 
       for(let i=0; i<roster.length; i++) {
           let s = roster[i]; let s_std = s.std ? s.std.toString().trim() : "12"; let s_stream = s.stream ? s.stream : "Commerce";
@@ -1062,10 +1012,7 @@
               }
           } else {
               let maxMarks = (std === "11") ? 50 : 100;
-              for(let j=0; j<mainSubs.length; j++) {
-                  let val = mData[2+j] || ""; let isAB = (val==='AB'||val==='ab'); let m = isAB ? 0 : (parseInt(val)||0);
-                  if(isAB || m < Math.ceil(maxMarks*0.33)) isFail = true; total += m;
-              }
+              for(let j=0; j<mainSubs.length; j++) { let val = mData[2+j] || ""; let isAB = (val==='AB'||val==='ab'); let m = isAB ? 0 : (parseInt(val)||0); if(isAB || m < Math.ceil(maxMarks*0.33)) isFail = true; total += m; }
           }
           if(!isFail && !hasKrupa) allScores.push({ index: i, score: total });
       }
