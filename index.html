@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="gu">
-<head> 
+<head>
   <meta name="theme-color" content="#0d47a1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ - સ્માર્ટ વર્ગ સંચાલન</title>
   
-  <!-- 🌟 રાઈટ ક્લિક અને ઇન્સ્પેક્ટ કોડ (સુરક્ષા) -->
+  <!-- રાઈટ ક્લિક અને ઇન્સ્પેક્ટ કોડ (સુરક્ષા) -->
   <script>
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.onkeydown = function(e) {
@@ -243,12 +243,15 @@
         </div>
     </div>
 
-    <!-- માસિક પ્રિન્ટ સેક્શન -->
+    <!-- 🌟 માસિક પ્રિન્ટ સેક્શન (નવા પ્રિવ્યૂ અને પ્રિન્ટ બટન સાથે) 🌟 -->
     <div class="card" style="background: #e3f2fd; border-color: #bbdefb; margin-bottom:15px;">
-        <h4 style="margin:0 0 10px; color:var(--primary); font-size:14px;">📄 માસિક હાજરી પત્રક (PDF)</h4>
-        <div style="display:flex; gap:10px;">
+        <h4 style="margin:0 0 10px; color:var(--primary); font-size:14px;">📄 માસિક હાજરી પત્રક (પ્રિવ્યૂ અને પ્રિન્ટ)</h4>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
             <input type="month" id="attMonthPicker" style="flex:1;">
-            <button class="btn btn-main" style="width:auto;" onclick="printAttendanceSheet()">🖨️ પ્રિન્ટ કાઢો</button>
+            <button class="btn btn-main" style="width:auto;" onclick="previewAttendanceSheet()">👁️ પત્રક જુઓ</button>
+            <button class="btn btn-success" id="btnPrintMonthBtn" style="width:auto; display:none;" onclick="printPreviewedSheet()">🖨️ પ્રિન્ટ</button>
+        </div>
+        <div id="monthlyPreviewContainer" style="display:none; background:#fff; padding:10px; border:1px solid #bbdefb; border-radius:8px; overflow-x:auto;">
         </div>
     </div>
 
@@ -394,7 +397,7 @@
   <div id="adminPanel" class="view-panel">
     <div class="card" style="border-left: 4px solid var(--success); background-color: #f1f8e9;">
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
-      <div class="form-group"><label>Google Apps Script URL:</label><input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbzJfVvpH3hUmBS-rKePmAHI-oeHgAq4VodBk5b6y2MGcgu9ikcsiYYVpofLRStjGKT4og/exec"></div>
+      <div class="form-group"><label>Google Apps Script URL:</label><input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbyhFMlpjyiLJVCM3WaMBytioP70-QoinUYy_duEfEt8e7ZamPBJOsGt3pPI3Dd_t8fMAg/exec"></div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
         <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="importDataCSV(event)">
@@ -479,7 +482,6 @@
   let attendanceDB = {}; 
   let currentSessionAttMap = {}; 
 
-  // 🌟 ડેટ ફિક્સ ૧: આંકડા હંમેશા અંગ્રેજી જ રહે અને બરાબર સેટ થાય 🌟
   const todayDateObj = new Date();
   const dd = String(todayDateObj.getDate()).padStart(2, '0');
   const mm = String(todayDateObj.getMonth() + 1).padStart(2, '0');
@@ -803,16 +805,17 @@
                 let dRaw = row[0]; let r = row[3]; let s = row[5] || "";
                 if(!dRaw || !r) continue;
 
-                // 🌟 ડેટ ફિક્સ ૨: ગૂગલ શીટની ઇન્ટરનેશનલ તારીખને લોકલ DD/MM/YYYY માં ફેરવવી 🌟
-                let d = dRaw;
-                if (typeof dRaw === 'string') {
-                    if (dRaw.includes('T')) {
-                        let dt = new Date(dRaw);
-                        d = String(dt.getDate()).padStart(2, '0') + '/' + String(dt.getMonth() + 1).padStart(2, '0') + '/' + dt.getFullYear();
-                    } else if (dRaw.includes('-') && dRaw.split('-')[0].length === 4) {
-                        let p = dRaw.split('-');
-                        d = `${p[2]}/${p[1]}/${p[0]}`;
-                    }
+                // 🌟 ડેટાબેઝમાં તારીખને માત્ર DD/MM/YYYY સ્વરૂપમાં જ સ્ટોર કરવી
+                let d = String(dRaw).trim();
+                if (d.includes('T')) {
+                    let dt = new Date(d);
+                    d = String(dt.getDate()).padStart(2, '0') + '/' + String(dt.getMonth() + 1).padStart(2, '0') + '/' + dt.getFullYear();
+                } else if (d.includes('-') && d.split('-')[0].length === 4) {
+                    let p = d.split('-');
+                    d = `${p[2]}/${p[1]}/${p[0]}`;
+                } else if (d.includes('/')) {
+                    let p = d.split('/');
+                    if(p.length === 3) d = `${p[0].padStart(2,'0')}/${p[1].padStart(2,'0')}/${p[2].substring(0,4)}`;
                 }
 
                 let shortS = 'P';
@@ -831,6 +834,80 @@
     } catch(e) {
         if(!isAuto) alert("ડેટા પ્રોસેસ કરવામાં ભૂલ: " + e.message);
     }
+  }
+
+  // 🌟 નવો પ્રિવ્યૂ કોડ 🌟
+  function previewAttendanceSheet() {
+    let activeFilter = document.getElementById('globalClassFilter').value;
+    let selectedMonth = document.getElementById('attMonthPicker').value; 
+    if(!selectedMonth) return alert("કૃપા કરીને મહિનો પસંદ કરો.");
+    
+    let yyyy = selectedMonth.split('-')[0]; let mm = selectedMonth.split('-')[1];
+    let dateObj = new Date(yyyy, mm-1, 1);
+    let monthName = dateObj.toLocaleString('gu-IN', { month: 'long', year: 'numeric' });
+
+    document.getElementById('prAttMonthView').innerText = monthName;
+    document.getElementById('prAttStdView').innerText = activeFilter === "all" ? "બધા (ધો. 11 અને 12)" : `ધોરણ ${activeFilter}`;
+
+    let daysInMonth = new Date(yyyy, mm, 0).getDate();
+    let theadHtml = `<tr style="background:#f1f3f5; font-weight:bold;"><th width="5%">રોલ</th><th width="20%">વિદ્યાર્થીનીનું નામ</th>`;
+    for(let d=1; d<=daysInMonth; d++) {
+        let isSunday = (new Date(yyyy, mm-1, d).getDay() === 0);
+        theadHtml += `<th style="${isSunday ? 'color:#c62828;' : ''}">${d}</th>`;
+    }
+    theadHtml += `</tr>`;
+    document.getElementById('prAttHead').innerHTML = theadHtml;
+
+    let tbodyHtml = "";
+    roster.forEach((st) => {
+      let stStd = st.std ? st.std.toString().trim() : "12";
+      if(activeFilter !== "all" && activeFilter !== stStd) return; 
+      if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return; 
+      
+      tbodyHtml += `<tr><td>${st.roll}</td><td style="text-align:left; font-weight:bold;">${st.name}</td>`;
+      for(let d=1; d<=daysInMonth; d++) {
+          let checkDate = `${String(d).padStart(2,'0')}/${mm.padStart(2,'0')}/${yyyy}`;
+          let isSunday = (new Date(yyyy, mm-1, d).getDay() === 0);
+          
+          let cellText = ""; let cellStyle = "";
+          if (isSunday) {
+              cellText = "રવિ"; cellStyle = "color:#c62828; background:#ffebee; font-size:10px;";
+          } else if (attendanceDB[checkDate] && attendanceDB[checkDate][st.roll]) {
+              let s = attendanceDB[checkDate][st.roll];
+              if(s === 'P') { cellText = "P"; cellStyle = "color:#2e7d32; font-weight:bold;"; }
+              else if(s === 'A') { cellText = "A"; cellStyle = "color:#c62828; font-weight:bold;"; }
+              else if(s === 'L') { cellText = "L"; cellStyle = "color:#f57c00; font-weight:bold;"; }
+              else if(s === 'H') { cellText = "રજા"; cellStyle = "color:#0d47a1; font-size:10px;"; }
+              else if(s === 'V') { cellText = "વૅકેશન"; cellStyle = "color:#e65100; font-size:9px; background:#fff3e0;"; }
+          }
+          tbodyHtml += `<td style="${cellStyle}">${cellText}</td>`;
+      }
+      tbodyHtml += `</tr>`;
+    });
+
+    document.getElementById('prAttBody').innerHTML = tbodyHtml;
+
+    // પ્રિવ્યૂ બતાવવા માટે
+    let preContainer = document.getElementById('monthlyPreviewContainer');
+    preContainer.innerHTML = `<table width="100%" border="1" cellpadding="3" style="border-collapse:collapse; text-align:center; font-size:11px; min-width:800px;"><thead>${theadHtml}</thead><tbody>${tbodyHtml}</tbody></table>`;
+    preContainer.style.display = 'block';
+    document.getElementById('btnPrintMonthBtn').style.display = 'inline-block';
+  }
+
+  // 🌟 પ્રિવ્યૂ જોયા પછી પ્રિન્ટ કરવા માટે
+  function printPreviewedSheet() {
+    document.body.classList.add('printing-att'); 
+    document.getElementById('mainApp').style.display = 'none'; 
+    document.getElementById('printAttArea').style.display = 'block';
+    
+    setTimeout(() => { 
+        window.print(); 
+        setTimeout(() => { 
+            document.body.classList.remove('printing-att'); 
+            document.getElementById('mainApp').style.display = 'flex'; 
+            document.getElementById('printAttArea').style.display = 'none'; 
+        }, 1000); 
+    }, 500);
   }
 
   function renderAdminTable() {
@@ -880,60 +957,6 @@
       }
       if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setupList(); alert("સફળતાપૂર્વક અપડેટ થઈ ગયું!"); }
     }; reader.readAsText(file, "UTF-8");
-  }
-
-  function printAttendanceSheet() {
-    let activeFilter = document.getElementById('globalClassFilter').value;
-    let selectedMonth = document.getElementById('attMonthPicker').value; 
-    if(!selectedMonth) return alert("કૃપા કરીને મહિનો પસંદ કરો.");
-    
-    let yyyy = selectedMonth.split('-')[0]; let mm = selectedMonth.split('-')[1];
-    let dateObj = new Date(yyyy, mm-1, 1);
-    let monthName = dateObj.toLocaleString('gu-IN', { month: 'long', year: 'numeric' });
-
-    document.getElementById('prAttMonthView').innerText = monthName;
-    document.getElementById('prAttStdView').innerText = activeFilter === "all" ? "બધા (ધો. 11 અને 12)" : `ધોરણ ${activeFilter}`;
-
-    let daysInMonth = new Date(yyyy, mm, 0).getDate();
-    let theadHtml = `<tr style="background:#f1f3f5; font-weight:bold;"><th width="5%">રોલ</th><th width="20%">વિદ્યાર્થીનીનું નામ</th>`;
-    for(let d=1; d<=daysInMonth; d++) {
-        let isSunday = (new Date(yyyy, mm-1, d).getDay() === 0);
-        theadHtml += `<th style="${isSunday ? 'color:#c62828;' : ''}">${d}</th>`;
-    }
-    theadHtml += `</tr>`;
-    document.getElementById('prAttHead').innerHTML = theadHtml;
-
-    let tbodyHtml = "";
-    roster.forEach((st) => {
-      let stStd = st.std ? st.std.toString().trim() : "12";
-      if(activeFilter !== "all" && activeFilter !== stStd) return; 
-      if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return; 
-      
-      tbodyHtml += `<tr><td>${st.roll}</td><td style="text-align:left; font-weight:bold;">${st.name}</td>`;
-      for(let d=1; d<=daysInMonth; d++) {
-          let checkDate = `${d.toString().padStart(2,'0')}/${mm.toString().padStart(2,'0')}/${yyyy}`;
-          let isSunday = (new Date(yyyy, mm-1, d).getDay() === 0);
-          
-          let cellText = ""; let cellStyle = "";
-          if (isSunday) {
-              cellText = "રવિ"; cellStyle = "color:#c62828; background:#ffebee; font-size:10px;";
-          } else if (attendanceDB[checkDate] && attendanceDB[checkDate][st.roll]) {
-              let s = attendanceDB[checkDate][st.roll];
-              if(s === 'P') { cellText = "P"; cellStyle = "color:#2e7d32;"; }
-              else if(s === 'A') { cellText = "A"; cellStyle = "color:#c62828; font-weight:bold;"; }
-              else if(s === 'L') { cellText = "L"; cellStyle = "color:#f57c00;"; }
-              else if(s === 'H') { cellText = "રજા"; cellStyle = "color:#0d47a1; font-size:10px;"; }
-              else if(s === 'V') { cellText = "વૅકેશન"; cellStyle = "color:#e65100; font-size:9px; background:#fff3e0;"; }
-          }
-          tbodyHtml += `<td style="${cellStyle}">${cellText}</td>`;
-      }
-      tbodyHtml += `</tr>`;
-    });
-
-    document.getElementById('prAttBody').innerHTML = tbodyHtml;
-    
-    document.body.classList.add('printing-att'); document.getElementById('mainApp').style.display = 'none'; document.getElementById('printAttArea').style.display = 'block';
-    setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-att'); document.getElementById('mainApp').style.display = 'flex'; document.getElementById('printAttArea').style.display = 'none'; }, 1000); }, 500);
   }
 
   function getSubjectsList(streamStr) { let commonSubs = ["ગુજરાતી", "અંગ્રેજી", "અર્થશાસ્ત્ર"]; let streamSubs = streamStr.toLowerCase().includes('arts') ? ["હિન્દી", "સંસ્કૃત", "સમાજશાસ્ત્ર", "ચિત્રકામ"] : ["નામાના મૂળતત્વો", "વાણિજ્ય વ્યવસ્થા અને સંચાલન", "આંકડાશાસ્ત્ર", "એસ.પી.સી.સી."]; return [...commonSubs, ...streamSubs]; }
