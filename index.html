@@ -294,16 +294,12 @@
       
       <div id="subjectInputsContainer" style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:15px; max-height:400px; overflow-y:auto;"><p style="text-align:center; color:#888; font-size:12px;">વિદ્યાર્થીની પસંદ કરો.</p></div>
       
-      <!-- 🌟 નવું: માર્કશીટ પ્રિવ્યૂ બટન અને કન્ટેનર -->
       <div class="btn-grid">
         <button class="btn btn-main" id="btnPreviewMarksheet" onclick="togglePreviewMarksheet()">👁️ માર્કશીટ જુઓ / છુપાવો</button>
         <button class="btn btn-success" id="btnReportWA" onclick="calculateAndShareReport()">💬 WhatsApp રિઝલ્ટ</button>
       </div>
       
-      <!-- પ્રિવ્યૂ માટેનું બોક્સ -->
       <div id="marksheetPreviewContainer" style="display:none; background:#fff; padding:15px; border:1px solid #bbdefb; border-radius:8px; overflow-x:auto; margin-top:15px;"></div>
-      
-      <!-- પ્રિન્ટ બટન (પ્રિવ્યૂ જોયા પછી જ દેખાશે) -->
       <button class="btn btn-main" id="btnReportPrint" style="display:none; width:100%; margin-top:10px; background:#d32f2f;" onclick="printPreviewedMarksheet()">🖨️ માર્કશીટ પ્રિન્ટ કાઢો</button>
 
     </div>
@@ -412,13 +408,7 @@
   <div id="adminPanel" class="view-panel">
     <div class="card" style="border-left: 4px solid var(--success); background-color: #f1f8e9;">
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
-      
-      <!-- ⚠️ સાહેબ, અહીં તમારી નવી સ્ક્રિપ્ટ લિંક પેસ્ટ કરવાનું ભૂલતા નહિ -->
-      <div class="form-group">
-          <label>Google Apps Script URL:</label>
-          <input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbwN6D5zlgnSA3-gKW84vHPPsn0bhvEC03FHSkOjsQhmjoMFd_o1b31wbY8VE0kO6oKsgQ/exec">
-      </div>
-      
+      <div class="form-group"><label>Google Apps Script URL:</label><input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbwN6D5zlgnSA3-gKW84vHPPsn0bhvEC03FHSkOjsQhmjoMFd_o1b31wbY8VE0kO6oKsgQ/exec"></div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
         <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="importDataCSV(event)">
@@ -615,6 +605,7 @@
                <button class="att-btn ${defaultStatus==='L'?'l-active':''}" onclick="setAttendanceStatus(${st.roll}, 'L', this)">L</button>
             </div>
             <button class="btn btn-father" onclick="sendAbsent('${st.name}', '${st.fPhone}')">📲 પિતા</button>
+            <button class="btn btn-mother" onclick="sendAbsent('${st.name}', '${st.mPhone}')">📲 માતા</button>
           </div>
         </div>
       `;
@@ -808,7 +799,6 @@
           let existingStudent = roster.find(s => s.roll === rollNo && s.std === stdVal && s.stream === streamVal);
           let savedLeave = existingStudent && existingStudent.leaveDate ? existingStudent.leaveDate : "";
 
-          // 🌟 ડેટાબેઝમાંથી માર્ક્સ શોધવાનો સ્માર્ટ કોડ 🌟
           let student = { 
               roll: rollNo, gr: col[1]?col[1].toString().trim():"", name: col[2].toString().trim(), photo: col[3]?col[3].toString().trim():"", dob: col[4]?col[4].toString().trim():"", blood: col[12]?col[12].toString().trim():"", std: stdVal, stream: streamVal, fPhone: col[9]?col[9].toString().replace(/[^0-9]/g, ''):"", mPhone: col[10]?col[10].toString().replace(/[^0-9]/g, ''):"", udise: col[8]?col[8].toString().trim():"", leaveDate: savedLeave, status: col[15]?col[15].toString().trim():"", 
               marks: { 
@@ -929,7 +919,6 @@
     setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-att'); document.getElementById('mainApp').style.display = 'flex'; document.getElementById('printAttArea').style.display = 'none'; }, 1000); }, 500);
   }
 
-  // 🌟 માર્કશીટ ટૉગલ પ્રિવ્યૂ ફંક્શન 🌟
   function togglePreviewMarksheet() {
     let preContainer = document.getElementById('marksheetPreviewContainer');
     let toggleBtn = document.getElementById('btnPreviewMarksheet');
@@ -943,9 +932,8 @@
         let d = extractReportData(); 
         if(!d) return alert("કૃપા કરીને પહેલા વિદ્યાર્થીની પસંદ કરો.");
         
-        populateMarksheetPrintArea(d); // ડેટા જનરેટ કરો
+        populateMarksheetPrintArea(d); 
         
-        // પ્રિન્ટ એરિયાનો કોડ ક્લોન કરીને પ્રિવ્યૂ બોક્સમાં મૂકો
         preContainer.innerHTML = document.getElementById('printReportArea').innerHTML;
         preContainer.style.display = 'block';
         printBtn.style.display = 'block';
@@ -960,7 +948,6 @@
     setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-report'); document.getElementById('mainApp').style.display = 'flex'; document.getElementById('printReportArea').style.display = 'none'; }, 1000); }, 500);
   }
 
-  // સહાયક માર્કશીટ ફંક્શન્સ 
   function populateMarksheetPrintArea(d) {
     document.getElementById('prExamName').innerText = d.examName; document.getElementById('prName').innerText = d.st.name; document.getElementById('prStd').innerText = formatStdStream(d.st.std, d.stream); document.getElementById('prRoll').innerText = d.st.roll; document.getElementById('prGr').innerText = d.st.gr; document.getElementById('prDob').innerText = d.st.dob || "-"; document.getElementById('prPresentDays').innerText = d.preDays; document.getElementById('prTotalDays').innerText = d.totDays; document.getElementById('prRemarks').innerText = d.rems; document.getElementById('prRankView').innerText = d.finalRank;
     let headHtml = ""; let marksBody = "";
@@ -1049,7 +1036,6 @@
     }
     document.getElementById('subjectInputsContainer').innerHTML = html; autoCalculateRank(); 
     
-    // 🌟 પ્રિવ્યૂ છુપાવો જો નવો વિદ્યાર્થી બદલાય
     let preContainer = document.getElementById('marksheetPreviewContainer');
     if (preContainer && preContainer.style.display === 'block') {
          togglePreviewMarksheet();
