@@ -9,8 +9,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ - સ્માર્ટ વર્ગ સંચાલન</title>
   
+  <!-- 🌟 સ્માર્ટ સુરક્ષા કોડ: માત્ર ઇનપુટ બોક્સમાં પેસ્ટ કરવા દેશે, બાકી બધે બ્લોક! -->
   <script>
-    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('contextmenu', event => {
+        // જો યુઝર લખાણ વાળા બોક્સ પર ક્લિક કરે તો પેસ્ટ કરવા દેવું
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+            return;
+        }
+        // બાકી આખી એપમાં રાઈટ-ક્લિક બ્લોક
+        event.preventDefault();
+    });
+    
     document.onkeydown = function(e) {
       if(e.keyCode == 123) { return false; }
       if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
