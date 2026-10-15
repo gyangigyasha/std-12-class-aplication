@@ -638,11 +638,11 @@
       syncGoogleSheetLive(true); 
   }
 
-  // 🌟 નવો સ્માર્ટ ફિલ્ટર કમાન્ડ: આનાથી ડેશબોર્ડ હંમેશા બરાબર અપડેટ થશે 🌟
+  // 🌟 સ્માર્ટ ફિલ્ટર
   function applyGlobalFilter() {
-      setupList(); // લિસ્ટ અને હાજરીનો ડેટા ફરીથી સેટ કરશે
-      updateDashboardStats(); // હાજર-ગેરહાજર ફરીથી ગણશે
-      updateCharts(); // ગ્રાફ્સને નવા આંકડાઓ સાથે બદલશે
+      setupList(); 
+      updateDashboardStats(); 
+      updateCharts(); 
   }
 
   function setupList() {
@@ -684,12 +684,15 @@
       let dispStd = formatStdStream(st.std, st.stream);
       let leaveHtml = "";
       
+      // 🌟 નવો ડેટાબેઝ કી: રોલ નંબર + નામ (મિક્સિંગ રોકવા માટે) 🌟
+      let uniqueKey = st.roll + "_" + String(st.name).trim();
+      
       let defaultStatus = 'P';
       if(st.leaveDate && st.leaveDate === selectedIsoDate) defaultStatus = 'L';
-      if(attendanceDB[selectedIndDate] && attendanceDB[selectedIndDate][st.roll]) {
-          defaultStatus = attendanceDB[selectedIndDate][st.roll];
+      if(attendanceDB[selectedIndDate] && attendanceDB[selectedIndDate][uniqueKey]) {
+          defaultStatus = attendanceDB[selectedIndDate][uniqueKey];
       }
-      currentSessionAttMap[st.roll] = defaultStatus;
+      currentSessionAttMap[uniqueKey] = defaultStatus;
 
       if(defaultStatus === 'L') leaveHtml = `<div class="leave-badge">🟡 રજા નોંધાયેલ</div>`;
       if(defaultStatus === 'H') leaveHtml = `<div class="leave-badge" style="background:#e3f2fd; color:#0d47a1; border-color:#bbdefb;">🏖️ જાહેર રજા</div>`;
@@ -706,9 +709,9 @@
           </div>
           <div class="actions">
             <div class="att-toggle-group">
-               <button class="att-btn ${defaultStatus==='P'?'p-active':''}" onclick="setAttendanceStatus(${st.roll}, 'P', this)">P</button>
-               <button class="att-btn ${defaultStatus==='A'?'a-active':''}" onclick="setAttendanceStatus(${st.roll}, 'A', this)">A</button>
-               <button class="att-btn ${defaultStatus==='L'?'l-active':''}" onclick="setAttendanceStatus(${st.roll}, 'L', this)">L</button>
+               <button class="att-btn ${defaultStatus==='P'?'p-active':''}" onclick="setAttendanceStatus(${i}, 'P', this)">P</button>
+               <button class="att-btn ${defaultStatus==='A'?'a-active':''}" onclick="setAttendanceStatus(${i}, 'A', this)">A</button>
+               <button class="att-btn ${defaultStatus==='L'?'l-active':''}" onclick="setAttendanceStatus(${i}, 'L', this)">L</button>
             </div>
             <button class="btn btn-father" onclick="sendAbsent('${(st.name||'').replace(/'/g, "\\'")}', '${(st.fPhone||'').replace(/'/g, "\\'")}')">📲 પિતા</button>
             <button class="btn btn-mother" onclick="sendAbsent('${(st.name||'').replace(/'/g, "\\'")}', '${(st.mPhone||'').replace(/'/g, "\\'")}')">📲 માતા</button>
@@ -743,9 +746,9 @@
 
   function updateDashboardStats() {
       let pCount = 0; let aCount = 0;
-      for (let roll in currentSessionAttMap) {
-          if (currentSessionAttMap[roll] === 'P') pCount++;
-          if (currentSessionAttMap[roll] === 'A') aCount++;
+      for (let key in currentSessionAttMap) {
+          if (currentSessionAttMap[key] === 'P') pCount++;
+          if (currentSessionAttMap[key] === 'A') aCount++;
       }
       let elPresent = document.getElementById('dashPresentCount');
       if (elPresent) elPresent.innerText = pCount;
@@ -754,8 +757,12 @@
       if (elAbsent) elAbsent.innerText = aCount;
   }
 
-  function setAttendanceStatus(roll, status, btnElement) {
-    currentSessionAttMap[roll] = status;
+  // 🌟 સ્માર્ટ હાજરી સેવર
+  function setAttendanceStatus(index, status, btnElement) {
+    let st = roster[index];
+    let uniqueKey = st.roll + "_" + String(st.name).trim();
+    currentSessionAttMap[uniqueKey] = status;
+    
     let group = btnElement.parentElement;
     group.querySelectorAll('.att-btn').forEach(b => b.classList.remove('p-active', 'a-active', 'l-active'));
     if(status === 'P') btnElement.classList.add('p-active');
@@ -822,6 +829,7 @@
       if(!stIdxStr || stIdxStr === "") { container.style.display = 'none'; return; }
       
       const st = roster[parseInt(stIdxStr)];
+      let uniqueKey = st.roll + "_" + String(st.name).trim();
       
       let overall_tDays = 0, overall_pDays = 0;
       let month_tDays = 0, month_pDays = 0;
@@ -834,7 +842,7 @@
       let currMonthName = monthNames[todayObj.getMonth()];
 
       for (let dateStr in attendanceDB) {
-          let stat = attendanceDB[dateStr][st.roll];
+          let stat = attendanceDB[dateStr][uniqueKey];
           if(stat === 'P' || stat === 'A' || stat === 'L') {
               overall_tDays++;
               if(stat === 'P') overall_pDays++;
@@ -910,7 +918,7 @@
       let selIsoDate = document.getElementById('attDailyDate').value;
       let indDate = formatToIndianDate(selIsoDate);
       if(confirm(`શું તમે ${indDate} ના રોજ "જાહેર રજા / સ્થાનિક રજા" (Holiday) જાહેર કરવા માંગો છો? આનાથી બધા વિદ્યાર્થીઓની રજા પૂરાઈ જશે.`)) {
-          for (let roll in currentSessionAttMap) currentSessionAttMap[roll] = 'H';
+          for (let key in currentSessionAttMap) currentSessionAttMap[key] = 'H';
           submitAttendanceToSheet();
       }
   }
@@ -948,9 +956,10 @@
           
           records.push({ roll: st.roll, name: st.name, status: `વેકેશન/રજા (${reason})` });
           
+          let uniqueKey = st.roll + "_" + String(st.name).trim();
           datesArr.forEach(dStr => {
               if(!attendanceDB[dStr]) attendanceDB[dStr] = {};
-              attendanceDB[dStr][st.roll] = 'V';
+              attendanceDB[dStr][uniqueKey] = 'V';
           });
       });
       
@@ -982,12 +991,13 @@
       if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return;
       if(activeFilter !== "all" && activeFilter !== stStd) return;
 
-      let stat = currentSessionAttMap[st.roll] || 'P';
+      let uniqueKey = st.roll + "_" + String(st.name).trim();
+      let stat = currentSessionAttMap[uniqueKey] || 'P';
       let fullStat = stat === 'P' ? 'હાજર (Present)' : (stat === 'A' ? 'ગેરહાજર (Absent)' : (stat === 'H' ? 'જાહેર રજા (Holiday)' : 'રજા (Leave)'));
       records.push({ roll: st.roll, name: st.name, status: fullStat });
       
       if(!attendanceDB[selIndDate]) attendanceDB[selIndDate] = {};
-      attendanceDB[selIndDate][st.roll] = stat;
+      attendanceDB[selIndDate][uniqueKey] = stat;
     });
 
     if(records.length === 0) return alert("સેવ કરવા માટે કોઈ ડેટા નથી.");
@@ -1064,7 +1074,9 @@
         if(dataObj.attLog && Array.isArray(dataObj.attLog) && dataObj.attLog.length > 1) {
             for(let j=1; j<dataObj.attLog.length; j++) {
                 let row = dataObj.attLog[j];
-                let dRaw = row[0]; let r = row[3]; let s = row[5] || "";
+                let dRaw = row[0]; let r = row[3]; 
+                let stName = row[4] ? String(row[4]).trim() : ""; 
+                let s = row[5] || "";
                 if(!dRaw || !r) continue;
 
                 let dStr = String(dRaw).trim().split(' ')[0]; 
@@ -1085,8 +1097,9 @@
                 else if(s.includes('વેકેશન') || s.includes('વૅકેશન')) shortS = 'V';
                 else if(s.includes('રજા')) shortS = 'L';
                 
+                let uniqueKey = r + "_" + stName;
                 if(!attendanceDB[d]) attendanceDB[d] = {};
-                attendanceDB[d][r] = shortS;
+                attendanceDB[d][uniqueKey] = shortS;
             }
         }
         applyGlobalFilter();
@@ -1132,6 +1145,7 @@
           if(activeFilter !== "all" && activeFilter !== stStd) return; 
           if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return; 
           
+          let uniqueKey = st.roll + "_" + String(st.name).trim();
           tbodyHtml += `<tr><td>${st.roll}</td><td style="text-align:left; font-weight:bold;">${st.name}</td>`;
           for(let d=1; d<=daysInMonth; d++) {
               let checkDate = `${String(d).padStart(2,'0')}/${mm.padStart(2,'0')}/${yyyy}`;
@@ -1140,8 +1154,8 @@
               let cellText = ""; let cellStyle = "";
               if (isSunday) {
                   cellText = "રવિ"; cellStyle = "color:#c62828; background:#ffebee; font-size:10px;";
-              } else if (attendanceDB[checkDate] && attendanceDB[checkDate][st.roll]) {
-                  let s = attendanceDB[checkDate][st.roll];
+              } else if (attendanceDB[checkDate] && attendanceDB[checkDate][uniqueKey]) {
+                  let s = attendanceDB[checkDate][uniqueKey];
                   if(s === 'P') { cellText = "P"; cellStyle = "color:#2e7d32; font-weight:bold;"; }
                   else if(s === 'A') { cellText = "A"; cellStyle = "color:#c62828; font-weight:bold;"; }
                   else if(s === 'L') { cellText = "L"; cellStyle = "color:#f57c00; font-weight:bold;"; }
