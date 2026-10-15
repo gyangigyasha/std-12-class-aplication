@@ -496,7 +496,7 @@
   <div id="adminPanel" class="view-panel">
     <div class="card" style="border-left: 4px solid var(--success); background-color: #f1f8e9;">
       <h3 style="margin:0 0 10px; color:var(--success); font-size:16px;">🔄 ડેટા મેનેજમેન્ટ (Live Sync)</h3>
-      <div class="form-group"><label>Google Apps Script URL:</label><input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbws4_RIacZPslYfezjCjc_rImJPmnomDONnD_yTNybT72aCGb6B5OIY0iOLq75HPKFw_w/exec"></div>
+      <div class="form-group"><label>Google Apps Script URL:</label><input type="text" id="scriptUrlInput" value="https://script.google.com/macros/s/AKfycbwN6D5zlgnSA3-gKW84vHPPsn0bhvEC03FHSkOjsQhmjoMFd_o1b31wbY8VE0kO6oKsgQ/exec"></div>
       <button class="btn btn-success" id="btnSyncData" style="margin-bottom: 10px;" onclick="syncGoogleSheetLive()">🔄 લાઈવ Google Sheet માંથી ડેટા લાવો (Sync)</button>
       <div class="btn-grid" style="margin-top: 5px;">
         <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="importDataCSV(event)">
@@ -1036,21 +1036,13 @@
           let existingStudent = roster.find(s => s.roll === rollNo && s.std === stdVal && s.stream === streamVal);
           let savedLeave = existingStudent && existingStudent.leaveDate ? existingStudent.leaveDate : "";
 
-          // 🌟 હેડર રો ને અવગણવા માટે ફાઇન્ડ લોજીકમાં સુધારો
-          let marksF = null, marksS = null, marksA = null;
-          if (dataObj.first && Array.isArray(dataObj.first)) {
-              marksF = dataObj.first.find(r => String(r[0]).trim() === String(rollNo) && String(r[0]).trim() !== "રોલ નંબર");
-          }
-          if (dataObj.second && Array.isArray(dataObj.second)) {
-              marksS = dataObj.second.find(r => String(r[0]).trim() === String(rollNo) && String(r[0]).trim() !== "રોલ નંબર");
-          }
-          if (dataObj.annual && Array.isArray(dataObj.annual)) {
-              marksA = dataObj.annual.find(r => String(r[0]).trim() === String(rollNo) && String(r[0]).trim() !== "રોલ નંબર");
-          }
-
           let student = { 
               roll: rollNo, gr: col[1]?col[1].toString().trim():"", name: col[2].toString().trim(), photo: col[3]?col[3].toString().trim():"", dob: col[4]?col[4].toString().trim():"", blood: col[12]?col[12].toString().trim():"", std: stdVal, stream: streamVal, fPhone: col[9]?col[9].toString().replace(/[^0-9]/g, ''):"", mPhone: col[10]?col[10].toString().replace(/[^0-9]/g, ''):"", udise: col[8]?col[8].toString().trim():"", leaveDate: savedLeave, status: col[15]?col[15].toString().trim():"", 
-              marks: { first: marksF, second: marksS, annual: marksA } 
+              marks: { 
+                  first: (dataObj.first && Array.isArray(dataObj.first)) ? dataObj.first.find(r => String(r[0]).trim() === String(rollNo)) : null, 
+                  second: (dataObj.second && Array.isArray(dataObj.second)) ? dataObj.second.find(r => String(r[0]).trim() === String(rollNo)) : null, 
+                  annual: (dataObj.annual && Array.isArray(dataObj.annual)) ? dataObj.annual.find(r => String(r[0]).trim() === String(rollNo)) : null 
+              } 
           };
           importedRoster.push(student);
         }
@@ -1477,4 +1469,34 @@
   }
 
   function calculateAndShareReport() {
-    let d = extractReportData(); if(!d) return; let result
+    let d = extractReportData(); if(!d) return; let resultText = ""; d.mainResults.forEach(sub => { resultText += `${sub.name}: *${sub.marks}${sub.isFail ? " 🔴" : ""}* (${sub.grade})\n`; });
+    if(d.setupType === "11_annual") { resultText += `\nગૌણ વિષયો:\n`; d.minorResults.forEach(sub => { resultText += `${sub.name}: ${sub.marks} (${sub.grade})\n`; }); }
+    let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📄 *${d.examName} પરિણામ*\n\nવિદ્યાર્થીની: *${d.st.name}*\n${formatStdStream(d.st.std, d.stream)}\nહાજરી: ${d.preDays}/${d.totDays}\n-------------------------\n${resultText}-------------------------\nકુલ ગુણ (માત્ર મુખ્ય વિષયો): *${d.totalObtained} / ${d.totalMax}*\nટકાવારી: *${d.percentage.toFixed(2)}%*\nગ્રેડ: *${d.finalGrade}*\nરેન્ક: *${d.finalRank}*\nપરિણામ: ${d.passStatus.includes("પાસ") ? "🟢" : "🔴"} *${d.passStatus.split(' (')[0]}*\n\nઅભિપ્રાય: ${d.rems}\n`;
+    if(d.spNote && d.spNote.trim() !== "") msg += `\n📌 *ખાસ નોંધ:* ${d.spNote}\n`; msg += `\n- હેમંત સર (વર્ગ શિક્ષક)`; window.open(`https://api.whatsapp.com/send?phone=${d.st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  function toggleHwStudent() { document.getElementById('hwStudentGroup').style.display = (document.getElementById('hwSendType').value === 'individual') ? 'block' : 'none'; }
+  function toggleExamMarks() { const isAbsent = document.getElementById('examAttendance').value === 'absent'; const marksInput = document.getElementById('marksObt'); const totalInput = document.getElementById('marksTotal'); const btn = document.getElementById('btnExamDispatch'); if(isAbsent) { marksInput.value = "AB"; marksInput.disabled = true; totalInput.disabled = true; marksInput.style.backgroundColor = "#ffcdd2"; marksInput.style.color = "#c62828"; btn.innerText = "❌ ગેરહાજર મેસેજ મોકલો"; btn.className = "btn btn-danger"; } else { marksInput.value = ""; marksInput.disabled = false; totalInput.disabled = false; marksInput.style.backgroundColor = "#fff"; marksInput.style.color = "#333"; btn.innerText = "💬 પરિણામ મેસેજ મોકલો"; btn.className = "btn btn-main"; } }
+  function toggleLeaveType() { if(document.getElementById('leaveType').value === 'halfday') { document.getElementById('timeGroup').style.display = 'block'; document.getElementById('pickupGroup').style.display = 'block'; document.getElementById('leaveTimeInput').value = new Date().toTimeString().substring(0, 5); } else { document.getElementById('timeGroup').style.display = 'none'; document.getElementById('pickupGroup').style.display = 'none'; } }
+  function togglePickupDetails() { document.getElementById('otherPickupDetails').style.display = document.getElementById('leavePickupPerson').value === 'other' ? 'block' : 'none'; }
+  function toggleVacationBox() { let box = document.getElementById('vacationBox'); box.style.display = (box.style.display === 'none') ? 'block' : 'none'; }
+  
+  function approveLeave() { const stIdxStr = document.getElementById('leaveStudent').value; if(!stIdxStr || roster.length === 0) return; const lDate = document.getElementById('leaveDateInput').value; if(!lDate) return alert("તારીખ પસંદ કરો."); roster[parseInt(stIdxStr)].leaveDate = lDate; saveToStorage(); setupList(); alert("રજા મંજૂર કરી છે."); }
+  function cancelLeave() { const stIdxStr = document.getElementById('leaveStudent').value; if(!stIdxStr) return; const st = roster[parseInt(stIdxStr)]; if(st.leaveDate && confirm(`રજા રદ કરવી છે?`)) { st.leaveDate = ""; saveToStorage(); setupList(); alert("રજા રદ કરી છે."); } else { alert("રજા મંજૂર થયેલ નથી."); } }
+  
+  function wishBirthday(name, phone) { if(!phone) return alert("મોબાઈલ નંબર નથી."); window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n\nવાહલી દીકરી *${name}* ને જન્મદિવસની શુભેચ્છાઓ! 🎉\n- હેમંત સર`)}`, '_blank'); }
+  function sendAbsent(name, phone) { if(!phone) return alert("મોબાઈલ નંબર નથી."); window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\nવાલીશ્રી, આપની દીકરી *${name}* આજે ગેરહાજર છે.\n- હેમંત સર`)}`, '_blank'); }
+  
+  function dispatchHomework() { const type = document.getElementById('hwSendType').value; let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n📚 *ગૃહકાર્ય* (${todayStr})\n`; if (type === 'individual') { const stIdxStr = document.getElementById('hwStudent').value; if(stIdxStr && stIdxStr !== "") msg += `વિદ્યાર્થીની: ${roster[parseInt(stIdxStr)].name}\n`; } let sub = document.getElementById('hwSubject').value; if(sub) msg += `વિષય: *${sub}*\n`; msg += `વિગત: ${document.getElementById('hwDesc').value}\n`; if(document.getElementById('hwLink').value) msg += `લિંક: ${document.getElementById('hwLink').value}\n`; msg += `- હેમંત સર`; let phone = ""; if(type === 'individual') { const stIdxStr = document.getElementById('hwStudent').value; if(stIdxStr && stIdxStr !== "") phone = roster[parseInt(stIdxStr)].fPhone; } window.open(type === 'group' ? `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank'); }
+  function dispatchMarks() { const stIdxStr = document.getElementById('examStudent').value; if(!stIdxStr || stIdxStr === "") return; const st = roster[parseInt(stIdxStr)]; const examDate = document.getElementById('examDate').value.split('-').reverse().join('/'); let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n📝 *${document.getElementById('examTitle').value}*\n`; if (document.getElementById('examAttendance').value === 'present') { msg += `📊 *પરિણામ*\nવિદ્યાર્થીની: *${st.name}*\nવિષય: ${document.getElementById('examSubject').value}\nપરીક્ષા તારીખ: ${examDate}\nગુણ: *${document.getElementById('marksObt').value}/${document.getElementById('marksTotal').value}*\n- હેમંત સર`; } else { msg += `⚠️ સવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* તારીખ ${examDate} ના રોજ લેવાયેલ *${document.getElementById('examSubject').value}* ની પરીક્ષામાં ગેરહાજર રહેલ છે.\n- હેમંત સર`; } window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank'); }
+  function dispatchFee() { const stIdxStr = document.getElementById('feeStudent').value; if(!stIdxStr || stIdxStr === "") return; const st = roster[parseInt(stIdxStr)]; const note = document.getElementById('feeStatus').value === 'due' ? `બાકી છે` : `જમા મળી ગયેલ છે`; window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n💰 *ફી સૂચના*\nવાલીશ્રી, આપની દીકરી ${st.name} ની ફી પેટે ${document.getElementById('feeAmt').value}${note}.\n- કાર્યાલય`)}`, '_blank'); }
+  function dispatchNotice() { let msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ, સુરત\n📢 *શાળા પરિપત્ર / અગત્યની સૂચના*\nતારીખ: ${todayStr}\n-------------------------\nઆથી *${document.getElementById('noticeClass').value}* ના તમામ વિદ્યાર્થીનીઓને જણાવવાનું કે, ${document.getElementById('noticeDesc').value}\n`; if (document.getElementById('noticeLink').value) msg += `\n🔗 પરિપત્ર લિંક: ${document.getElementById('noticeLink').value}\n`; msg += `\n- હેમંત સર`; window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank'); }
+  function dispatchLeave() { const stIdxStr = document.getElementById('leaveStudent').value; if(!stIdxStr || stIdxStr === "") return; const st = roster[parseInt(stIdxStr)]; const lDate = document.getElementById('leaveDateInput').value.split('-').reverse().join('/'); const reason = document.getElementById('leaveReason').value; let msg = ""; if(document.getElementById('leaveType').value === 'advance') { msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ની તારીખ ${lDate} ની રજા મંજૂર કરેલ છે.\n\nકારણ: ${reason}\n\n- હેમંત સર`; } else { let tInput = document.getElementById('leaveTimeInput').value; let formatedTime = tInput ? ((tInput.split(':')[0]%12||12) + ':' + tInput.split(':')[1] + (tInput.split(':')[0]>=12?' PM':' AM')) : ""; let pickupInfo = document.getElementById('leavePickupPerson').value === 'other' ? `${document.getElementById('pickupName').value||"-"} (${document.getElementById('pickupRelation').value||"-"}) - મો.${document.getElementById('pickupPhone').value||"-"}` : "વાલી (માતા/પિતા)"; msg = `શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n🚨 *સુરક્ષા ચેતવણી (ચાલુ શાળાએ રજા)*\n\nસવિનય જણાવવાનું કે વાલીશ્રી, આપની દીકરી *${st.name}* ને શાળા સમય દરમિયાન વિશેષ રજા આપવામાં આવેલ છે.\n\nતારીખ: ${lDate}\nસમય: *${formatedTime}*\nકારણ: ${reason}\nલેવા આવનાર: *${pickupInfo}*\n\n- હેમંત સર`; } window.open(`https://api.whatsapp.com/send?phone=${st.fPhone}&text=${encodeURIComponent(msg)}`, '_blank'); }
+  
+  function printIDCard() { document.body.classList.add('printing-id'); document.getElementById('mainApp').style.display = 'none'; let idCard = document.getElementById('idCardPrintArea'); document.body.appendChild(idCard); setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-id'); document.getElementById('idPanel').insertBefore(idCard, document.getElementById('idPanel').querySelector('button')); document.getElementById('mainApp').style.display = 'flex'; }, 1000); }, 500); }
+  function renderCard() { if (!roster.length) return; const stIdxStr = document.getElementById('idStudent').value; if(!stIdxStr || stIdxStr === "") return; const st = roster[parseInt(stIdxStr)]; if(document.getElementById('cPhoto')) document.getElementById('cPhoto').src = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR; if(document.getElementById('cName')) document.getElementById('cName').innerText = st.name; if(document.getElementById('cStd')) document.getElementById('cStd').innerText = formatStdStream(st.std, st.stream); if(document.getElementById('cRoll')) document.getElementById('cRoll').innerText = st.roll; if(document.getElementById('cGR')) document.getElementById('cGR').innerText = st.gr; if(document.getElementById('cDOB')) document.getElementById('cDOB').innerText = st.dob; if(document.getElementById('cBlood')) document.getElementById('cBlood').innerText = st.blood; if(document.getElementById('cPhone')) document.getElementById('cPhone').innerText = st.fPhone; if(document.getElementById('cMPhone')) document.getElementById('cMPhone').innerText = st.mPhone; if(document.getElementById('cUdise')) document.getElementById('cUdise').innerText = st.udise; }
+
+  window.onload = function() { initApp(); };
+</script>
+</body>
+</html>
