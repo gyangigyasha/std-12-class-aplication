@@ -138,7 +138,12 @@
       body.printing-att #printAttArea { position: absolute; left: 0; top: 0; width: 100%; margin:0; background: white; }
       body.printing-id .id-box, body.printing-id .id-box * { visibility: visible !important; }
       body.printing-id .id-box { position: absolute; left: 0; top: 0; width: 100%; margin: 0; background: white; }
-      @page { size: A4 landscape; margin: 10mm; }
+      
+      /* New Seating Print Rules */
+      body.printing-seat #printSeatingArea, body.printing-seat #printSeatingArea * { visibility: visible !important; }
+      body.printing-seat #printSeatingArea { position: absolute; left: 0; top: 0; width: 100%; background: white; margin: 0; }
+      
+      @page { size: A4 portrait; margin: 10mm; }
     }
     
     .subject-block { background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
@@ -195,6 +200,10 @@
     <button class="nav-btn active" onclick="showPanel('dashPanel')">🏠 હોમ</button>
     <button class="nav-btn" onclick="showPanel('profilePanel')" style="color:#8e44ad;">🎓 360° પ્રોફાઇલ</button>
     <button class="nav-btn" onclick="showPanel('attPanel')">📋 હાજરી</button>
+    
+    <!-- 🌟 નવું: બેઠક વ્યવસ્થા ટેબ -->
+    <button class="nav-btn" onclick="showPanel('seatingPanel')" style="color:#009688;">🪑 બેઠક વ્યવસ્થા</button>
+    
     <button class="nav-btn" onclick="showPanel('reportPanel')" style="color:var(--success);">📄 માર્કશીટ</button>
     <button class="nav-btn" onclick="showPanel('rankPanel')" style="color:var(--secondary);">🏆 ટોપર્સ</button>
     <button class="nav-btn" onclick="showPanel('hwPanel')">📚 ગૃહકાર્ય</button>
@@ -316,6 +325,38 @@
     </div>
   </div>
 
+  <!-- 🌟 નવું: બેઠક વ્યવસ્થા પેનલ -->
+  <div id="seatingPanel" class="view-panel">
+    <div class="card">
+      <h3 class="card-title">🪑 સ્માર્ટ બેઠક વ્યવસ્થા (Cross-Mixing)</h3>
+      <div class="form-group"><label>પરીક્ષાનું નામ:</label><input type="text" id="seatExamName" value="પ્રથમ સામાયિક પરીક્ષા - ઓક્ટોબર 2026"></div>
+      
+      <div class="grid-2">
+        <div class="form-group">
+            <label>એક બ્લોકમાં વિદ્યાર્થીઓ:</label>
+            <input type="number" id="seatBlockSize" value="30">
+        </div>
+        <div class="form-group">
+            <label>લાગુ ધોરણ (Mix):</label>
+            <select id="seatClassSelect">
+                <option value="both">ધોરણ 11 અને 12 (Cross-Mix)</option>
+                <option value="11">માત્ર ધોરણ 11 (Arts & Com Mix)</option>
+                <option value="12">માત્ર ધોરણ 12 (Arts & Com Mix)</option>
+            </select>
+        </div>
+      </div>
+      
+      <p style="font-size:12px; color:#d84315; font-weight:bold; background:#fff3e0; padding:8px; border-radius:8px; border:1px dashed #ffcc80;">
+         💡 સિસ્ટમ આપોઆપ આર્ટસ અને કોમર્સ તેમજ ધોરણ 11 અને 12 ના વિદ્યાર્થીઓને એકાંતરે (Alternate) ગોઠવશે જેથી ચોરી ન થાય.
+      </p>
+
+      <button class="btn btn-main" onclick="generateSeating()">📊 બેઠક વ્યવસ્થા બનાવો</button>
+      
+      <div id="seatingPreviewContainer" style="display:none; margin-top:20px;"></div>
+      <button class="btn btn-success" id="btnSeatPrint" style="display:none; width:100%; margin-top:15px;" onclick="printSeating()">🖨️ બેઠક વ્યવસ્થા પ્રિન્ટ કાઢો</button>
+    </div>
+  </div>
+
   <div id="rankPanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">🏆 ક્લાસ ટોપર્સ (Top 3)</h3>
@@ -371,8 +412,8 @@
       <div class="form-group"><label>ગૃહકાર્ય પ્રકાર:</label><select id="hwSendType" onchange="toggleHwStudent()"><option value="group">📢 WhatsApp ગ્રુપમાં</option><option value="individual">👤 વ્યક્તિગત</option></select></div>
       <div class="form-group" id="hwStudentGroup" style="display:none;"><label>વિદ્યાર્થીની:</label><select id="hwStudent"></select></div>
       <div class="form-group"><label>વિષય:</label><input type="text" id="hwSubject" placeholder="વિષયનું નામ લખો..."></div>
-      <div class="form-group"><label>આજનું ગૃહકાર્ય:</label><textarea id="hwDesc" rows="3" placeholder="ગૃહકાર્યની વિગત..."></textarea></div>
-      <div class="form-group"><label>લિંક (વૈકલ્પિક):</label><input type="text" id="hwLink" placeholder="https://..."></div>
+      <div class="form-group"><label>આજનું ગૃહકાર્ય:</label><textarea id="hwDesc" rows="3" placeholder="ગૃહકાર્યની વિગત... (અહીં પેસ્ટ કરી શકાશે)"></textarea></div>
+      <div class="form-group"><label>લિંક (વૈકલ્પિક):</label><input type="text" id="hwLink" placeholder="https://... (અહીં લિંક પેસ્ટ કરો)"></div>
       <button class="btn btn-success" style="margin-top:5px;" onclick="dispatchHomework()">📲 WhatsApp પર મોકલો</button>
     </div>
   </div>
@@ -459,8 +500,8 @@
     <div class="card">
       <h3 class="card-title">📢 સૂચના / પરિપત્ર જનરેટર</h3>
       <div class="form-group"><label>લાગુ પડતું ધોરણ:</label><select id="noticeClass"><option value="12">ધોરણ ૧૨</option><option value="11">ધોરણ ૧૧</option><option value="11 અને 12">બંને (ધોરણ ૧૧/૧૨)</option></select></div>
-      <div class="form-group"><label>સૂચનાની વિગત:</label><textarea id="noticeDesc" rows="4" placeholder="સૂચના લખાણ..."></textarea></div>
-      <div class="form-group"><label>પરિપત્રની લિંક (વૈકલ્પિક):</label><input type="text" id="noticeLink" placeholder="https://drive.google.com/..."></div>
+      <div class="form-group"><label>સૂચનાની વિગત (અહીં પેસ્ટ કરી શકાશે):</label><textarea id="noticeDesc" rows="4" placeholder="સૂચના લખાણ..."></textarea></div>
+      <div class="form-group"><label>પરિપત્રની લિંક (અહીં પેસ્ટ કરી શકાશે):</label><input type="text" id="noticeLink" placeholder="https://drive.google.com/..."></div>
       <button class="btn btn-success" onclick="dispatchNotice()">📲 WhatsApp ગ્રૂપમાં શેર કરો</button>
     </div>
   </div>
@@ -541,6 +582,9 @@
     <div style="text-align:right; margin-top:30px; font-weight:bold; font-size:14px;">વર્ગ શિક્ષકની સહી: _______________________</div>
 </div>
 
+<!-- 🌟 નવો પ્રિન્ટ એરિયા (બેઠક વ્યવસ્થા) 🌟 -->
+<div id="printSeatingArea" style="display:none; font-family: Arial, sans-serif; color:#000; background:#fff;"></div>
+
 <script>
   const ADMIN_ID = "admin";
   const ADMIN_PASS = "97275";
@@ -552,7 +596,6 @@
   let attendanceDB = {}; 
   let currentSessionAttMap = {}; 
   
-  // Chart instances
   let dashPieObj = null;
   let dashBarObj = null;
 
@@ -762,7 +805,6 @@
       }
   }
 
-  // 🌟 સુધારેલ 360° સ્ટુડન્ટ પ્રોફાઇલ ફંક્શન (100% એક્યુરેટ હાજરી) 🌟
   function populateProfileDropdown() {
       const select = document.getElementById('profileSelect'); if(!select) return;
       let activeFilter = document.getElementById('globalClassFilter').value;
@@ -794,7 +836,6 @@
 
       for (let dateStr in attendanceDB) {
           let stat = attendanceDB[dateStr][st.roll];
-          // 🌟 માત્ર હાજર, ગેરહાજર અને રજા ને જ 'ખરા કાર્યકારી દિવસ' ગણીશું
           if(stat === 'P' || stat === 'A' || stat === 'L') {
               overall_tDays++;
               if(stat === 'P') overall_pDays++;
@@ -1170,6 +1211,96 @@
     }
     document.getElementById('prMarksHead').innerHTML = headHtml; document.getElementById('prMarksBody').innerHTML = marksBody; document.getElementById('prTotalObt').innerText = d.totalObtained; document.getElementById('prTotalMax').innerText = d.totalMax; document.getElementById('prPercent').innerText = d.percentage.toFixed(2); let gradeEl = document.getElementById('prGrade'); gradeEl.innerText = d.finalGrade; gradeEl.style.color = d.passStatus.includes("પાસ") ? "#0d47a1" : "red"; let passEl = document.getElementById('prPass'); passEl.innerText = d.passStatus.split(' (')[0]; passEl.style.color = d.passStatus.includes("પાસ") ? "green" : "red";
     if(d.spNote && d.spNote.trim() !== "") { document.getElementById('prSpecialNoteText').innerText = d.spNote; document.getElementById('prSpecialNoteBox').style.display = 'block'; } else { document.getElementById('prSpecialNoteBox').style.display = 'none'; }
+  }
+
+  // 🌟 નવો સ્માર્ટ ક્રોસ-મિક્સિંગ બેઠક વ્યવસ્થા કોડ (Cross-Mixing Algorithm) 🌟
+  function generateSeating() {
+      let blockSize = parseInt(document.getElementById('seatBlockSize').value) || 30;
+      let mixType = document.getElementById('seatClassSelect').value;
+      let examName = document.getElementById('seatExamName').value;
+
+      let q11C = [], q11A = [], q12C = [], q12A = [];
+      
+      roster.forEach(st => {
+          if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return;
+          let std = String(st.std).trim();
+          let stream = (st.stream || "Commerce").toLowerCase();
+          
+          if(mixType === "both" || mixType === std) {
+              if(std === "11" && stream.includes("com")) q11C.push(st);
+              else if(std === "11" && stream.includes("art")) q11A.push(st);
+              else if(std === "12" && stream.includes("com")) q12C.push(st);
+              else if(std === "12" && stream.includes("art")) q12A.push(st);
+          }
+      });
+
+      // રોલ નંબર મુજબ લાઈનમાં ગોઠવવા 
+      [q11C, q11A, q12C, q12A].forEach(q => q.sort((a,b) => a.roll - b.roll));
+
+      let allSeats = [];
+      
+      // ક્રોસ-મિક્સિંગ સિક્વન્સ: 11-Com, 12-Arts, 11-Arts, 12-Com
+      // આનાથી જોડે બેસનાર વિદ્યાર્થી હંમેશા અલગ ધોરણ કે અલગ પ્રવાહનો જ હશે!
+      let queues = [];
+      if(mixType === "both") {
+          queues = [q11C, q12A, q11A, q12C]; 
+      } else if (mixType === "11") {
+          queues = [q11C, q11A];
+      } else if (mixType === "12") {
+          queues = [q12C, q12A];
+      }
+      
+      let totalStudents = queues.reduce((sum, q) => sum + q.length, 0);
+      if(totalStudents === 0) return alert("પસંદ કરેલ ધોરણમાં કોઈ વિદ્યાર્થી મળ્યા નથી.");
+
+      let qIdx = 0;
+      while(allSeats.length < totalStudents) {
+          let currentQ = queues[qIdx % queues.length];
+          if(currentQ.length > 0) {
+              allSeats.push(currentQ.shift());
+          }
+          qIdx++;
+      }
+
+      // બ્લોક મુજબ ટુકડા પાડવા
+      let blocks = [];
+      for(let i=0; i<allSeats.length; i+=blockSize) {
+          blocks.push(allSeats.slice(i, i+blockSize));
+      }
+      
+      // HTML લિસ્ટ તૈયાર કરવું
+      let html = "";
+      blocks.forEach((blk, bIdx) => {
+          html += `<div class="block-page" style="page-break-after: always; padding: 20px; background:#fff; border:1px solid #ccc; margin-bottom:15px;">`;
+          html += `<h2 style="text-align:center; color:#0d47a1; margin:0;">શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ</h2>`;
+          html += `<h3 style="text-align:center; margin:5px 0;">${examName} - બેઠક વ્યવસ્થા</h3>`;
+          html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">`;
+          html += `<h3 style="margin:0; border: 2px solid #000; padding:5px 15px; background:#f1f8e9;">બ્લોક નં: ${bIdx + 1}</h3>`;
+          html += `<p style="margin:0; font-weight:bold;">કુલ વિદ્યાર્થીઓ: ${blk.length}</p>`;
+          html += `</div>`;
+          html += `<table width="100%" border="1" cellpadding="6" style="border-collapse:collapse; text-align:center; font-size:13px;">`;
+          html += `<tr style="background:#e3f2fd;"><th>બેઠક ક્રમાંક</th><th>ધોરણ</th><th>પ્રવાહ</th><th>રોલ નં</th><th style="text-align:left;">વિદ્યાર્થીનીનું નામ</th><th>વિદ્યાર્થીની સહી</th></tr>`;
+          blk.forEach((st, sIdx) => {
+              let dispStream = (st.stream||"Commerce").toLowerCase().includes("art") ? "Arts" : "Com";
+              html += `<tr><td><b>${sIdx+1}</b></td><td>${st.std}</td><td>${dispStream}</td><td><b>${st.roll}</b></td><td style="text-align:left;">${st.name}</td><td></td></tr>`;
+          });
+          html += `</table>`;
+          html += `<div style="margin-top:40px; display:flex; justify-content:space-between; font-weight:bold;">`;
+          html += `<span>હાજર સંખ્યા: _________</span><span>ગેરહાજર સંખ્યા: _________</span><span>સુપરવાઇઝરની સહી: ______________</span>`;
+          html += `</div></div>`;
+      });
+      
+      document.getElementById('seatingPreviewContainer').innerHTML = html;
+      document.getElementById('seatingPreviewContainer').style.display = 'block';
+      document.getElementById('btnSeatPrint').style.display = 'block';
+  }
+  
+  function printSeating() {
+      document.getElementById('printSeatingArea').innerHTML = document.getElementById('seatingPreviewContainer').innerHTML;
+      document.body.classList.add('printing-seat'); 
+      document.getElementById('mainApp').style.display = 'none'; 
+      document.getElementById('printSeatingArea').style.display = 'block';
+      setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-seat'); document.getElementById('mainApp').style.display = 'flex'; document.getElementById('printSeatingArea').style.display = 'none'; }, 1000); }, 500);
   }
 
   function renderAdminTable() {
