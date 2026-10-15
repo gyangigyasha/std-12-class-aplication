@@ -9,8 +9,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ - સ્માર્ટ વર્ગ સંચાલન</title>
   
+  <!-- ગ્રાફ્સ માટેની લિંક -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <!-- સ્માર્ટ સુરક્ષા કોડ -->
   <script>
     document.addEventListener('contextmenu', event => {
         if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
@@ -305,8 +307,7 @@
             <button class="btn btn-main" id="btnPreviewToggle" style="width:auto;" onclick="togglePreviewAttendanceSheet()">👁️ પત્રક જુઓ</button>
             <button class="btn btn-success" id="btnPrintMonthBtn" style="width:auto; display:none;" onclick="printPreviewedSheet()">🖨️ પ્રિન્ટ</button>
         </div>
-        <div id="monthlyPreviewContainer" style="display:none; background:#fff; padding:10px; border:1px solid #bbdefb; border-radius:8px; overflow-x:auto;">
-        </div>
+        <div id="monthlyPreviewContainer" style="display:none; background:#fff; padding:10px; border:1px solid #bbdefb; border-radius:8px; overflow-x:auto;"></div>
     </div>
 
     <div id="attContainer"></div>
@@ -605,12 +606,14 @@
     document.getElementById(panelId).classList.add('active');
     event.target.classList.add('active');
     
-    if(panelId === 'idPanel') renderCard();
-    if(panelId === 'reportPanel') generateSubjectInputs();
-    if(panelId === 'rankPanel') generateToppers();
-    if(panelId === 'adminPanel') renderAdminTable(); 
-    if(panelId === 'profilePanel') { populateProfileDropdown(); render360Profile(); }
-    if(panelId === 'dashPanel') updateCharts();
+    try {
+        if(panelId === 'idPanel') renderCard();
+        if(panelId === 'reportPanel') generateSubjectInputs();
+        if(panelId === 'rankPanel') generateToppers();
+        if(panelId === 'adminPanel') renderAdminTable(); 
+        if(panelId === 'profilePanel') { populateProfileDropdown(); render360Profile(); }
+        if(panelId === 'dashPanel') updateCharts();
+    } catch(e) { console.error("Panel Error:", e); }
   }
 
   function formatStdStream(std, streamStr) {
@@ -666,7 +669,7 @@
       if(st.dob && (activeFilter === "all" || activeFilter === stStd) && selectedIndDate === todayStr) {
           let dParts = st.dob.split('/');
           if(dParts.length >= 2 && parseInt(dParts[0]) == parseInt(tDay) && parseInt(dParts[1]) == parseInt(tMonth)) {
-              bdayHtml += `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.2); padding:10px; border-radius:8px; margin-bottom:8px; font-weight:bold;"><div>🎉 ${st.name} (ધોરણ ${stStd})</div><button class="btn btn-success" style="padding:5px 10px; font-size:12px; background:#fff; color:#c51162; border:none;" onclick="wishBirthday('${st.name}', '${st.fPhone}')">💬 Wish</button></div>`;
+              bdayHtml += `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.2); padding:10px; border-radius:8px; margin-bottom:8px; font-weight:bold;"><div>🎉 ${st.name} (ધોરણ ${stStd})</div><button class="btn btn-success" style="padding:5px 10px; font-size:12px; background:#fff; color:#c51162; border:none;" onclick="wishBirthday('${(st.name||'').replace(/'/g, "\\'")}', '${(st.fPhone||'').replace(/'/g, "\\'")}')">💬 Wish</button></div>`;
           }
       }
 
@@ -689,10 +692,10 @@
       list.innerHTML += `
         <div class="student-item">
           <div class="student-meta">
-            <img class="student-avatar" src="${st.photo || DEFAULT_AVATAR}">
+            <img class="student-avatar" src="${(st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR}">
             <div>
               <h4>રોલ ${st.roll}: ${st.name} ${leaveHtml}</h4>
-              <p>${dispStd} | પિતા: ${st.fPhone}</p>
+              <p>${dispStd} | પિતા: ${st.fPhone || '-'}</p>
             </div>
           </div>
           <div class="actions">
@@ -701,17 +704,21 @@
                <button class="att-btn ${defaultStatus==='A'?'a-active':''}" onclick="setAttendanceStatus(${st.roll}, 'A', this)">A</button>
                <button class="att-btn ${defaultStatus==='L'?'l-active':''}" onclick="setAttendanceStatus(${st.roll}, 'L', this)">L</button>
             </div>
-            <button class="btn btn-father" onclick="sendAbsent('${st.name}', '${st.fPhone}')">📲 પિતા</button>
-            <button class="btn btn-mother" onclick="sendAbsent('${st.name}', '${st.mPhone}')">📲 માતા</button>
+            <button class="btn btn-father" onclick="sendAbsent('${(st.name||'').replace(/'/g, "\\'")}', '${(st.fPhone||'').replace(/'/g, "\\'")}')">📲 પિતા</button>
+            <button class="btn btn-mother" onclick="sendAbsent('${(st.name||'').replace(/'/g, "\\'")}', '${(st.mPhone||'').replace(/'/g, "\\'")}')">📲 માતા</button>
           </div>
         </div>
       `;
-      sels.forEach(id => document.getElementById(id).innerHTML += `<option value="${i}">રોલ ${st.roll} - ${st.name}</option>`);
+      sels.forEach(id => {
+          let selEl = document.getElementById(id);
+          if(selEl) selEl.innerHTML += `<option value="${i}">રોલ ${st.roll} - ${st.name}</option>`;
+      });
     });
 
     let bBanner = document.getElementById('birthdayBanner');
     if(bdayHtml !== "") { document.getElementById('birthdayList').innerHTML = bdayHtml; bBanner.style.display = 'block'; } else { bBanner.style.display = 'none'; }
     
+    // 🌟 ડેશબોર્ડના આંકડા હવે માત્ર પસંદ કરેલ ફિલ્ટર મુજબ જ દેખાશે 🌟
     let elTotalStudents = document.getElementById('totalStudentsCount');
     if(elTotalStudents) elTotalStudents.innerText = filteredCount; 
     
@@ -758,38 +765,42 @@
   }
   
   function updateCharts() {
-      let pCount = parseInt(document.getElementById('dashPresentCount').innerText) || 0;
-      let aCount = parseInt(document.getElementById('dashAbsentCount').innerText) || 0;
-      let activeFilter = document.getElementById('globalClassFilter').value;
-      
-      const ctxPie = document.getElementById('dashPieChart');
-      if (ctxPie) {
-          if (dashPieObj) dashPieObj.destroy();
-          dashPieObj = new Chart(ctxPie, {
-              type: 'doughnut',
-              data: { labels: ['હાજર', 'ગેરહાજર'], datasets: [{ data: [pCount, aCount], backgroundColor: ['#00b09b', '#eb3349'], borderWidth: 0 }] },
-              options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels:{font:{family:'sans-serif', size:11}} } }, cutout: '70%' }
-          });
-      }
+      try {
+          if(typeof Chart === 'undefined') return;
+          
+          let pCount = parseInt(document.getElementById('dashPresentCount').innerText) || 0;
+          let aCount = parseInt(document.getElementById('dashAbsentCount').innerText) || 0;
+          let activeFilter = document.getElementById('globalClassFilter').value;
+          
+          const ctxPie = document.getElementById('dashPieChart');
+          if (ctxPie) {
+              if (dashPieObj) dashPieObj.destroy();
+              dashPieObj = new Chart(ctxPie, {
+                  type: 'doughnut',
+                  data: { labels: ['હાજર', 'ગેરહાજર'], datasets: [{ data: [pCount, aCount], backgroundColor: ['#00b09b', '#eb3349'], borderWidth: 0 }] },
+                  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels:{font:{family:'sans-serif', size:11}} } }, cutout: '70%' }
+              });
+          }
 
-      let fAvg = 0, sAvg = 0, aAvg = 0, cF = 0, cS = 0, cA = 0;
-      roster.forEach(st => {
-          let stStd = st.std ? st.std.toString().trim() : "12";
-          if(activeFilter !== "all" && activeFilter !== stStd) return;
-          if(st.marks && st.marks.first) { fAvg += (parseInt(st.marks.first[2])||0); cF++; }
-          if(st.marks && st.marks.second) { sAvg += (parseInt(st.marks.second[2])||0); cS++; }
-      });
-      if(cF > 0) fAvg = Math.round(fAvg/cF); if(cS > 0) sAvg = Math.round(sAvg/cS);
-
-      const ctxBar = document.getElementById('dashBarChart');
-      if (ctxBar) {
-          if (dashBarObj) dashBarObj.destroy();
-          dashBarObj = new Chart(ctxBar, {
-              type: 'bar',
-              data: { labels: ['પ્રથમ', 'દ્વિતીય', 'વાર્ષિક'], datasets: [{ label: 'સરેરાશ માર્ક્સ', data: [fAvg, sAvg, 0], backgroundColor: '#1e3c72', borderRadius: 5 }] },
-              options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+          let fAvg = 0, sAvg = 0, aAvg = 0, cF = 0, cS = 0, cA = 0;
+          roster.forEach(st => {
+              let stStd = st.std ? st.std.toString().trim() : "12";
+              if(activeFilter !== "all" && activeFilter !== stStd) return;
+              if(st.marks && st.marks.first && !isNaN(parseInt(st.marks.first[2]))) { fAvg += parseInt(st.marks.first[2]); cF++; }
+              if(st.marks && st.marks.second && !isNaN(parseInt(st.marks.second[2]))) { sAvg += parseInt(st.marks.second[2]); cS++; }
           });
-      }
+          if(cF > 0) fAvg = Math.round(fAvg/cF); if(cS > 0) sAvg = Math.round(sAvg/cS);
+
+          const ctxBar = document.getElementById('dashBarChart');
+          if (ctxBar) {
+              if (dashBarObj) dashBarObj.destroy();
+              dashBarObj = new Chart(ctxBar, {
+                  type: 'bar',
+                  data: { labels: ['પ્રથમ', 'દ્વિતીય', 'વાર્ષિક'], datasets: [{ label: 'સરેરાશ માર્ક્સ', data: [fAvg, sAvg, 0], backgroundColor: '#1e3c72', borderRadius: 5 }] },
+                  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+              });
+          }
+      } catch(e) { console.error("Chart Render Error:", e); }
   }
 
   function populateProfileDropdown() {
@@ -1186,7 +1197,17 @@
   }
 
   function populateMarksheetPrintArea(d) {
-    document.getElementById('prExamName').innerText = d.examName; document.getElementById('prName').innerText = d.st.name; document.getElementById('prStd').innerText = formatStdStream(d.st.std, d.stream); document.getElementById('prRoll').innerText = d.st.roll; document.getElementById('prGr').innerText = d.st.gr; document.getElementById('prDob').innerText = d.st.dob || "-"; document.getElementById('prPresentDays').innerText = d.preDays; document.getElementById('prTotalDays').innerText = d.totDays; document.getElementById('prRemarks').innerText = d.rems; document.getElementById('prRankView').innerText = d.finalRank;
+    let elExam = document.getElementById('prExamName'); if(elExam) elExam.innerText = d.examName; 
+    let elName = document.getElementById('prName'); if(elName) elName.innerText = d.st.name; 
+    let elStd = document.getElementById('prStd'); if(elStd) elStd.innerText = formatStdStream(d.st.std, d.stream); 
+    let elRoll = document.getElementById('prRoll'); if(elRoll) elRoll.innerText = d.st.roll; 
+    let elGr = document.getElementById('prGr'); if(elGr) elGr.innerText = d.st.gr; 
+    let elDob = document.getElementById('prDob'); if(elDob) elDob.innerText = d.st.dob || "-"; 
+    let elPDays = document.getElementById('prPresentDays'); if(elPDays) elPDays.innerText = d.preDays; 
+    let elTDays = document.getElementById('prTotalDays'); if(elTDays) elTDays.innerText = d.totDays; 
+    let elRemarks = document.getElementById('prRemarks'); if(elRemarks) elRemarks.innerText = d.rems; 
+    let elRank = document.getElementById('prRankView'); if(elRank) elRank.innerText = d.finalRank;
+    
     let headHtml = ""; let marksBody = "";
     if(d.setupType === "11_annual") {
         headHtml = `<tr style="background:#e3f2fd; font-weight:bold;"><th style="text-align:left;">વિષય</th><th title="પ્રથમ+દ્વિતીય+વાર્ષિક">કુલ (200)</th><th title="200 માંથી અડધા">રૂપાંતરિત (100)</th><th>સિધ્ધી ગુણ</th><th>કૃપા ગુણ</th><th>ફાઇનલ ગુણ (100)</th><th>ગ્રેડ</th></tr>`;
@@ -1196,8 +1217,16 @@
         document.getElementById('prMinorSection').style.display = 'none'; headHtml = `<tr style="background:#e3f2fd; font-weight:bold;"><th style="text-align:left;">વિષય</th><th>કુલ ગુણ</th><th>મેળવેલ ગુણ</th><th>ગ્રેડ</th></tr>`;
         d.mainResults.forEach(sub => { marksBody += `<tr><td style="text-align:left; font-weight:bold;">${sub.name}</td><td>${d.maxMarks}</td><td style="${sub.isFail ? "color:red; font-weight:bold;" : ""}">${sub.marks}</td><td>${sub.grade}</td></tr>`; });
     }
-    document.getElementById('prMarksHead').innerHTML = headHtml; document.getElementById('prMarksBody').innerHTML = marksBody; document.getElementById('prTotalObt').innerText = d.totalObtained; document.getElementById('prTotalMax').innerText = d.totalMax; document.getElementById('prPercent').innerText = d.percentage.toFixed(2); let gradeEl = document.getElementById('prGrade'); gradeEl.innerText = d.finalGrade; gradeEl.style.color = d.passStatus.includes("પાસ") ? "#0d47a1" : "red"; let passEl = document.getElementById('prPass'); passEl.innerText = d.passStatus.split(' (')[0]; passEl.style.color = d.passStatus.includes("પાસ") ? "green" : "red";
-    if(d.spNote && d.spNote.trim() !== "") { document.getElementById('prSpecialNoteText').innerText = d.spNote; document.getElementById('prSpecialNoteBox').style.display = 'block'; } else { document.getElementById('prSpecialNoteBox').style.display = 'none'; }
+    document.getElementById('prMarksHead').innerHTML = headHtml; 
+    document.getElementById('prMarksBody').innerHTML = marksBody; 
+    document.getElementById('prTotalObt').innerText = d.totalObtained; 
+    document.getElementById('prTotalMax').innerText = d.totalMax; 
+    document.getElementById('prPercent').innerText = d.percentage.toFixed(2); 
+    
+    let gradeEl = document.getElementById('prGrade'); if(gradeEl) { gradeEl.innerText = d.finalGrade; gradeEl.style.color = d.passStatus.includes("પાસ") ? "#0d47a1" : "red"; }
+    let passEl = document.getElementById('prPass'); if(passEl) { passEl.innerText = d.passStatus.split(' (')[0]; passEl.style.color = d.passStatus.includes("પાસ") ? "green" : "red"; }
+    let snBox = document.getElementById('prSpecialNoteBox');
+    if(d.spNote && d.spNote.trim() !== "") { document.getElementById('prSpecialNoteText').innerText = d.spNote; if(snBox) snBox.style.display = 'block'; } else { if(snBox) snBox.style.display = 'none'; }
   }
 
   function generateSeating() {
@@ -1327,8 +1356,9 @@
   function getSubjectsList(streamStr) { let commonSubs = ["ગુજરાતી", "અંગ્રેજી", "અર્થશાસ્ત્ર"]; let streamSubs = streamStr.toLowerCase().includes('arts') ? ["હિન્દી", "સંસ્કૃત", "સમાજશાસ્ત્ર", "ચિત્રકામ"] : ["નામાના મૂળતત્વો", "વાણિજ્ય વ્યવસ્થા અને સંચાલન", "આંકડાશાસ્ત્ર", "એસ.પી.સી.સી."]; return [...commonSubs, ...streamSubs]; }
   
   function generateSubjectInputs() {
-    const stIdx = document.getElementById('reportStudent').value;
-    if(!stIdx || stIdx === "" || roster.length === 0) return;
+    const stIdxStr = document.getElementById('reportStudent').value;
+    if(!stIdxStr || stIdxStr === "" || roster.length === 0) return;
+    const stIdx = parseInt(stIdxStr); if(isNaN(stIdx)) return;
     const st = roster[stIdx]; const examType = document.getElementById('reportExamType').value;
     let std = st.std ? st.std.toString().trim() : "12"; let stream = st.stream ? st.stream : "Commerce";
     let elInfo = document.getElementById('reportStudentInfo'); if(elInfo) elInfo.innerText = `વિગત: ${formatStdStream(std, stream)}`;
@@ -1358,9 +1388,7 @@
     document.getElementById('subjectInputsContainer').innerHTML = html; autoCalculateRank(); 
     
     let preContainer = document.getElementById('marksheetPreviewContainer');
-    if (preContainer && preContainer.style.display === 'block') {
-         togglePreviewMarksheet();
-    }
+    if (preContainer && preContainer.style.display === 'block') { togglePreviewMarksheet(); }
   }
 
   function autoCalculateRank() {
@@ -1496,7 +1524,9 @@
   function printIDCard() { document.body.classList.add('printing-id'); document.getElementById('mainApp').style.display = 'none'; let idCard = document.getElementById('idCardPrintArea'); document.body.appendChild(idCard); setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-id'); document.getElementById('idPanel').insertBefore(idCard, document.getElementById('idPanel').querySelector('button')); document.getElementById('mainApp').style.display = 'flex'; }, 1000); }, 500); }
   function renderCard() { if (!roster.length) return; const stIdxStr = document.getElementById('idStudent').value; if(!stIdxStr || stIdxStr === "") return; const st = roster[parseInt(stIdxStr)]; if(document.getElementById('cPhoto')) document.getElementById('cPhoto').src = (st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR; if(document.getElementById('cName')) document.getElementById('cName').innerText = st.name; if(document.getElementById('cStd')) document.getElementById('cStd').innerText = formatStdStream(st.std, st.stream); if(document.getElementById('cRoll')) document.getElementById('cRoll').innerText = st.roll; if(document.getElementById('cGR')) document.getElementById('cGR').innerText = st.gr; if(document.getElementById('cDOB')) document.getElementById('cDOB').innerText = st.dob; if(document.getElementById('cBlood')) document.getElementById('cBlood').innerText = st.blood; if(document.getElementById('cPhone')) document.getElementById('cPhone').innerText = st.fPhone; if(document.getElementById('cMPhone')) document.getElementById('cMPhone').innerText = st.mPhone; if(document.getElementById('cUdise')) document.getElementById('cUdise').innerText = st.udise; }
 
-  window.onload = function() { initApp(); };
+  window.onload = function() { 
+      try { initApp(); } catch(e) { console.error("App Init Error:", e); } 
+  };
 </script>
 </body>
 </html>
