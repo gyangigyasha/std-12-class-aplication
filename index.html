@@ -1,129 +1,167 @@
 <!DOCTYPE html>
 <html lang="gu">
 <head>
-  <meta name="theme-color" content="#0d47a1">
+  <meta name="theme-color" content="#1e3c72">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/a/default-user=s70-c">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ - સ્માર્ટ વર્ગ સંચાલન</title>
   
-  <!-- 🌟 સ્માર્ટ સુરક્ષા કોડ: માત્ર ઇનપુટ બોક્સમાં પેસ્ટ કરવા દેશે, બાકી બધે બ્લોક! -->
+  <!-- ગ્રાફ્સ માટે Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- સ્માર્ટ સુરક્ષા કોડ (રાઈટ ક્લિક પેસ્ટ છૂટ સાથે) -->
   <script>
     document.addEventListener('contextmenu', event => {
-        // જો યુઝર લખાણ વાળા બોક્સ પર ક્લિક કરે તો પેસ્ટ કરવા દેવું
-        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
-            return;
-        }
-        // બાકી આખી એપમાં રાઈટ-ક્લિક બ્લોક
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
         event.preventDefault();
     });
-    
     document.onkeydown = function(e) {
-      if(e.keyCode == 123) { return false; }
-      if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
-      if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
-      if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
-      if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
-     }
+      if(e.keyCode == 123) return false;
+      if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
+      if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+    }
   </script>
 
   <style>
-    :root { --primary: #0d47a1; --primary-dark: #0a3375; --secondary: #1976d2; --success: #2e7d32; --warning: #f57c00; --danger: #d32f2f; --father: #00838f; --mother: #6a1b9a; --bg: #f4f6f9; --card-bg: #ffffff; --border: #e0e0e0; --text: #333; }
+    /* 🌟 આધુનિક 3D કલર પેલેટ અને ગ્રેડિયન્ટ્સ 🌟 */
+    :root { 
+        --primary: #1e3c72; --primary-dark: #2a5298; --secondary: #ff6a00; --success: #00b09b; --success-dark: #96c93d; 
+        --warning: #f5af19; --danger: #eb3349; --danger-dark: #f45c43; --father: #00838f; --mother: #8e44ad; 
+        --bg: #eef2f3; --card-bg: rgba(255, 255, 255, 0.95); --text: #2c3e50; 
+    }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; justify-content: center; }
+    body { background: var(--bg); background-image: linear-gradient(to right, #eef2f3, #8e9eab); color: var(--text); margin: 0; padding: 10px; display: flex; justify-content: center; }
+    
     .app-container { width: 100%; max-width: 900px; display: flex; flex-direction: column; min-height: 96vh; }
-    header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 12px; }
-    header h1 { margin: 0; font-size: 20px; letter-spacing: 0.5px; }
-    header p { margin: 5px 0 0; font-size: 13px; opacity: 0.9; }
-    .filter-bar { background: #fff; border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid var(--border); }
-    .filter-bar select { width: auto; font-weight: bold; color: var(--primary); padding: 8px 12px; border: 2px solid var(--primary); outline: none; border-radius:6px; }
-    .nav-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+    
+    /* 3D Header */
+    header { 
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 18px; 
+        border-radius: 16px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.15), inset 0 -3px 0 rgba(0,0,0,0.1); 
+        margin-bottom: 15px; position: relative; overflow: hidden;
+    }
+    header::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%); pointer-events:none; }
+    header h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 0.5px; text-shadow: 1px 2px 4px rgba(0,0,0,0.3); }
+    header p { margin: 5px 0 0; font-size: 13px; font-weight: 500; opacity: 0.9; }
+    
+    /* Filter Bar 3D */
+    .filter-bar { background: #fff; border-radius: 16px; padding: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.5); }
+    .filter-bar select { padding: 8px 15px; border: 2px solid var(--primary); border-radius: 8px; font-weight: bold; color: var(--primary); outline: none; background: #f8f9fa; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+    
+    /* Smart Nav Bar */
+    .nav-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
     .nav-bar::-webkit-scrollbar { display: none; }
-    .nav-btn { flex: 0 0 auto; padding: 10px 14px; background: #fff; border: 1px solid var(--border); border-radius: 20px; font-size: 13px; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-    .nav-btn.admin-btn { background: #e3f2fd; color: var(--primary); border-color: #bbdefb; }
+    .nav-btn { flex: 0 0 auto; padding: 10px 16px; background: #fff; border: none; border-radius: 25px; font-size: 13px; font-weight: bold; color: #555; cursor: pointer; transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 6px rgba(0,0,0,0.05), inset 0 -2px 0 rgba(0,0,0,0.05); }
+    .nav-btn.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 6px 12px rgba(30, 60, 114, 0.3), inset 0 2px 0 rgba(255,255,255,0.2); transform: translateY(-2px); }
+    .nav-btn.admin-btn { background: linear-gradient(135deg, #ece9e6, #ffffff); color: #333; border: 1px solid #ddd; }
+
     .view-panel { display: none; }
-    .view-panel.active { display: block; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .card { background: var(--card-bg); border-radius: 12px; padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .card-title { font-size: 16px; font-weight: bold; color: var(--primary); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-    .form-group { margin-bottom: 12px; }
-    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #555; }
-    input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; background: #fafafa; transition: 0.2s; }
-    input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: #fff; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    .btn { padding: 10px 15px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s; }
-    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-main { background-color: var(--primary); width: 100%; }
-    .btn-success { background-color: var(--success); width: 100%; }
-    .btn-warning { background-color: var(--warning); width: 100%; }
-    .btn-danger { background-color: var(--danger); width: 100%; }
-    .btn-secondary { background-color: #757575; }
-    .btn-father { background-color: var(--father); font-size: 11px; padding: 5px 8px; border-radius: 4px; }
-    .btn-mother { background-color: var(--mother); font-size: 11px; padding: 5px 8px; border-radius: 4px; }
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-    .dashboard-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-    .stat-box { background: #e3f2fd; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #bbdefb; }
-    .stat-box h2 { margin: 0 0 5px; color: var(--primary); font-size: 26px; }
-    .stat-box p { margin: 0; font-size: 13px; color: #555; font-weight: bold; }
+    .view-panel.active { display: block; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes popIn { 0% { opacity: 0; transform: translateY(15px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
     
-    .student-item { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 10px; background: #fff; border-left: 4px solid var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 10px; }
+    /* 3D Cards */
+    .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 10px 20px rgba(0,0,0,0.05), 0 2px 5px rgba(0,0,0,0.03); backdrop-filter: blur(10px); }
+    .card-title { font-size: 17px; font-weight: 800; color: var(--primary); margin-top: 0; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px dashed #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
+    
+    .form-group { margin-bottom: 15px; }
+    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: #444; }
+    input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px; font-size: 14px; outline: none; background: #fafafa; transition: 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.03); }
+    input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: #fff; box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.1); }
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    
+    /* 3D Buttons */
+    .btn { padding: 12px 18px; border-radius: 10px; border: none; font-size: 14px; font-weight: 800; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1), inset 0 2px 0 rgba(255,255,255,0.2); transition: 0.3s; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.3); }
+    .btn:active { transform: translateY(1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    
+    .btn-main { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); width: 100%; }
+    .btn-success { background: linear-gradient(135deg, var(--success), var(--success-dark)); width: 100%; }
+    .btn-warning { background: linear-gradient(135deg, #f12711, #f5af19); width: 100%; }
+    .btn-danger { background: linear-gradient(135deg, var(--danger), var(--danger-dark)); width: 100%; }
+    .btn-secondary { background: linear-gradient(135deg, #606c88, #3f4c6b); color:#fff; }
+    
+    /* Quick Action & Stat Boxes */
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+    .dashboard-stats { margin-bottom: 15px; }
+    .stat-box { padding: 15px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 6px 12px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+    .stat-box::after { content:''; position:absolute; top:-20px; right:-20px; width:60px; height:60px; background:rgba(255,255,255,0.2); border-radius:50%; }
+    .stat-box h2 { margin: 0 0 5px; font-size: 28px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .stat-box p { margin: 0; font-size: 12px; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
+    
+    .student-item { display: flex; flex-direction: column; gap: 12px; padding: 15px; border-radius: 12px; background: #fff; border-left: 5px solid var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.04); margin-bottom: 12px; transition: 0.3s; }
+    .student-item:hover { transform: translateX(5px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
     @media (min-width: 650px) { .student-item { flex-direction: row; align-items: center; justify-content: space-between; } }
-    .student-meta { display: flex; align-items: center; gap: 12px; }
-    .student-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); }
-    .student-meta h4 { margin: 0; font-size: 14px; color: #222; }
-    .student-meta p { margin: 3px 0 0; font-size: 12px; color: #666; }
-    .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .leave-badge { display: inline-block; background: #fff3cd; color: #856404; font-size: 11px; font-weight: bold; padding: 2px 6px; border-radius: 4px; border: 1px solid #ffeeba; }
+    .student-meta { display: flex; align-items: center; gap: 15px; }
+    .student-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+    .student-meta h4 { margin: 0; font-size: 15px; font-weight: 800; color: #222; }
+    .student-meta p { margin: 4px 0 0; font-size: 12px; font-weight: 600; color: #666; }
     
-    .att-toggle-group { display: inline-flex; border-radius: 8px; overflow: hidden; border: 1px solid #ccc; }
-    .att-btn { border: none; padding: 6px 12px; font-size: 12px; font-weight: bold; cursor: pointer; background: #f0f0f0; color: #555; }
+    .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .leave-badge { display: inline-block; background: linear-gradient(135deg, #f6d365, #fda085); color: #fff; font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    
+    .att-toggle-group { display: inline-flex; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .att-btn { border: none; padding: 8px 14px; font-size: 13px; font-weight: 800; cursor: pointer; background: #e0e0e0; color: #555; transition: 0.2s; }
     .att-btn.p-active { background: var(--success); color: white; }
     .att-btn.a-active { background: var(--danger); color: white; }
     .att-btn.l-active { background: var(--warning); color: white; }
 
-    .id-box { max-width: 320px; margin: 15px auto; border: 2px solid var(--primary); border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    .id-header { background: var(--primary); color: white; padding: 12px; text-align: center; }
-    .id-header h4 { margin: 0; font-size: 14px; }
-    .id-header p { margin: 3px 0 0; font-size: 11px; opacity: 0.9; }
-    .id-body { padding: 15px; font-size: 13px; line-height: 1.8; }
-    .id-body img { width: 75px; height: 75px; border-radius: 50%; margin: 0 auto 10px; display: block; border: 2px solid var(--primary); }
-    .table-container { overflow-x: auto; margin-top: 15px; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
-    th, td { padding: 10px; border: 1px solid var(--border); text-align: left; }
-    th { background: #f1f3f5; color: #333; font-weight: bold; }
-    #loginModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
-    .modal-content { background-color: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-    
-    @media print {
-      body.printing-report * { visibility: hidden; }
-      body.printing-report #printReportArea { display: block !important; visibility: visible !important; position: absolute; left: 0; top: 0; width: 100%; background: white; }
-      body.printing-report #printReportArea * { visibility: visible !important; }
-      body.printing-report #mainApp { display: none !important; }
-      
-      body.printing-att * { visibility: hidden; }
-      body.printing-att #printAttArea { display: block !important; visibility: visible !important; position: absolute; left: 0; top: 0; width: 100%; max-width: 100%; margin:0; background: white; }
-      body.printing-att #printAttArea * { visibility: visible !important; }
-      body.printing-att #mainApp { display: none !important; }
+    /* 360 Profile specific UI */
+    .profile-card { background: linear-gradient(135deg, #ffffff, #f1f2f6); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+    .profile-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 20px; text-align: center; color: white; position: relative; }
+    .profile-header img { width: 90px; height: 90px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 5px 15px rgba(0,0,0,0.2); background:#fff; }
+    .profile-header h2 { margin: 10px 0 5px; font-size: 20px; }
+    .profile-header p { margin: 0; font-size: 13px; opacity: 0.9; font-weight: 600; }
+    .profile-body { padding: 20px; }
+    .info-tag { display: inline-block; background: rgba(30, 60, 114, 0.1); color: var(--primary); padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; margin: 5px 5px 5px 0; }
+    .progress-bar-bg { width: 100%; height: 12px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-top: 5px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--success), var(--success-dark)); border-radius: 10px; transition: width 1s ease-in-out; }
+    .marks-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+    .mark-box { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.03); }
+    .mark-box h4 { margin: 0 0 5px; font-size: 12px; color: #666; }
+    .mark-box .score { font-size: 18px; font-weight: 800; color: var(--primary); }
 
-      body.printing-id * { visibility: hidden; }
-      body.printing-id .id-box { visibility: visible !important; position: absolute; left: 0; top: 0; width: 100%; max-width: 100%; margin: 0; background: white; }
-      body.printing-id .id-box * { visibility: visible !important; }
-      body.printing-id #mainApp { display: none !important; }
+    .id-box { max-width: 320px; margin: 15px auto; border: 3px solid var(--primary); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .id-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 15px; text-align: center; }
+    .id-header h4 { margin: 0; font-size: 15px; font-weight:800; }
+    .id-header p { margin: 3px 0 0; font-size: 11px; font-weight:600; opacity: 0.9; }
+    .id-body { padding: 20px 15px; font-size: 13px; line-height: 1.8; font-weight: 600; }
+    .id-body img { width: 85px; height: 85px; border-radius: 50%; margin: 0 auto 15px; display: block; border: 3px solid var(--secondary); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    
+    .table-container { overflow-x: auto; margin-top: 15px; border-radius: 12px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; background:#fff; }
+    th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { background: #f8f9fa; color: var(--primary); font-weight: 800; }
+    
+    #loginModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+    .modal-content { background-color: #fff; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+    
+    /* Prints */
+    @media print {
+      body * { visibility: hidden; }
+      body.printing-report #printReportArea, body.printing-report #printReportArea * { visibility: visible !important; }
+      body.printing-report #printReportArea { position: absolute; left: 0; top: 0; width: 100%; background: white; }
+      body.printing-att #printAttArea, body.printing-att #printAttArea * { visibility: visible !important; }
+      body.printing-att #printAttArea { position: absolute; left: 0; top: 0; width: 100%; margin:0; background: white; }
+      body.printing-id .id-box, body.printing-id .id-box * { visibility: visible !important; }
+      body.printing-id .id-box { position: absolute; left: 0; top: 0; width: 100%; margin: 0; background: white; }
       @page { size: A4 landscape; margin: 10mm; }
     }
-    .subject-block { background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .subject-name { font-size: 14px; font-weight: 700; color: #0d47a1; margin-bottom: 8px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
-    #syncBanner { display: none; background: #e8f5e9; color: #2e7d32; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; border-radius: 8px; margin-bottom: 10px; border: 1px solid #c8e6c9; }
-    #birthdayBanner { display: none; background: linear-gradient(135deg, #ff4081, #c51162); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3); }
-    .rank-item { display:flex; align-items:center; gap:15px; background:#fff; padding:15px; border-radius:10px; margin-bottom:10px; border:1px solid #e0e0e0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .rank-badge { width: 40px; height: 40px; background: #fff3e0; color: #e65100; font-size: 18px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #ffb74d; flex-shrink:0; }
-    .rank-1 { background: #fff8e1; border-color: #ffc107; color: #ff8f00; }
-    .rank-2 { background: #f5f5f5; border-color: #9e9e9e; color: #616161; }
-    .rank-3 { background: #efebe9; border-color: #8d6e63; color: #5d4037; }
+    
+    .subject-block { background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .subject-name { font-size: 14px; font-weight: 800; color: #0d47a1; margin-bottom: 8px; border-bottom: 1px dashed #e0e0e0; padding-bottom: 5px; }
+    #syncBanner { display: none; background: linear-gradient(135deg, #00b09b, #96c93d); color: white; text-align: center; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0, 176, 155, 0.2); }
+    #birthdayBanner { display: none; background: linear-gradient(135deg, #ff0844, #ffb199); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(255, 8, 68, 0.3); }
+    .rank-item { display:flex; align-items:center; gap:15px; background:#fff; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.3s; }
+    .rank-item:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
+    .rank-badge { width: 45px; height: 45px; font-size: 18px; font-weight: 900; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink:0; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .rank-1 { background: linear-gradient(135deg, #f6d365, #fda085); color: #fff; border: 2px solid #fff; }
+    .rank-2 { background: linear-gradient(135deg, #e0e0e0, #bdbdbd); color: #fff; border: 2px solid #fff; }
+    .rank-3 { background: linear-gradient(135deg, #d7ccc8, #8d6e63); color: #fff; border: 2px solid #fff; }
   </style>
 </head>
 <body>
@@ -164,11 +202,13 @@
     </select>
   </div>
 
+  <!-- 🌟 360 પ્રોફાઇલ બટન સાથેનું સ્માર્ટ મેનૂ -->
   <div class="nav-bar">
     <button class="nav-btn active" onclick="showPanel('dashPanel')">🏠 હોમ</button>
+    <button class="nav-btn" onclick="showPanel('profilePanel')" style="color:#8e44ad;">🎓 360° પ્રોફાઇલ</button>
     <button class="nav-btn" onclick="showPanel('attPanel')">📋 હાજરી</button>
-    <button class="nav-btn" onclick="showPanel('reportPanel')" style="color:var(--success); border-color:var(--success);">📄 માર્કશીટ</button>
-    <button class="nav-btn" onclick="showPanel('rankPanel')" style="color:#d84315; border-color:#d84315;">🏆 ટોપર્સ</button>
+    <button class="nav-btn" onclick="showPanel('reportPanel')" style="color:var(--success);">📄 માર્કશીટ</button>
+    <button class="nav-btn" onclick="showPanel('rankPanel')" style="color:var(--secondary);">🏆 ટોપર્સ</button>
     <button class="nav-btn" onclick="showPanel('hwPanel')">📚 ગૃહકાર્ય</button>
     <button class="nav-btn" onclick="showPanel('examPanel')">📝 પરીક્ષા ગુણ</button>
     <button class="nav-btn" onclick="showPanel('feePanel')">💰 ફી</button>
@@ -178,25 +218,39 @@
     <button class="nav-btn admin-btn" onclick="openAdminPanel()">⚙ Admin</button>
   </div>
 
+  <!-- 🌟 ડેશબોર્ડ: 3D ગ્રાફિકલ ચાર્ટ્સ સાથે 🌟 -->
   <div id="dashPanel" class="view-panel active">
     <div id="birthdayBanner">
         <h3 style="margin:0 0 10px; font-size:16px;">🎂 આજના જન્મદિવસ!</h3>
         <div id="birthdayList"></div>
     </div>
 
-    <div class="grid-3" style="margin-bottom: 15px;">
-      <div class="stat-box" style="background: #e3f2fd; border-color: #bbdefb; padding:10px;">
-        <h2 id="dashTotalCount" style="font-size:22px; color:var(--primary);">0</h2><p style="font-size:11px;">કુલ વિદ્યાર્થીની</p>
+    <!-- 3D Stat Boxes -->
+    <div class="grid-3 dashboard-stats">
+      <div class="stat-box" style="background: linear-gradient(135deg, #1e3c72, #2a5298);">
+        <h2 id="dashTotalCount">0</h2><p>કુલ વિદ્યાર્થીની</p>
       </div>
-      <div class="stat-box" style="background: #e8f5e9; border-color: #c8e6c9; padding:10px;">
-        <h2 id="dashPresentCount" style="font-size:22px; color: #2e7d32;">0</h2><p style="font-size:11px;">આજના હાજર</p>
+      <div class="stat-box" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+        <h2 id="dashPresentCount">0</h2><p>આજના હાજર</p>
       </div>
-      <div class="stat-box" style="background: #ffebee; border-color: #ffcdd2; padding:10px;">
-        <h2 id="dashAbsentCount" style="font-size:22px; color: #c62828;">0</h2><p style="font-size:11px;">આજના ગેરહાજર</p>
+      <div class="stat-box" style="background: linear-gradient(135deg, #eb3349, #f45c43);">
+        <h2 id="dashAbsentCount">0</h2><p>આજના ગેરહાજર</p>
       </div>
     </div>
     
-    <div class="card" style="border-left: 4px solid var(--primary);">
+    <!-- 🌟 નવા 3D ચાર્ટ્સ (Graphs) -->
+    <div class="grid-2" style="margin-bottom:15px;">
+        <div class="card" style="padding:15px;">
+            <div style="font-size:13px; font-weight:bold; text-align:center; color:var(--primary); margin-bottom:10px;">આજની હાજરી ગ્રાફ</div>
+            <div style="position: relative; height:150px; width:100%;"><canvas id="dashPieChart"></canvas></div>
+        </div>
+        <div class="card" style="padding:15px;">
+            <div style="font-size:13px; font-weight:bold; text-align:center; color:var(--primary); margin-bottom:10px;">એકંદર પરિણામ ગ્રાફ</div>
+            <div style="position: relative; height:150px; width:100%;"><canvas id="dashBarChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="card">
       <h4 class="card-title" style="border:none; margin-bottom:5px;">📌 ઝડપી કાર્યો (Quick Actions)</h4>
       <div class="btn-grid">
         <button class="btn btn-main" onclick="showPanel('attPanel')">✅ હાજરી પૂરો</button>
@@ -205,6 +259,20 @@
         <button class="btn btn-danger" onclick="showPanel('leavePanel')">🚨 રજા મંજૂરી</button>
       </div>
     </div>
+  </div>
+
+  <!-- 🌟 નવું: 360° સ્ટુડન્ટ પ્રોફાઇલ ટેબ 🌟 -->
+  <div id="profilePanel" class="view-panel">
+      <div class="card">
+         <h3 class="card-title">🎓 360° સ્ટુડન્ટ પ્રોફાઇલ</h3>
+         <div class="form-group">
+            <label>વિદ્યાર્થીની પસંદ કરો:</label>
+            <select id="profileSelect" onchange="render360Profile()"></select>
+         </div>
+         <div id="profileViewContainer" style="display:none; animation: popIn 0.4s;">
+             <!-- Data will be populated via JS -->
+         </div>
+      </div>
   </div>
 
   <div id="attPanel" class="view-panel">
@@ -309,7 +377,7 @@
       </div>
       
       <div id="marksheetPreviewContainer" style="display:none; background:#fff; padding:15px; border:1px solid #bbdefb; border-radius:8px; overflow-x:auto; margin-top:15px;"></div>
-      <button class="btn btn-main" id="btnReportPrint" style="display:none; width:100%; margin-top:10px; background:#d32f2f;" onclick="printPreviewedMarksheet()">🖨️ માર્કશીટ પ્રિન્ટ કાઢો</button>
+      <button class="btn btn-main" id="btnReportPrint" style="display:none; width:100%; margin-top:10px; background:linear-gradient(135deg, #e53935, #c62828);" onclick="printPreviewedMarksheet()">🖨️ માર્કશીટ પ્રિન્ટ કાઢો</button>
 
     </div>
   </div>
@@ -320,8 +388,8 @@
       <div class="form-group"><label>ગૃહકાર્ય પ્રકાર:</label><select id="hwSendType" onchange="toggleHwStudent()"><option value="group">📢 WhatsApp ગ્રુપમાં</option><option value="individual">👤 વ્યક્તિગત</option></select></div>
       <div class="form-group" id="hwStudentGroup" style="display:none;"><label>વિદ્યાર્થીની:</label><select id="hwStudent"></select></div>
       <div class="form-group"><label>વિષય:</label><input type="text" id="hwSubject" placeholder="વિષયનું નામ લખો..."></div>
-      <div class="form-group"><label>આજનું ગૃહકાર્ય:</label><textarea id="hwDesc" rows="3" placeholder="ગૃહકાર્યની વિગત..."></textarea></div>
-      <div class="form-group"><label>લિંક (વૈકલ્પિક):</label><input type="text" id="hwLink" placeholder="https://..."></div>
+      <div class="form-group"><label>આજનું ગૃહકાર્ય:</label><textarea id="hwDesc" rows="3" placeholder="ગૃહકાર્યની વિગત... (અહીં પેસ્ટ કરી શકાશે)"></textarea></div>
+      <div class="form-group"><label>લિંક (વૈકલ્પિક):</label><input type="text" id="hwLink" placeholder="https://... (અહીં લિંક પેસ્ટ કરો)"></div>
       <button class="btn btn-success" style="margin-top:5px;" onclick="dispatchHomework()">📲 WhatsApp પર મોકલો</button>
     </div>
   </div>
@@ -408,8 +476,8 @@
     <div class="card">
       <h3 class="card-title">📢 સૂચના / પરિપત્ર જનરેટર</h3>
       <div class="form-group"><label>લાગુ પડતું ધોરણ:</label><select id="noticeClass"><option value="12">ધોરણ ૧૨</option><option value="11">ધોરણ ૧૧</option><option value="11 અને 12">બંને (ધોરણ ૧૧/૧૨)</option></select></div>
-      <div class="form-group"><label>સૂચનાની વિગત:</label><textarea id="noticeDesc" rows="4" placeholder="સૂચના લખાણ..."></textarea></div>
-      <div class="form-group"><label>પરિપત્રની લિંક (વૈકલ્પિક):</label><input type="text" id="noticeLink" placeholder="https://drive.google.com/..."></div>
+      <div class="form-group"><label>સૂચનાની વિગત (અહીં પેસ્ટ કરી શકાશે):</label><textarea id="noticeDesc" rows="4" placeholder="સૂચના લખાણ..."></textarea></div>
+      <div class="form-group"><label>પરિપત્રની લિંક (અહીં પેસ્ટ કરી શકાશે):</label><input type="text" id="noticeLink" placeholder="https://drive.google.com/..."></div>
       <button class="btn btn-success" onclick="dispatchNotice()">📲 WhatsApp ગ્રૂપમાં શેર કરો</button>
     </div>
   </div>
@@ -500,6 +568,10 @@
   
   let attendanceDB = {}; 
   let currentSessionAttMap = {}; 
+  
+  // Chart instances
+  let dashPieObj = null;
+  let dashBarObj = null;
 
   const todayDateObj = new Date();
   const dd = String(todayDateObj.getDate()).padStart(2, '0');
@@ -519,10 +591,13 @@
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(panelId).classList.add('active');
     event.target.classList.add('active');
+    
     if(panelId === 'idPanel') renderCard();
     if(panelId === 'reportPanel') generateSubjectInputs();
     if(panelId === 'rankPanel') generateToppers();
     if(panelId === 'adminPanel') renderAdminTable(); 
+    if(panelId === 'profilePanel') { populateProfileDropdown(); render360Profile(); }
+    if(panelId === 'dashPanel') updateCharts();
   }
 
   function formatStdStream(std, streamStr) {
@@ -641,6 +716,8 @@
     }
     
     updateDashboardStats();
+    updateCharts();
+    populateProfileDropdown();
   }
 
   function updateDashboardStats() {
@@ -664,8 +741,127 @@
     if(status === 'A') btnElement.classList.add('a-active');
     if(status === 'L') btnElement.classList.add('l-active');
     updateDashboardStats();
+    updateCharts();
   }
   
+  // 🌟 ડેશબોર્ડ ગ્રાફિક્સ અપડેટ (Chart.js) 🌟
+  function updateCharts() {
+      let pCount = parseInt(document.getElementById('dashPresentCount').innerText) || 0;
+      let aCount = parseInt(document.getElementById('dashAbsentCount').innerText) || 0;
+      let activeFilter = document.getElementById('globalClassFilter').value;
+      
+      // Pie Chart (Attendance)
+      const ctxPie = document.getElementById('dashPieChart');
+      if (ctxPie) {
+          if (dashPieObj) dashPieObj.destroy();
+          dashPieObj = new Chart(ctxPie, {
+              type: 'doughnut',
+              data: { labels: ['હાજર', 'ગેરહાજર'], datasets: [{ data: [pCount, aCount], backgroundColor: ['#00b09b', '#eb3349'], borderWidth: 0 }] },
+              options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels:{font:{family:'sans-serif', size:11}} } }, cutout: '70%' }
+          });
+      }
+
+      // Bar Chart (Exams Dummy/Calculated)
+      let fAvg = 0, sAvg = 0, aAvg = 0, cF = 0, cS = 0, cA = 0;
+      roster.forEach(st => {
+          let stStd = st.std ? st.std.toString().trim() : "12";
+          if(activeFilter !== "all" && activeFilter !== stStd) return;
+          if(st.marks && st.marks.first) { fAvg += (parseInt(st.marks.first[2])||0); cF++; }
+          if(st.marks && st.marks.second) { sAvg += (parseInt(st.marks.second[2])||0); cS++; }
+      });
+      if(cF > 0) fAvg = Math.round(fAvg/cF); if(cS > 0) sAvg = Math.round(sAvg/cS);
+
+      const ctxBar = document.getElementById('dashBarChart');
+      if (ctxBar) {
+          if (dashBarObj) dashBarObj.destroy();
+          dashBarObj = new Chart(ctxBar, {
+              type: 'bar',
+              data: { labels: ['પ્રથમ', 'દ્વિતીય', 'વાર્ષિક'], datasets: [{ label: 'સરેરાશ માર્ક્સ', data: [fAvg, sAvg, 0], backgroundColor: '#1e3c72', borderRadius: 5 }] },
+              options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+          });
+      }
+  }
+
+  // 🌟 360° સ્ટુડન્ટ પ્રોફાઇલ ફંક્શન્સ 🌟
+  function populateProfileDropdown() {
+      const select = document.getElementById('profileSelect'); if(!select) return;
+      let activeFilter = document.getElementById('globalClassFilter').value;
+      select.innerHTML = '<option value="">-- વિદ્યાર્થીની પસંદ કરો --</option>';
+      roster.forEach((st, i) => {
+          let stStd = st.std ? st.std.toString().trim() : "12";
+          if(st.status && (st.status.toLowerCase().includes('left') || st.status.includes('કમી'))) return;
+          if(activeFilter !== "all" && activeFilter !== stStd) return;
+          select.innerHTML += `<option value="${i}">રોલ ${st.roll} - ${st.name}</option>`;
+      });
+  }
+
+  function render360Profile() {
+      const stIdxStr = document.getElementById('profileSelect').value;
+      const container = document.getElementById('profileViewContainer');
+      if(!stIdxStr || stIdxStr === "") { container.style.display = 'none'; return; }
+      
+      const st = roster[parseInt(stIdxStr)];
+      
+      // Calculate Overall Attendance
+      let tDays = 0, pDays = 0;
+      for (let dateStr in attendanceDB) {
+          if(attendanceDB[dateStr][st.roll]) {
+              tDays++;
+              if(attendanceDB[dateStr][st.roll] === 'P') pDays++;
+          }
+      }
+      let attPer = tDays > 0 ? Math.round((pDays/tDays)*100) : 0;
+      
+      // Find marks overview
+      let mF = st.marks && st.marks.first ? (st.marks.first[2]||"-") : "-";
+      let mS = st.marks && st.marks.second ? (st.marks.second[2]||"-") : "-";
+      let mA = st.marks && st.marks.annual ? (st.marks.annual[2]||"-") : "-";
+
+      let html = `
+        <div class="profile-card">
+           <div class="profile-header">
+               <img src="${(st.photo && st.photo.trim() !== "") ? st.photo : DEFAULT_AVATAR}">
+               <h2>${st.name}</h2>
+               <p>રોલ: ${st.roll} | ${formatStdStream(st.std, st.stream)}</p>
+           </div>
+           <div class="profile-body">
+               <div style="margin-bottom:20px;">
+                  <span class="info-tag">GR: ${st.gr || "-"}</span>
+                  <span class="info-tag">DOB: ${st.dob || "-"}</span>
+                  <span class="info-tag">Blood: ${st.blood || "-"}</span><br>
+                  <span class="info-tag">પિતા: ${st.fPhone || "-"}</span>
+                  <span class="info-tag">માતા: ${st.mPhone || "-"}</span>
+               </div>
+               
+               <h4 style="margin:0 0 10px; color:var(--primary); font-size:14px;">📊 હાજરીની સ્થિતિ</h4>
+               <div style="font-size:12px; font-weight:bold; color:#555; display:flex; justify-content:space-between;">
+                   <span>હાજર: ${pDays} / ${tDays}</span>
+                   <span style="color:var(--success);">${attPer}%</span>
+               </div>
+               <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${attPer}%;"></div></div>
+               
+               <div style="margin-top:20px;">
+                   <h4 style="margin:0 0 10px; color:var(--primary); font-size:14px;">📝 પરીક્ષા પરફોર્મન્સ (મુખ્ય વિષય)</h4>
+                   <div class="marks-grid">
+                       <div class="mark-box"><h4>પ્રથમ પરીક્ષા</h4><div class="score">${mF}</div></div>
+                       <div class="mark-box"><h4>દ્વિતીય પરીક્ષા</h4><div class="score">${mS}</div></div>
+                       <div class="mark-box"><h4>વાર્ષિક પરીક્ષા</h4><div class="score">${mA}</div></div>
+                   </div>
+               </div>
+               
+               <div style="margin-top:20px;">
+                   <h4 style="margin:0 0 10px; color:var(--primary); font-size:14px;">🚨 રજા હિસ્ટ્રી</h4>
+                   <div style="font-size:13px; color:#666; font-weight:bold;">
+                       ${st.leaveDate ? `<span style="color:var(--danger);">છેલ્લી નોંધાયેલ રજા: ${formatToIndianDate(st.leaveDate)}</span>` : '<span style="color:var(--success);">કોઈ વિશેષ રજા નોંધાયેલ નથી.</span>'}
+                   </div>
+               </div>
+           </div>
+        </div>
+      `;
+      container.innerHTML = html;
+      container.style.display = 'block';
+  }
+
   function declareHoliday() {
       let selIsoDate = document.getElementById('attDailyDate').value;
       let indDate = formatToIndianDate(selIsoDate);
