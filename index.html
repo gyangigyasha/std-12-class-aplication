@@ -138,11 +138,8 @@
       body.printing-att #printAttArea { position: absolute; left: 0; top: 0; width: 100%; margin:0; background: white; }
       body.printing-id .id-box, body.printing-id .id-box * { visibility: visible !important; }
       body.printing-id .id-box { position: absolute; left: 0; top: 0; width: 100%; margin: 0; background: white; }
-      
-      /* New Seating Print Rules */
       body.printing-seat #printSeatingArea, body.printing-seat #printSeatingArea * { visibility: visible !important; }
       body.printing-seat #printSeatingArea { position: absolute; left: 0; top: 0; width: 100%; background: white; margin: 0; }
-      
       @page { size: A4 portrait; margin: 10mm; }
     }
     
@@ -200,10 +197,7 @@
     <button class="nav-btn active" onclick="showPanel('dashPanel')">🏠 હોમ</button>
     <button class="nav-btn" onclick="showPanel('profilePanel')" style="color:#8e44ad;">🎓 360° પ્રોફાઇલ</button>
     <button class="nav-btn" onclick="showPanel('attPanel')">📋 હાજરી</button>
-    
-    <!-- 🌟 નવું: બેઠક વ્યવસ્થા ટેબ -->
     <button class="nav-btn" onclick="showPanel('seatingPanel')" style="color:#009688;">🪑 બેઠક વ્યવસ્થા</button>
-    
     <button class="nav-btn" onclick="showPanel('reportPanel')" style="color:var(--success);">📄 માર્કશીટ</button>
     <button class="nav-btn" onclick="showPanel('rankPanel')" style="color:var(--secondary);">🏆 ટોપર્સ</button>
     <button class="nav-btn" onclick="showPanel('hwPanel')">📚 ગૃહકાર્ય</button>
@@ -268,7 +262,6 @@
   </div>
 
   <div id="attPanel" class="view-panel">
-    
     <div style="text-align: right; margin-bottom: 10px;">
         <button class="btn" style="background:#fff3e0; color:#e65100; border:1px solid #ffcc80; font-size:12px; padding:6px 12px; border-radius:20px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.05);" onclick="toggleVacationBox()">⚙️ વિશેષ રજા / વેકેશન સેટિંગ 🔽</button>
     </div>
@@ -278,7 +271,6 @@
             <div style="font-size: 13.5px; font-weight: bold; margin-bottom: 12px; color: #e65100;">
               🌴 વેકેશન અને રજા સેટિંગ
             </div>
-            
             <div style="background:#fff; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #ffcc80;">
                 <p style="font-size:11px; margin:0 0 8px 0; color:#d84315; font-weight:bold;">લાંબી રજા / વેકેશન (Bulk):</p>
                 <div class="grid-2" style="margin-bottom:10px;">
@@ -288,7 +280,6 @@
                 <input type="text" id="vacReason" placeholder="રજાનું કારણ (દા.ત. દિવાળી વેકેશન)" style="margin-bottom:8px; border-color:#ffcc80;">
                 <button class="btn btn-warning" id="btnSaveVacation" onclick="declareBulkVacation()" style="width:100%;">🌴 વેકેશન સેવ કરો</button>
             </div>
-
             <div style="background:#fff; padding:10px; border-radius:8px; border:1px solid #ffcc80;">
                 <p style="font-size:11px; margin:0 0 4px 0; color:#d84315; font-weight:bold;">કોઈ ૧ દિવસની સ્થાનિક રજા:</p>
                 <p style="font-size:10px; color:#666; margin:0 0 8px 0;">(નીચે પસંદ કરેલી 'દૈનિક હાજરી' તારીખ મુજબ જાહેર થશે)</p>
@@ -325,7 +316,6 @@
     </div>
   </div>
 
-  <!-- 🌟 નવું: બેઠક વ્યવસ્થા પેનલ -->
   <div id="seatingPanel" class="view-panel">
     <div class="card">
       <h3 class="card-title">🪑 સ્માર્ટ બેઠક વ્યવસ્થા (Cross-Mixing)</h3>
@@ -345,11 +335,9 @@
             </select>
         </div>
       </div>
-      
       <p style="font-size:12px; color:#d84315; font-weight:bold; background:#fff3e0; padding:8px; border-radius:8px; border:1px dashed #ffcc80;">
          💡 સિસ્ટમ આપોઆપ આર્ટસ અને કોમર્સ તેમજ ધોરણ 11 અને 12 ના વિદ્યાર્થીઓને એકાંતરે (Alternate) ગોઠવશે જેથી ચોરી ન થાય.
       </p>
-
       <button class="btn btn-main" onclick="generateSeating()">📊 બેઠક વ્યવસ્થા બનાવો</button>
       
       <div id="seatingPreviewContainer" style="display:none; margin-top:20px;"></div>
@@ -402,7 +390,6 @@
       
       <div id="marksheetPreviewContainer" style="display:none; background:#fff; padding:15px; border:1px solid #bbdefb; border-radius:8px; overflow-x:auto; margin-top:15px;"></div>
       <button class="btn btn-main" id="btnReportPrint" style="display:none; width:100%; margin-top:10px; background:linear-gradient(135deg, #e53935, #c62828);" onclick="printPreviewedMarksheet()">🖨️ માર્કશીટ પ્રિન્ટ કાઢો</button>
-
     </div>
   </div>
 
@@ -726,7 +713,7 @@
     if(bdayHtml !== "") { document.getElementById('birthdayList').innerHTML = bdayHtml; bBanner.style.display = 'block'; } else { bBanner.style.display = 'none'; }
     
     let elTotalStudents = document.getElementById('totalStudentsCount');
-    if(elTotalStudents) elTotalStudents.innerText = roster.length;
+    if(elTotalStudents) elTotalStudents.innerText = filteredCount; 
     
     let elDashTotal = document.getElementById('dashTotalCount');
     if(elDashTotal) elDashTotal.innerText = filteredCount;
@@ -1213,7 +1200,6 @@
     if(d.spNote && d.spNote.trim() !== "") { document.getElementById('prSpecialNoteText').innerText = d.spNote; document.getElementById('prSpecialNoteBox').style.display = 'block'; } else { document.getElementById('prSpecialNoteBox').style.display = 'none'; }
   }
 
-  // 🌟 નવો સ્માર્ટ ક્રોસ-મિક્સિંગ બેઠક વ્યવસ્થા કોડ (Cross-Mixing Algorithm) 🌟
   function generateSeating() {
       let blockSize = parseInt(document.getElementById('seatBlockSize').value) || 30;
       let mixType = document.getElementById('seatClassSelect').value;
@@ -1234,13 +1220,10 @@
           }
       });
 
-      // રોલ નંબર મુજબ લાઈનમાં ગોઠવવા 
       [q11C, q11A, q12C, q12A].forEach(q => q.sort((a,b) => a.roll - b.roll));
 
       let allSeats = [];
       
-      // ક્રોસ-મિક્સિંગ સિક્વન્સ: 11-Com, 12-Arts, 11-Arts, 12-Com
-      // આનાથી જોડે બેસનાર વિદ્યાર્થી હંમેશા અલગ ધોરણ કે અલગ પ્રવાહનો જ હશે!
       let queues = [];
       if(mixType === "both") {
           queues = [q11C, q12A, q11A, q12C]; 
@@ -1262,13 +1245,11 @@
           qIdx++;
       }
 
-      // બ્લોક મુજબ ટુકડા પાડવા
       let blocks = [];
       for(let i=0; i<allSeats.length; i+=blockSize) {
           blocks.push(allSeats.slice(i, i+blockSize));
       }
       
-      // HTML લિસ્ટ તૈયાર કરવું
       let html = "";
       blocks.forEach((blk, bIdx) => {
           html += `<div class="block-page" style="page-break-after: always; padding: 20px; background:#fff; border:1px solid #ccc; margin-bottom:15px;">`;
