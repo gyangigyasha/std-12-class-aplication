@@ -9,10 +9,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ - સ્માર્ટ વર્ગ સંચાલન</title>
   
-  <!-- ગ્રાફ્સ માટેની લિંક -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- સ્માર્ટ સુરક્ષા કોડ -->
   <script>
     document.addEventListener('contextmenu', event => {
         if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
@@ -46,7 +44,7 @@
     header p { margin: 5px 0 0; font-size: 13px; font-weight: 500; opacity: 0.9; }
     
     .filter-bar { background: #fff; border-radius: 16px; padding: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.5); }
-    .filter-bar select { padding: 8px 15px; border: 2px solid var(--primary); border-radius: 8px; font-weight: bold; color: var(--primary); outline: none; background: #f8f9fa; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+    .filter-bar select { width: 100%; padding: 8px 15px; border: 2px solid var(--primary); border-radius: 8px; font-weight: bold; color: var(--primary); outline: none; background: #f8f9fa; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
     
     .nav-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
     .nav-bar::-webkit-scrollbar { display: none; }
@@ -187,8 +185,8 @@
   <div id="syncBanner">🔄 ગૂગલ શીટમાંથી નવો ડેટા ચેક થઈ રહ્યો છે...</div>
 
   <div class="filter-bar">
-    <label style="margin:0; font-size:14px;">કાર્ય માટે વર્ગ પસંદ કરો:</label>
-    <select id="globalClassFilter" onchange="setupList()">
+    <label style="margin:0; font-size:14px; flex-shrink:0;">કાર્ય માટે વર્ગ પસંદ કરો:</label>
+    <select id="globalClassFilter" onchange="applyGlobalFilter()">
       <option value="all">બધા (ધો. 11 અને 12)</option>
       <option value="11">ફક્ત ધોરણ 11</option>
       <option value="12">ફક્ત ધોરણ 12</option>
@@ -612,7 +610,8 @@
         if(panelId === 'rankPanel') generateToppers();
         if(panelId === 'adminPanel') renderAdminTable(); 
         if(panelId === 'profilePanel') { populateProfileDropdown(); render360Profile(); }
-        if(panelId === 'dashPanel') updateCharts();
+        // જો ડેશબોર્ડ પર જઈએ તો જ ચાર્ટ અપડેટ થાય
+        if(panelId === 'dashPanel') applyGlobalFilter(); 
     } catch(e) { console.error("Panel Error:", e); }
   }
 
@@ -637,6 +636,13 @@
       
       setupList();
       syncGoogleSheetLive(true); 
+  }
+
+  // 🌟 નવો સ્માર્ટ ફિલ્ટર કમાન્ડ: આનાથી ડેશબોર્ડ હંમેશા બરાબર અપડેટ થશે 🌟
+  function applyGlobalFilter() {
+      setupList(); // લિસ્ટ અને હાજરીનો ડેટા ફરીથી સેટ કરશે
+      updateDashboardStats(); // હાજર-ગેરહાજર ફરીથી ગણશે
+      updateCharts(); // ગ્રાફ્સને નવા આંકડાઓ સાથે બદલશે
   }
 
   function setupList() {
@@ -718,7 +724,6 @@
     let bBanner = document.getElementById('birthdayBanner');
     if(bdayHtml !== "") { document.getElementById('birthdayList').innerHTML = bdayHtml; bBanner.style.display = 'block'; } else { bBanner.style.display = 'none'; }
     
-    // 🌟 ડેશબોર્ડના આંકડા હવે માત્ર પસંદ કરેલ ફિલ્ટર મુજબ જ દેખાશે 🌟
     let elTotalStudents = document.getElementById('totalStudentsCount');
     if(elTotalStudents) elTotalStudents.innerText = filteredCount; 
     
@@ -734,10 +739,6 @@
         generateSubjectInputs(); 
         if(document.getElementById('bottomSaveBtnBox')) document.getElementById('bottomSaveBtnBox').style.display = 'block';
     }
-    
-    updateDashboardStats();
-    updateCharts();
-    populateProfileDropdown();
   }
 
   function updateDashboardStats() {
@@ -999,7 +1000,7 @@
     try {
       let res = await fetch(scriptUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
       let json = await res.json();
-      if(json.status === "success") { alert("✅ " + json.message); setupList(); } else { alert("ભૂલ: " + json.message); }
+      if(json.status === "success") { alert("✅ " + json.message); applyGlobalFilter(); } else { alert("ભૂલ: " + json.message); }
     } catch(e) { alert("ભૂલ: " + e.toString()); } 
     finally { 
         if(btnTop) { btnTop.innerText = "💾 સેવ"; btnTop.disabled = false; }
@@ -1088,7 +1089,7 @@
                 attendanceDB[d][r] = shortS;
             }
         }
-        setupList();
+        applyGlobalFilter();
         if(!isAuto) alert("સફળતાપૂર્વક સિંક થયું! કુલ વિદ્યાર્થીઓ: " + roster.length);
     } catch(e) {
         if(!isAuto) alert("ડેટા પ્રોસેસ કરવામાં ભૂલ: " + e.message);
@@ -1327,7 +1328,7 @@
   }
 
   function deleteStudent(index) { 
-    if (confirm("શું તમે ખરેખર આ વિદ્યાર્થીની માહિતી કાઢી નાખવા માંગો છો?")) { roster.splice(index, 1); saveToStorage(); setupList(); renderAdminTable(); } 
+    if (confirm("શું તમે ખરેખર આ વિદ્યાર્થીની માહિતી કાઢી નાખવા માંગો છો?")) { roster.splice(index, 1); saveToStorage(); applyGlobalFilter(); renderAdminTable(); } 
   }
 
   function exportDataJSON() { 
@@ -1349,7 +1350,7 @@
         let student = { roll: rollNo, gr: col[1]?col[1].trim():"", name: col[2]?col[2].trim():"", photo: col[3]&&col[3].trim()?col[3].trim():"", dob: col[4]?col[4].trim():"", blood: col[12]?col[12].trim():"", std: stdVal, stream: streamVal, fPhone: col[9]?col[9].replace(/[^0-9]/g, ''):"", mPhone: col[10]?col[10].replace(/[^0-9]/g, ''):"", udise: col[8]?col[8].trim():"", leaveDate: savedLeave, status: statusVal, marks: { first: null, second: null, annual: null } };
         if (student.name) importedRoster.push(student);
       }
-      if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); setupList(); alert("સફળતાપૂર્વક અપડેટ થઈ ગયું!"); }
+      if (importedRoster.length > 0) { roster = importedRoster; saveToStorage(); applyGlobalFilter(); alert("સફળતાપૂર્વક અપડેટ થઈ ગયું!"); }
     }; reader.readAsText(file, "UTF-8");
   }
 
@@ -1509,8 +1510,8 @@
   function togglePickupDetails() { document.getElementById('otherPickupDetails').style.display = document.getElementById('leavePickupPerson').value === 'other' ? 'block' : 'none'; }
   function toggleVacationBox() { let box = document.getElementById('vacationBox'); box.style.display = (box.style.display === 'none') ? 'block' : 'none'; }
   
-  function approveLeave() { const stIdxStr = document.getElementById('leaveStudent').value; if(!stIdxStr || roster.length === 0) return; const lDate = document.getElementById('leaveDateInput').value; if(!lDate) return alert("તારીખ પસંદ કરો."); roster[parseInt(stIdxStr)].leaveDate = lDate; saveToStorage(); setupList(); alert("રજા મંજૂર કરી છે."); }
-  function cancelLeave() { const stIdxStr = document.getElementById('leaveStudent').value; if(!stIdxStr) return; const st = roster[parseInt(stIdxStr)]; if(st.leaveDate && confirm(`રજા રદ કરવી છે?`)) { st.leaveDate = ""; saveToStorage(); setupList(); alert("રજા રદ કરી છે."); } else { alert("રજા મંજૂર થયેલ નથી."); } }
+  function approveLeave() { const stIdxStr = document.getElementById('leaveStudent').value; if(!stIdxStr || roster.length === 0) return; const lDate = document.getElementById('leaveDateInput').value; if(!lDate) return alert("તારીખ પસંદ કરો."); roster[parseInt(stIdxStr)].leaveDate = lDate; saveToStorage(); applyGlobalFilter(); alert("રજા મંજૂર કરી છે."); }
+  function cancelLeave() { const stIdxStr = document.getElementById('leaveStudent').value; if(!stIdxStr) return; const st = roster[parseInt(stIdxStr)]; if(st.leaveDate && confirm(`રજા રદ કરવી છે?`)) { st.leaveDate = ""; saveToStorage(); applyGlobalFilter(); alert("રજા રદ કરી છે."); } else { alert("રજા મંજૂર થયેલ નથી."); } }
   
   function wishBirthday(name, phone) { if(!phone) return alert("મોબાઈલ નંબર નથી."); window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\n\nવાહલી દીકરી *${name}* ને જન્મદિવસની શુભેચ્છાઓ! 🎉\n- હેમંત સર`)}`, '_blank'); }
   function sendAbsent(name, phone) { if(!phone) return alert("મોબાઈલ નંબર નથી."); window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(`શ્રી એમ જી સિંગાપુરી ગર્લ્સ હાઈસ્કૂલ\nવાલીશ્રી, આપની દીકરી *${name}* આજે ગેરહાજર છે.\n- હેમંત સર`)}`, '_blank'); }
